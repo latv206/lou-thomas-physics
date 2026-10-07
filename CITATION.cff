@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Please cite this repository when using its research, software, figures, or results. Cite the specific work and revision as well when applicable."
+title: "Lou Thomas Physics Research: BIH-VI, RNSF, and Foundations"
+type: software
+authors:
+  - family-names: "Thomas"
+    given-names: "Lou"
+version: "2026.10.07.1"
+abstract: "An AI-assisted personal research collection containing boundary-inversion cosmology studies, relational-substrate lattice experiments, conceptual manuscripts, numerical records, and explicit validation limits."
+keywords:
+  - cosmology
+  - computational physics
+  - boundary inversion
+  - entanglement
+  - exploratory research
+license:
+  - MIT
+  - CC-BY-4.0

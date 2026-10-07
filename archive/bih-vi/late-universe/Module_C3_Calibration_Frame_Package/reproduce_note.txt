@@ -1,0 +1,4 @@
+
+The package was generated in-session with NumPy/Pandas/Matplotlib.
+All numerical data needed for audit are in the CSV outputs.
+The README and Equation Sheet give the model equations and assumptions.

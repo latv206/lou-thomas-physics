@@ -1,0 +1,5 @@
+family,n_shapes,max_abs_fNL_shape_id,max_abs_fNL_K,max_abs_fNL_sum_O1_to_O4,max_abs_B_shape_id,max_abs_B_K,max_abs_B_sum_O1_to_O4
+equilateral,49,equilateral_K0.1000,0.1,5.40055131120143e+17,equilateral_K0.1000,0.1,0.2024196053708739
+folded_flattened,98,folded_delta0.001_K0.1000,0.1,7.726136502487505e+17,folded_delta0.001_K0.1000,0.1,0.2784171853662131
+isosceles,637,isosceles_q0.001_K0.1000,0.1,8.489999821426169e+26,isosceles_q0.001_K0.1000,0.1,531620384.2165665
+squeezed,147,squeezed_q0.001_K0.1000,0.1,8.489999821426169e+26,squeezed_q0.001_K0.1000,0.1,531620384.2165665

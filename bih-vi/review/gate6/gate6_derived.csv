@@ -1,0 +1,18 @@
+metric,value,note
+Kstar1_delta0.01,1.9707,interpolated
+Kstar2_delta0.01,6.0546,extrapolated-past-grid-edge
+Kstar1_delta0.003,1.9039,interpolated
+Kstar2_delta0.003,5.8557,interpolated
+Kstar1_delta0.001,1.6929,interpolated
+Kstar2_delta0.001,5.7709,interpolated
+B6_sign_flip_in_delta_family,True,gate slope spans a zero
+interval_slope_1e2_to_3e3,0.6784,spans sign flip
+interval_slope_3e3_to_1e3,0.3323,"post-flip, decelerating"
+absB6_over_absB5_delta0.01,0.0517,pole would be >> 1
+absB6_over_absB5_delta0.003,0.1686,pole would be >> 1
+absB6_over_absB5_delta0.001,0.2971,pole would be >> 1
+cancellation_x_delta0.01,317.7,sum|pieces|/|B_total| at K=6
+cancellation_x_delta0.003,141.5,sum|pieces|/|B_total| at K=6
+cancellation_x_delta0.001,98.4,sum|pieces|/|B_total| at K=6
+equilateral_crossings_near_6,0,B negative throughout production band above K~0.5
+isosceles_K6_n_positive,0,of 9

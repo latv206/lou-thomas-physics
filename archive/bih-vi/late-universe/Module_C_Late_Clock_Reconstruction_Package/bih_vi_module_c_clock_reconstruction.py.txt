@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+"""
+BIH-VI Module C: Late-Clock Reconstruction
+
+This script reconstructs the BIH effective clock profile m(z) from a target
+late-universe expansion history. It is intentionally conservative: the frozen
+BIH-VI early branch is not modified. The Sqrt-Reg high-density shield enters
+only through y(z)=1-sqrt(1-H^2/H_c^2); for the frozen inflationary H_c this is
+numerically zero throughout the late universe, so m(z) ~= 2 epsilon(z).
+
+Outputs:
+  - bih_vi_module_c_lcdm_clock.csv
+  - bih_vi_module_c_lapse_template.csv
+  - bih_vi_module_c_lcdm_clock_profile.png
+  - bih_vi_module_c_lapse_clock_profile.png
+
+Natural units are implicit in the equations, but H0 is carried in km/s/Mpc for
+observational readability. The dimensionless formulas use H/H0.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+import argparse
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+@dataclass(frozen=True)
+class LCDMParams:
+    """Flat or curved Lambda-CDM background parameters."""
+    H0: float = 67.36            # km/s/Mpc, Planck 2018 TT,TE,EE+lowE+lensing baseline
+    Omega_m0: float = 0.3153
+    Omega_r0: float | None = None
+    Omega_k0: float = 0.0
+    N_eff: float = 3.046
+
+    def with_radiation(self) -> "LCDMParams":
+        if self.Omega_r0 is not None:
+            return self
+        # Photon density for T_CMB ~= 2.7255 K: Omega_gamma h^2 ~= 2.469e-5.
+        # Total radiation includes neutrinos: Omega_r = Omega_gamma*(1+0.2271*N_eff).
+        h = self.H0 / 100.0
+        omega_gamma_h2 = 2.469e-5
+        omega_r = (omega_gamma_h2 / h**2) * (1.0 + 0.2271 * self.N_eff)
+        return LCDMParams(
+            H0=self.H0,
+            Omega_m0=self.Omega_m0,
+            Omega_r0=omega_r,
+            Omega_k0=self.Omega_k0,
+            N_eff=self.N_eff,
+        )
+
+    @property
+    def Omega_de0(self) -> float:
+        p = self.with_radiation()
+        return 1.0 - p.Omega_m0 - float(p.Omega_r0) - p.Omega_k0
+
+
+def e2_lcdm(z: np.ndarray, params: LCDMParams) -> np.ndarray:
+    p = params.with_radiation()
+    zp1 = 1.0 + z
+    return (
+        float(p.Omega_r0) * zp1**4
+        + p.Omega_m0 * zp1**3
+        + p.Omega_k0 * zp1**2
+        + p.Omega_de0
+    )
+
+
+def epsilon_lcdm(z: np.ndarray, params: LCDMParams) -> np.ndarray:
+    """epsilon_H = -d ln H / d ln a = (1+z)d ln H/dz."""
+    p = params.with_radiation()
+    zp1 = 1.0 + z
+    numerator = (
+        2.0 * float(p.Omega_r0) * zp1**4
+        + 1.5 * p.Omega_m0 * zp1**3
+        + p.Omega_k0 * zp1**2
+    )
+    return numerator / e2_lcdm(z, p)
+
+
+def y_from_h_over_hc(h_over_hc: np.ndarray) -> np.ndarray:
+    """Low-density branch: y=1-sqrt(1-H^2/H_c^2). Undefined if H>H_c."""
+    q = np.asarray(h_over_hc, dtype=float) ** 2
+    y = np.full_like(q, np.nan, dtype=float)
+    mask = q <= 1.0
+    # Use stable small-q expansion where direct subtraction loses precision.
+    tiny = mask & (q < 1e-8)
+    normal = mask & ~tiny
+    y[tiny] = 0.5 * q[tiny] + 0.125 * q[tiny] ** 2
+    y[normal] = 1.0 - np.sqrt(1.0 - q[normal])
+    return y
+
+
+def m_from_epsilon_y(epsilon: np.ndarray, y: np.ndarray) -> np.ndarray:
+    return epsilon * (2.0 - y) / (1.0 - y)
+
+
+def lapse_nu(z: np.ndarray, delta_nu: float, z_t: float, sharpness: float) -> np.ndarray:
+    """
+    Phenomenological low-redshift lapse template:
+        nu(z) = 1 + delta_nu / [1 + (z/z_t)^s]
+    with nu(0)=1+delta_nu and nu(z>>z_t)->1.
+    This is a test ansatz, not a derived BIH result.
+    """
+    if z_t <= 0:
+        raise ValueError("z_t must be positive")
+    if sharpness <= 0:
+        raise ValueError("sharpness must be positive")
+    return 1.0 + delta_nu / (1.0 + (z / z_t) ** sharpness)
+
+
+def dlnnu_dz_numeric(z: np.ndarray, nu: np.ndarray) -> np.ndarray:
+    return np.gradient(np.log(nu), z, edge_order=2)
+
+
+def reconstruct_tables(
+    outdir: Path,
+    params: LCDMParams,
+    h_c_over_h0: float,
+    h0_local: float,
+    z_t: float,
+    sharpness: float,
+    z_min: float,
+    z_max: float,
+    n_grid: int,
+) -> tuple[Path, Path, Path, Path]:
+    outdir.mkdir(parents=True, exist_ok=True)
+    p = params.with_radiation()
+
+    # Include z=0 exactly, plus logarithmic coverage to recombination and beyond.
+    z_positive = np.logspace(np.log10(max(z_min, 1e-5)), np.log10(z_max), n_grid - 1)
+    z = np.unique(np.concatenate(([0.0], z_positive)))
+
+    E2 = e2_lcdm(z, p)
+    E = np.sqrt(E2)
+    eps = epsilon_lcdm(z, p)
+    h_over_hc = E / h_c_over_h0
+    y = y_from_h_over_hc(h_over_hc)
+    m_exact = m_from_epsilon_y(eps, y)
+    m_late = 2.0 * eps
+    w_eff_from_m = -1.0 + m_late / 3.0
+
+    lcdm = pd.DataFrame({
+        "z": z,
+        "a": 1.0 / (1.0 + z),
+        "H_km_s_Mpc": p.H0 * E,
+        "E": E,
+        "E2": E2,
+        "epsilon_H": eps,
+        "y_for_selected_Hc": y,
+        "m_BIH_exact": m_exact,
+        "m_late_y_to_0": m_late,
+        "w_eff_late": w_eff_from_m,
+    })
+
+    lcdm_csv = outdir / "bih_vi_module_c_lcdm_clock.csv"
+    lcdm.to_csv(lcdm_csv, index=False)
+
+    delta_nu = h0_local / p.H0 - 1.0
+    nu = lapse_nu(z, delta_nu=delta_nu, z_t=z_t, sharpness=sharpness)
+    dlnnu = dlnnu_dz_numeric(z, nu)
+    eps_lapse = eps + (1.0 + z) * dlnnu
+    H_lapse = nu * p.H0 * E
+    y_lapse = y_from_h_over_hc((H_lapse / p.H0) / h_c_over_h0)
+    m_lapse_exact = m_from_epsilon_y(eps_lapse, y_lapse)
+    m_lapse_late = 2.0 * eps_lapse
+
+    lapse = pd.DataFrame({
+        "z": z,
+        "a": 1.0 / (1.0 + z),
+        "nu": nu,
+        "H_LCDM_CMB_calibrated_km_s_Mpc": p.H0 * E,
+        "H_lapse_observed_km_s_Mpc": H_lapse,
+        "epsilon_LCDM": eps,
+        "epsilon_lapse": eps_lapse,
+        "m_LCDM_late": m_late,
+        "m_lapse_late": m_lapse_late,
+        "m_lapse_exact": m_lapse_exact,
+        "delta_m_late": m_lapse_late - m_late,
+    })
+    lapse_csv = outdir / "bih_vi_module_c_lapse_template.csv"
+    lapse.to_csv(lapse_csv, index=False)
+
+    # Plot 1: baseline LCDM clock profile.
+    fig = plt.figure(figsize=(8.0, 5.0))
+    ax = fig.add_subplot(111)
+    ax.plot(np.log10(1.0 + z), m_late, label=r"$m_{\Lambda CDM}(z) \simeq 2\epsilon_H$")
+    ax.axhline(4.0, linestyle="--", linewidth=1.0, label="radiation-like m=4")
+    ax.axhline(3.0, linestyle="--", linewidth=1.0, label="matter-like m=3")
+    ax.axhline(0.0, linestyle=":", linewidth=1.0, label="de Sitter m=0")
+    ax.set_xlabel(r"$\log_{10}(1+z)$")
+    ax.set_ylabel(r"BIH clock gear $m(z)$")
+    ax.set_title("BIH Module C baseline: LCDM as a late-clock gear profile")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    lcdm_png = outdir / "bih_vi_module_c_lcdm_clock_profile.png"
+    fig.savefig(lcdm_png, dpi=200)
+    plt.close(fig)
+
+    # Plot 2: demonstration lapse template effect.
+    fig = plt.figure(figsize=(8.0, 5.0))
+    ax = fig.add_subplot(111)
+    ax.plot(z, m_late, label=r"baseline $m_{\Lambda CDM}$")
+    ax.plot(z, m_lapse_late, label=rf"lapse template $z_t={z_t:g}, s={sharpness:g}$")
+    ax.set_xlim(0.0, min(3.0, z_max))
+    ax.set_xlabel("redshift z")
+    ax.set_ylabel(r"late-limit clock gear $m(z)$")
+    ax.set_title("Example low-redshift clock-lapse deformation")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    lapse_png = outdir / "bih_vi_module_c_lapse_clock_profile.png"
+    fig.savefig(lapse_png, dpi=200)
+    plt.close(fig)
+
+    return lcdm_csv, lapse_csv, lcdm_png, lapse_png
+
+
+def summarize_key_values(params: LCDMParams, h_c_over_h0: float, h0_local: float) -> pd.DataFrame:
+    z_key = np.array([0.0, 0.1, 0.5, 1.0, 2.0, 10.0, 1100.0, 3000.0])
+    p = params.with_radiation()
+    E = np.sqrt(e2_lcdm(z_key, p))
+    eps = epsilon_lcdm(z_key, p)
+    y = y_from_h_over_hc(E / h_c_over_h0)
+    m = m_from_epsilon_y(eps, y)
+    return pd.DataFrame({
+        "z": z_key,
+        "H_km_s_Mpc": p.H0 * E,
+        "epsilon_H": eps,
+        "m_BIH_exact": m,
+        "m_late_y_to_0": 2.0 * eps,
+        "w_eff_late": -1.0 + (2.0 * eps) / 3.0,
+        "H0_local_over_CMB_minus_1": h0_local / p.H0 - 1.0,
+    })
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="BIH-VI Module C late-clock reconstruction")
+    parser.add_argument("--outdir", default="./legacy_data", help="Output directory")
+    parser.add_argument("--H0", type=float, default=67.36, help="CMB-calibrated H0 in km/s/Mpc")
+    parser.add_argument("--Omega-m0", type=float, default=0.3153, help="Matter density today")
+    parser.add_argument("--Omega-k0", type=float, default=0.0, help="Curvature density today")
+    parser.add_argument("--Omega-r0", type=float, default=None, help="Radiation density today; computed if omitted")
+    parser.add_argument("--Hc-over-H0", type=float, default=1e55, help="Critical Hubble scale divided by H0")
+    parser.add_argument("--H0-local", type=float, default=73.17, help="Local distance-ladder H0 used for lapse demo")
+    parser.add_argument("--z-t", type=float, default=0.3, help="Transition redshift for lapse template")
+    parser.add_argument("--sharpness", type=float, default=4.0, help="Sharpness s for lapse template")
+    parser.add_argument("--z-min", type=float, default=1e-4, help="Minimum positive redshift in log grid")
+    parser.add_argument("--z-max", type=float, default=1e4, help="Maximum redshift in log grid")
+    parser.add_argument("--n-grid", type=int, default=800, help="Number of redshift grid points")
+    args = parser.parse_args()
+
+    params = LCDMParams(
+        H0=args.H0,
+        Omega_m0=args.Omega_m0,
+        Omega_r0=args.Omega_r0,
+        Omega_k0=args.Omega_k0,
+    ).with_radiation()
+
+    paths = reconstruct_tables(
+        outdir=Path(args.outdir),
+        params=params,
+        h_c_over_h0=args.Hc_over_H0,
+        h0_local=args.H0_local,
+        z_t=args.z_t,
+        sharpness=args.sharpness,
+        z_min=args.z_min,
+        z_max=args.z_max,
+        n_grid=args.n_grid,
+    )
+
+    summary = summarize_key_values(params, args.Hc_over_H0, args.H0_local)
+    summary_path = Path(args.outdir) / "bih_vi_module_c_key_values.csv"
+    summary.to_csv(summary_path, index=False)
+
+    print("BIH-VI Module C outputs:")
+    for path in (*paths, summary_path):
+        print(f"  {path}")
+    print("\nKey values:")
+    print(summary.to_string(index=False))
+
+
+if __name__ == "__main__":
+    main()

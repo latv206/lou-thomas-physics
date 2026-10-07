@@ -1,0 +1,217 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{natbib}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\newcommand{\Ms}{E_{\rm MS}}
+\newcommand{\Mpl}{M_{\rm Pl}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\placeholderfig}[1]{\begin{center}\fbox{\parbox{0.88\linewidth}{\centering \vspace{0.4cm}\textbf{#1}\vspace{0.4cm}}}\end{center}}
+
+\title{Boundary-Inversion Cosmology VI:\\
+A Sqrt-Reg EFT-Clock Inflationary Branch and Calibration-Frame Late-Universe Extension}
+\author{Lou \& collaborators}
+\date{Draft skeleton -- audit-ready, not production-likelihood final}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present Boundary-Inversion Cosmology VI (BIH-VI) as a boundary-anchored effective-field-theory cosmology organized around the invariant marginal-horizon seam $\chi=h^{ab}\nabla_a R\nabla_b R=0$, equivalently $R=2G E_{\rm MS}$. The early-universe branch realizes a Sqrt-Reg entropy-selected density shield through a stable EFT clock with background evolution $H^2=H_c^2y(2-y)$, $y_N=-m(y)y$, and $\epsilon_H=m(1-y)/(2-y)$. For the frozen benchmark $m(y)=\mu(1-y)^3$, $\mu=1$, $c_s=1$, and $N_*=55$, the model gives $n_s=0.9652$, $r=1.4\times10^{-3}$, and $\alpha_s=-5.8\times10^{-4}$, with stable scalar and tensor quadratic actions. The exit switch is pivot-safe and produces a localized ultra-small-scale feature mapped to $k\sim1.3\times10^{23}\,\mathrm{Mpc}^{-1}$, or $f\sim200\,\mathrm{MHz}$, while remaining quiet in ordinary CMB/LSS channels.
+
+We then test whether the same boundary-centered framework can be extended to late-universe cosmology without modifying the frozen inflationary branch. The low-density expansion of the Sqrt-Reg background shows that the entropy shield acts as a UV density regulator rather than an infrared dark-energy mechanism. A direct metric-lapse interpretation, $H_{\rm obs}(z)=\nu(z)H_{\rm geom}(z)$, is rejected at the diagnostic level because the required local uplift produces unacceptable supernova-shape and BAO-distance distortions. We therefore define a calibration-frame late branch in which $\nu_{\rm metric}(z)=1$ for light-propagation distance integrals, while the local distance ladder may measure a substrate-dependent calibration offset $H_0^{\rm ladder}=\nu_{\rm cal}H_0^{\rm geom}$, equivalently $\Delta M_B=5\log_{10}\nu_{\rm cal}\simeq0.18\,\mathrm{mag}$ for the current SH0ES/Planck-scale target.
+
+The late branch is formulated as a falsifiable likelihood architecture rather than a completed solution. Posterior samples are translated into a substrate-exchange diagnostic $Q_{\rm bulk}$ through $\dot\rho_{\rm DE}+3H(1+w_{\rm int})\rho_{\rm DE}=Q_{\rm bulk}$, with $Q_{\rm bulk}/(H\rho_{\rm DE})=3(w_{\rm int}-w_{\rm eff})$. The C3 branch survives only if the reconstructed exchange history is smooth, bounded, and low-frequency. BIH-VI is therefore presented as a stable EFT-level early-universe branch plus a calibration-frame late-universe validation program, not as a UV-complete microscopic substrate theory.
+\end{abstract}
+
+\begin{tcolorbox}[colback=blue!3,colframe=blue!45!black,title=Scope Boundary]
+BIH-VI is presented as an EFT-level cosmological framework. It does not claim to be a UV-complete microscopic theory. The early-universe branch is frozen at the Sqrt-Reg/EFT-clock benchmark. The late-universe branch is a diagnostic calibration-frame extension motivated by the failure of universal metric-lapse deformations. The calibration-frame branch is falsifiable through full distance-likelihood tests and through the smoothness, boundedness, and physical interpretability of the reconstructed substrate-exchange history $Q_{\rm bulk}(z)$.
+\end{tcolorbox}
+
+\section{Introduction}
+The standard cosmological model is empirically successful, but two observational fronts motivate controlled extensions: early-universe consistency and the late-universe calibration problem. BIH-VI addresses these questions as an EFT-level framework organized around causal boundaries rather than as a final microscopic theory. The early branch is frozen; the late branch is treated as a separate observational audit.
+
+\section{Boundary seam and Sqrt-Reg thermodynamics}
+The invariant seam is
+\begin{equation}
+\chi = h^{ab}\nabla_a R\nabla_b R=0,
+\qquad
+R=2G\Ms .
+\end{equation}
+In spherical symmetry,
+\begin{equation}
+\theta_\pm = \frac{2}{R}l_\pm^a\nabla_a R,
+\qquad
+\theta_+\theta_-=-\frac{4\chi}{R^2}
+\end{equation}
+for $l_+\cdot l_-=-2$.
+
+\placeholderfig{Figure 1 placeholder: null-expansion sign sectors for Schwarzschild and FLRW screens.}
+
+\subsection{Sqrt-Reg entropy shield}
+\begin{align}
+S_{\sqrt{}}(A)&=\frac{1}{4G}\left[\sqrt{A(A-A_c)}+A_c\,\operatorname{arcosh}\sqrt{\frac{A}{A_c}}\right],\\
+S_A&=\frac{1}{4G\sqrt{1-A_c/A}},\\
+G_{\rm eff}(A)&=\frac{1}{4S_A}=G\sqrt{1-\frac{A_c}{A}}.
+\end{align}
+The corresponding Friedmann function is
+\begin{equation}
+F_{\sqrt{}}(x)=2x_c\left[1-\sqrt{1-x/x_c}\right],
+\qquad
+F_{\sqrt{}}(H^2)=\frac{8\pi G}{3}\rho.
+\end{equation}
+
+\section{Frozen EFT-clock branch}
+The stable EFT-clock branch is
+\begin{align}
+H^2&=H_c^2y(2-y),\\
+y_N&=-m(y)y,\\
+\epsilon_H&=\frac{m(1-y)}{2-y}.
+\end{align}
+The EFT functions are
+\begin{align}
+c(y)&=\Mpl^2 m H_c^2 y(1-y),\\
+\Lambda(y)&=\Mpl^2H_c^2 y[(6-m)+(m-3)y],\\
+M_2^4&=\frac{c}{2}(c_s^{-2}-1).
+\end{align}
+The scalar and tensor quadratic actions are
+\begin{align}
+S_\zeta^{(2)}&=\Mpl^2\int \dd t\,\dd^3x\,a^3\frac{\epsilon_H}{c_s^2}\left[\dot\zeta^2-c_s^2\frac{(\nabla\zeta)^2}{a^2}\right],\\
+S_T^{(2)}&=\frac{\Mpl^2}{8}\int \dd t\,\dd^3x\,a^3\left[\dot h_{ij}^2-\frac{(\nabla h_{ij})^2}{a^2}\right].
+\end{align}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Parameter & Frozen benchmark\\
+\midrule
+$p$ & 3\\
+$\mu$ & 1\\
+$c_s$ & 1\\
+$N_*$ & 55\\
+$z_e$ & 1/3\\
+$n_s$ & 0.9652\\
+$r$ & $1.4\times10^{-3}$\\
+$\alpha_s$ & $-5.8\times10^{-4}$\\
+$H_c$ & $3.8\times10^{-6}M_{\rm Pl}$\\
+\bottomrule
+\end{tabular}
+\caption{Frozen BIH-VI benchmark line.}
+\end{table}
+
+\placeholderfig{Figure 2 placeholder: $(n_s,r)$ parameter island with frozen benchmark marked.}
+
+\section{Exit switch, feature bispectrum, and UHF relic}
+\begin{align}
+m(y)&=\mu(1-y)^3+m_{\rm post}S(y),\\
+S(y)&=\frac{1}{1+\exp[(y-y_g)/\Delta]}.
+\end{align}
+For the benchmark $y_g=2/3$, $\Delta=0.01$, and $m_{\rm post}=4$, the switch is pivot-safe. The feature is localized at
+\begin{equation}
+|f_{\rm NL}^{\rm eq,feat}|_{\rm peak}\sim3\times10^3,
+\qquad
+P_{\rm switch}/P_{\rm cubic}\sim3\times10^{-5},
+\end{equation}
+near $K\sim3.58$, and maps to
+\begin{equation}
+k_{\rm peak}\sim1.3\times10^{23}\,\mathrm{Mpc}^{-1},
+\qquad
+f_{\rm peak}\sim2.0\times10^8\,\mathrm{Hz}.
+\end{equation}
+\placeholderfig{Figure 3 placeholder: Mukhanov-Sasaki exit-feature convergence and scale map.}
+
+\section{Late-universe diagnostic gate}
+\begin{tcolorbox}[colback=yellow!8,colframe=yellow!40!black,title=Pivot Paragraph]
+Having established the stable EFT-clock realization of the Sqrt-Reg density shield as an early-universe branch, we now assess whether the same boundary-centered framework can be extended to late-time cosmology without modifying its frozen inflationary mechanics. The low-density expansion of the Sqrt-Reg background shows that the entropy shield acts as a UV regulator rather than an infrared dark-energy mechanism. We therefore treat the late universe as a separate observational gate on the BIH clock/stress sector. A direct metric-lapse interpretation, in which a redshift-dependent clock factor multiplies all distance integrals, is rejected at the diagnostic level by supernova-shape and BAO-geometry constraints. Consequently, we define a calibration-frame branch: the global geometry remains governed by $H_{\rm geom}(z)$, while the local distance ladder is allowed to measure a substrate-dependent calibration offset $\Delta M_B\simeq0.18\,\mathrm{mag}$. This recasts the Hubble tension as a testable calibration-frame hypothesis rather than a universal modification of light-propagation distances.
+\end{tcolorbox}
+
+\subsection{Low-density Sqrt-Reg limit}
+\begin{equation}
+F_{\sqrt{}}(x)=x+\frac{x^2}{4x_c}+O(x^3/x_c^2).
+\end{equation}
+The entropy shield is therefore a UV regulator, not an automatic IR dark-energy term.
+
+\subsection{Metric-lapse rejection}
+The rejected universal metric-lapse branch is
+\begin{equation}
+H_{\rm obs}(z)=\nu(z)H_{\rm geom}(z),
+\qquad
+\nu(z)=1+\frac{\delta_\nu}{1+(z/z_t)^s}.
+\end{equation}
+It fails as a primary $H_0$ mechanism because an SH0ES-sized uplift produces unacceptable distance-integral strain.
+\placeholderfig{Figure 4 placeholder: C1/C2 metric-lapse distance-gate failure heatmaps.}
+
+\subsection{Calibration-frame C3 branch}
+\begin{equation}
+\nu_{\rm metric}(z)=1,
+\qquad
+H_0^{\rm ladder}=\nu_{\rm cal}H_0^{\rm geom},
+\qquad
+\Delta M_B=5\log_{10}\nu_{\rm cal}.
+\end{equation}
+For the target ratio $73.17/67.36$, $\nu_{\rm cal}\simeq1.086$ and $\Delta M_B\simeq0.18\,\mathrm{mag}$.
+
+\section{C3 likelihood architecture}
+The production parameter vector is
+\begin{equation}
+\Theta_{\rm C3}=\{h,\Omega_m,\Omega_k,\omega_b,w_0,w_a,M_B^{\rm geom},\Delta M_B\}.
+\end{equation}
+The diagnostic geometry sector is
+\begin{align}
+E_{\rm BIH}^2(z)&=\Omega_r(1+z)^4+\Omega_m(1+z)^3+\Omega_k(1+z)^2+\Omega_{\rm DE}f_{\rm DE}(z),\\
+w_{\rm eff}(z)&=w_0+w_a\frac{z}{1+z},\\
+f_{\rm DE}(z)&=(1+z)^{3(1+w_0+w_a)}\exp\left[-3w_a\frac{z}{1+z}\right].
+\end{align}
+
+\section{$Q_{\rm bulk}$ reconstruction and falsifiability}
+\begin{align}
+\dot\rho_{\rm DE}+3H(1+w_{\rm int})\rho_{\rm DE}&=Q_{\rm bulk},\\
+\frac{Q_{\rm bulk}}{H\rho_{\rm DE}}&=3(w_{\rm int}-w_{\rm eff}).
+\end{align}
+For $w_{\rm int}=-1$,
+\begin{equation}
+\frac{Q_{\rm bulk}}{H\rho_{\rm DE}}=-3[1+w_{\rm eff}(z)].
+\end{equation}
+The C3 branch survives only if the posterior-implied exchange history is smooth, bounded, low-frequency, and physically interpretable.
+\placeholderfig{Figure 5 placeholder: $Q_{\rm bulk}(z)$ posterior band with smoothness metrics.}
+
+\section{Discussion}
+The paper should distinguish established branch, rejected branch, and surviving extension. Avoid grand-unified language. CPL is a reconstruction scaffold, not the physical theory.
+
+\section{Conclusion}
+The hierarchy is deliberate:
+\begin{itemize}
+\item Frozen engine: Sqrt-Reg EFT-clock branch.
+\item Stress test: universal metric lapse rejected.
+\item Surviving extension: calibration-frame branch.
+\item Falsifier: production likelihood plus $Q_{\rm bulk}(z)$ smoothness.
+\end{itemize}
+BIH-VI should be understood as an EFT-level cosmological framework with a frozen early-universe branch and a late-universe validation pipeline. It is not presented as a final microscopic substrate theory, nor as a completed solution to the Hubble tension.
+
+\appendix
+\section{Equation map}
+% Add compact equation map here.
+
+\section{Rejected and demoted branches}
+% Document log-critical, pure f(T), minimal f(T,B), analytic f(R), and C1/C2 metric-lapse failures.
+
+\section{Likelihood repository and supplemental code}
+% Link Cobaya/Python likelihoods and Q_bulk reconstruction scripts.
+
+\section{Figure and table plan}
+% Replace placeholders with canonical package figures and production-likelihood plots.
+
+\section{Reviewer-facing caveats}
+% State explicitly that Delta M_B is a target, Q_bulk is a falsifier, and production posterior claims require full covariance chains.
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+\end{document}

@@ -1,0 +1,42 @@
+
+"""
+Cobaya custom likelihood wrapper.
+
+Run from a Cobaya environment:
+  cobaya-run cobaya_bih_vi_c3.yaml
+
+This wrapper does its own background-distance calculation rather than calling CAMB/CLASS.
+For a final publication likelihood, replace the compressed theta_* prior with a proper
+Boltzmann-code CMB prior or full Planck/ACT likelihood.
+"""
+from cobaya.likelihood import Likelihood
+from pathlib import Path
+from bih_vi_c3_likelihood import (
+    C3Params, DESIDR2BAOLikelihood, PantheonPlusSH0ESLikelihood,
+    CMBThetaStarPrior, DeltaMBPrior, total_chi2
+)
+
+class BIHVIC3Likelihood(Likelihood):
+    data_dir: str = "data"
+    use_pantheon: bool = True
+    use_bao: bool = True
+    use_theta_star: bool = True
+    use_delta_MB_prior: bool = True
+
+    def initialize(self):
+        d = Path(self.data_dir)
+        self.bao = DESIDR2BAOLikelihood(d / "desi_dr2_embedded_mean.csv", d / "desi_dr2_embedded_cov.txt") if self.use_bao else None
+        self.cmb = CMBThetaStarPrior() if self.use_theta_star else None
+        self.dmb = DeltaMBPrior() if self.use_delta_MB_prior else None
+        self.sne = None
+        if self.use_pantheon:
+            self.sne = PantheonPlusSH0ESLikelihood(d / "Pantheon+SH0ES.dat", d / "Pantheon+SH0ES_STAT+SYS.cov", include_calibrators=True)
+
+    def get_requirements(self):
+        return {}
+
+    def logp(self, h, omega_m, omega_k, omega_b_h2, w0, wa, M_B_geom, Delta_M_B):
+        p = C3Params(h=h, omega_m=omega_m, omega_k=omega_k, omega_b_h2=omega_b_h2,
+                     w0=w0, wa=wa, M_B_geom=M_B_geom, Delta_M_B=Delta_M_B)
+        chi2, comps = total_chi2(p, bao=self.bao, sne=self.sne, cmb=self.cmb, dmb_prior=self.dmb)
+        return -0.5 * chi2

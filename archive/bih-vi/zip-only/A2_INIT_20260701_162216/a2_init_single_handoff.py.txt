@@ -1,0 +1,457 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+import math
+import shutil
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+
+
+def ensure_dir(p: Path) -> Path:
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_json(path: Path, obj: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2), encoding="utf-8")
+
+
+def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        path.write_text("", encoding="utf-8")
+        return
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def latest_dir(root: Path, prefix: str) -> Path | None:
+    if not root.exists():
+        return None
+    dirs = sorted([p for p in root.glob(prefix + "*") if p.is_dir()])
+    return dirs[-1] if dirs else None
+
+
+def copy_if_exists(src: Path, dst: Path) -> bool:
+    if src.exists():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dst)
+        return True
+    return False
+
+
+def build_shape_grid() -> list[dict[str, Any]]:
+    rows = []
+
+    K_values = list(np.concatenate([
+        np.linspace(0.1, 1.0, 10),
+        np.linspace(1.25, 3.25, 9),
+        np.linspace(3.35, 3.85, 21),
+        np.linspace(4.0, 6.0, 9),
+    ]))
+
+    for K in K_values:
+        rows.append({
+            "shape_id": f"equilateral_K{K:.4f}",
+            "family": "equilateral",
+            "K": float(K),
+            "q1": 1.0,
+            "q2": 1.0,
+            "q3": 1.0,
+            "triangle_valid": True,
+            "notes": "k1=k2=k3"
+        })
+
+    for q in [1e-3, 1e-2, 1e-1]:
+        for K in K_values:
+            k3 = 3.0 * K / (q + 2.0)
+            k1 = q * k3
+            k2 = k3
+            rows.append({
+                "shape_id": f"squeezed_q{q:g}_K{K:.4f}",
+                "family": "squeezed",
+                "K": float(K),
+                "q1": float(k1 / k3),
+                "q2": float(k2 / k3),
+                "q3": 1.0,
+                "triangle_valid": bool(k1 + k2 > k3),
+                "notes": "k1=q*k3, k2=k3"
+            })
+
+    for delta in [1e-2, 1e-3]:
+        for K in K_values:
+            a = 3.0 * K / (4.0 - 2.0 * delta)
+            k1 = a
+            k2 = a
+            k3 = (1.0 - delta) * (k1 + k2)
+            rows.append({
+                "shape_id": f"folded_delta{delta:g}_K{K:.4f}",
+                "family": "folded_flattened",
+                "K": float(K),
+                "q1": float(k1 / k3),
+                "q2": float(k2 / k3),
+                "q3": 1.0,
+                "triangle_valid": bool(k1 + k2 > k3),
+                "notes": "near-folded with finite regulator"
+            })
+
+    for q in [1e-3, 3e-3, 1e-2, 3e-2, 0.1, 0.2, 0.5, 0.8, 1.0, 1.2, 1.5, 1.8, 1.95]:
+        for K in K_values:
+            k3 = 3.0 * K / (q + 2.0)
+            k1 = q * k3
+            k2 = k3
+            rows.append({
+                "shape_id": f"isosceles_q{q:g}_K{K:.4f}",
+                "family": "isosceles",
+                "K": float(K),
+                "q1": float(k1 / k3),
+                "q2": 1.0,
+                "q3": 1.0,
+                "triangle_valid": bool(k1 + k2 > k3 and k1 + k3 > k2 and k2 + k3 > k1),
+                "notes": "k2=k3; broad isosceles scan"
+            })
+
+    return rows
+
+
+def proxy_feature_envelope(K: float) -> tuple[float, float, float]:
+    """
+    Canary only. Not final physics.
+    Encodes known Module A/B facts:
+      peak near K~3.58,
+      normalized fNL O(1e3),
+      power suppression O(3e-5),
+      absolute proxy finite.
+    """
+    K0 = 3.58
+    width = 0.12
+    g = math.exp(-0.5 * ((K - K0) / width) ** 2)
+
+    power_ratio = max(3.3e-5, 1.0 - 0.999967 * g)
+    fnl_norm = 3.0e3 * g
+    B_abs_proxy = fnl_norm * (power_ratio ** 2)
+
+    return power_ratio, fnl_norm, B_abs_proxy
+
+
+def run_proxy_canary(shape_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out = []
+    for r in shape_rows:
+        K = float(r["K"])
+        power_ratio, fnl, b_abs = proxy_feature_envelope(K)
+
+        family = r["family"]
+        if family == "squeezed":
+            shape_weight = min(1.0, max(0.05, float(r["q1"]) ** 0.25))
+        elif family == "folded_flattened":
+            shape_weight = 0.7
+        else:
+            shape_weight = 1.0
+
+        fnl_shape = fnl * shape_weight
+        b_shape = b_abs * shape_weight
+
+        out.append({
+            "shape_id": r["shape_id"],
+            "family": family,
+            "K": K,
+            "q1": r["q1"],
+            "q2": r["q2"],
+            "q3": r["q3"],
+            "power_ratio_proxy": power_ratio,
+            "fNL_shape_proxy": fnl_shape,
+            "B_abs_proxy": b_shape,
+            "cmb_side_safe_proxy": bool((K >= 1.0) or (abs(fnl_shape) <= 1.0)),
+            "absolute_finite_proxy": bool(math.isfinite(b_shape) and abs(b_shape) < 1.0),
+            "localized_proxy": bool((abs(fnl_shape) < 10.0) or (3.35 <= K <= 3.85)),
+            "proxy_status": "CANARY_ONLY_NOT_FINAL_ININ"
+        })
+
+    return out
+
+
+def summarize_canary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    max_f = max(rows, key=lambda r: abs(float(r["fNL_shape_proxy"])))
+    max_b = max(rows, key=lambda r: abs(float(r["B_abs_proxy"])))
+    return {
+        "status": "A2_INIT_CANARY_COMPLETE",
+        "not_final_physics": True,
+        "max_abs_fNL_proxy": {
+            "shape_id": max_f["shape_id"],
+            "family": max_f["family"],
+            "K": max_f["K"],
+            "fNL_shape_proxy": max_f["fNL_shape_proxy"],
+            "power_ratio_proxy": max_f["power_ratio_proxy"]
+        },
+        "max_abs_B_proxy": {
+            "shape_id": max_b["shape_id"],
+            "family": max_b["family"],
+            "K": max_b["K"],
+            "B_abs_proxy": max_b["B_abs_proxy"]
+        },
+        "n_cmb_side_proxy_failures": int(sum(1 for r in rows if not r["cmb_side_safe_proxy"])),
+        "n_absolute_finiteness_proxy_failures": int(sum(1 for r in rows if not r["absolute_finite_proxy"])),
+        "n_localization_proxy_failures": int(sum(1 for r in rows if not r["localized_proxy"])),
+        "interpretation": "Canary validates reporting logic only. A2_RUN01 must replace proxies with exact tree-level in-in integrals."
+    }
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--codex-root", required=True)
+    ap.add_argument("--c3-work", required=True)
+    ap.add_argument("--a2-work", required=True)
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args()
+
+    codex_root = Path(args.codex_root)
+    c3_work = Path(args.c3_work)
+    a2_work = Path(args.a2_work)
+    out = ensure_dir(Path(args.out))
+
+    benchmark = {
+        "module": "A2",
+        "status": "INITIALIZED_NOT_CLOSED",
+        "purpose": "Full tree-level EFT bispectrum closure for the frozen BIH-VI exit switch.",
+        "frozen_parameters": {
+            "p": 3,
+            "mu": 1,
+            "c_s": 1,
+            "N_star": 55,
+            "y_g": 2.0 / 3.0,
+            "z_g": 1.0 / 3.0,
+            "Delta": 0.01,
+            "m_post": 4,
+            "H_c_over_Mpl": 3.8e-6
+        },
+        "baseline_observables": {
+            "n_s": 0.9652,
+            "r": 1.4e-3,
+            "alpha_s": -5.8e-4
+        },
+        "known_exit_feature_facts": {
+            "leading_equilateral_peak_K": 3.58,
+            "leading_equilateral_peak_abs_fNL_order": "O(1e3)",
+            "power_ratio_at_peak_order": "O(3e-5)",
+            "k_peak_Mpc_inv": 1.3e23,
+            "f_peak_Hz": 2.0e8,
+            "interpretation": "Ultra-small-scale; UHF-relic quiet; not ordinary CMB/LSS target."
+        },
+        "hard_boundaries": [
+            "Do not modify frozen Sqrt-Reg/EFT-clock branch.",
+            "Do not claim UV completion.",
+            "Do not reopen C3 late-universe fishing.",
+            "A2 is a perturbative-consistency gate, not a discovery claim.",
+            "Proxy canary is not a physical bispectrum."
+        ]
+    }
+    write_json(out / "A2_FROZEN_BENCHMARK_MANIFEST.json", benchmark)
+
+    operator_registry = [
+        {
+            "operator_id": "O1_zeta_dotzeta2",
+            "symbolic_form": "zeta * dot(zeta)^2",
+            "status": "required_tree_level",
+            "kernel_status": "TODO_exact_inin"
+        },
+        {
+            "operator_id": "O2_zeta_gradzeta2",
+            "symbolic_form": "zeta * (partial zeta)^2 / a^2",
+            "status": "required_tree_level",
+            "kernel_status": "TODO_exact_inin"
+        },
+        {
+            "operator_id": "O3_dotzeta_gradzeta_gradchi",
+            "symbolic_form": "dot(zeta) * partial_i(zeta) * partial_i(chi)",
+            "status": "required_tree_level",
+            "kernel_status": "TODO_exact_inin"
+        },
+        {
+            "operator_id": "O4_switch_eps_doteta_zeta2_dotzeta",
+            "symbolic_form": "epsilon_H * dot(eta_H) * zeta^2 * dot(zeta)",
+            "status": "required_tree_level",
+            "kernel_status": "existing_leading_proxy_must_replace_with_exact"
+        },
+        {
+            "operator_id": "O5_field_redefinition_boundary",
+            "symbolic_form": "field redefinition + boundary terms",
+            "status": "required_for_comparison",
+            "kernel_status": "TODO_exact"
+        }
+    ]
+    write_json(out / "A2_CUBIC_OPERATOR_REGISTRY.json", operator_registry)
+
+    pass_fail = {
+        "module": "A2",
+        "pass_gates": [
+            {
+                "gate": "CMB_safety",
+                "rule": "For K<1, all shapes remain observationally safe; no broad local/folded/equilateral leakage."
+            },
+            {
+                "gate": "exit_localization",
+                "rule": "Large normalized fNL, if present, remains localized near K~3.5--3.7."
+            },
+            {
+                "gate": "absolute_finiteness",
+                "rule": "Absolute bispectrum amplitude and perturbativity ratios remain finite and smooth."
+            },
+            {
+                "gate": "squeezed_sanity",
+                "rule": "No broad unsuppressed squeezed/local-type signal leaks to CMB scales."
+            }
+        ],
+        "fail_gates": [
+            {
+                "gate": "CMB_scale_large_NG",
+                "rule": "Any relevant operator or shape produces large unsuppressed non-Gaussianity for K<1."
+            },
+            {
+                "gate": "absolute_divergence",
+                "rule": "Absolute bispectrum amplitude diverges or becomes nonconvergent."
+            },
+            {
+                "gate": "shape_leakage",
+                "rule": "Exit feature leaks broadly across K or shape space."
+            }
+        ]
+    }
+    write_json(out / "A2_PASS_FAIL_GATES.json", pass_fail)
+
+    shape_grid = build_shape_grid()
+    write_csv(out / "A2_SHAPE_SCAN_GRID.csv", shape_grid)
+    write_json(out / "A2_SHAPE_SCAN_GRID_SUMMARY.json", {
+        "n_shapes": len(shape_grid),
+        "families": sorted(set(r["family"] for r in shape_grid)),
+        "K_min": min(float(r["K"]) for r in shape_grid),
+        "K_max": max(float(r["K"]) for r in shape_grid),
+        "triangle_invalid_count": int(sum(1 for r in shape_grid if not r["triangle_valid"]))
+    })
+
+    canary = run_proxy_canary(shape_grid)
+    write_csv(out / "A2_PROXY_CANARY_SCAN.csv", canary)
+    write_json(out / "A2_PROXY_CANARY_SUMMARY.json", summarize_canary(canary))
+
+    c3_refs = []
+    handoff = c3_work / "_HANDOFF"
+    if handoff.exists():
+        for prefix in ["RUN06_2MPP_CLOSURE_", "RUN07_FRAME_OFFSET_ANCHOR_AUDIT_"]:
+            latest = latest_dir(handoff, prefix)
+            if latest:
+                for name in [
+                    "RUN06_2MPP_CLOSURE_VERDICT.json",
+                    "RUN06_2MPP_CLOSURE_SUMMARY.md",
+                    "RUN07_FRAME_OFFSET_FINAL_VERDICT.json",
+                    "RUN07_FRAME_OFFSET_SUMMARY.md"
+                ]:
+                    src = latest / name
+                    dst = out / "C3_CLOSURE_REFERENCES" / f"{latest.name}_{name}"
+                    if copy_if_exists(src, dst):
+                        c3_refs.append({
+                            "source": str(src),
+                            "copied_to": str(dst),
+                            "sha256": sha256(dst)
+                        })
+
+    write_json(out / "A2_C3_CLOSURE_REFERENCE_MANIFEST.json", {
+        "status": "C3_REFERENCE_LINKED" if c3_refs else "NO_C3_REFERENCE_FOUND",
+        "note": "C3 remains closed as calibration-sector diagnostic. These are references only.",
+        "files": c3_refs
+    })
+
+    next_contract = {
+        "status": "A2_INIT_COMPLETE_NEXT_RUN_REQUIRED",
+        "next_run_name": "A2_RUN01_FULL_TREE_LEVEL_ININ",
+        "required_implementation": [
+            "Compute or load Mukhanov-Sasaki mode functions for frozen benchmark.",
+            "Implement exact tree-level in-in integrals for O1-O4 plus field redefinition/boundary contribution.",
+            "Use A2_SHAPE_SCAN_GRID.csv as the fixed shape grid.",
+            "Report operator-separated B_zeta, summed B_zeta, f_NL^shape, P_zeta(k_i), and perturbativity ratios.",
+            "Run convergence over integration depth, time step, squeezed ratios, and folded regulators.",
+            "Do not promote proxy canary results to physics conclusions."
+        ],
+        "locked_inputs": [
+            "A2_FROZEN_BENCHMARK_MANIFEST.json",
+            "A2_CUBIC_OPERATOR_REGISTRY.json",
+            "A2_SHAPE_SCAN_GRID.csv",
+            "A2_PASS_FAIL_GATES.json"
+        ]
+    }
+    write_json(out / "A2_NEXT_RUN_CONTRACT.json", next_contract)
+
+    summary = """# BIH-VI Module A2 Initialization
+
+Status: **A2_INIT_COMPLETE_NEXT_RUN_REQUIRED**
+
+This handoff initializes Module A2 as the perturbative-consistency gate for the frozen BIH-VI exit transition.
+
+It does **not** complete A2.
+
+## Created
+
+- `A2_FROZEN_BENCHMARK_MANIFEST.json`
+- `A2_CUBIC_OPERATOR_REGISTRY.json`
+- `A2_SHAPE_SCAN_GRID.csv`
+- `A2_SHAPE_SCAN_GRID_SUMMARY.json`
+- `A2_PASS_FAIL_GATES.json`
+- `A2_PROXY_CANARY_SCAN.csv`
+- `A2_PROXY_CANARY_SUMMARY.json`
+- `A2_C3_CLOSURE_REFERENCE_MANIFEST.json`
+- `A2_NEXT_RUN_CONTRACT.json`
+- `A2_INIT_EVIDENCE_MANIFEST.csv`
+
+## Next required run
+
+`A2_RUN01_FULL_TREE_LEVEL_ININ`
+
+That run must replace the proxy canary with exact tree-level in-in integrals.
+
+## Forbidden claims
+
+- A2 is complete.
+- BIH-VI is proven.
+- The proxy canary is a physical bispectrum.
+- The exit feature is a direct detection channel.
+- C3 is reopened.
+"""
+    (out / "A2_INIT_SUMMARY.md").write_text(summary, encoding="utf-8")
+
+    manifest_rows = []
+    for p in sorted(out.rglob("*")):
+        if p.is_file():
+            manifest_rows.append({
+                "relative_path": str(p.relative_to(out)),
+                "bytes": p.stat().st_size,
+                "sha256": sha256(p)
+            })
+    write_csv(out / "A2_INIT_EVIDENCE_MANIFEST.csv", manifest_rows)
+
+    print(json.dumps({
+        "status": "A2_INIT_COMPLETE_NEXT_RUN_REQUIRED",
+        "handoff_folder": str(out),
+        "n_shapes": len(shape_grid),
+        "operator_count": len(operator_registry),
+        "c3_reference_files": len(c3_refs),
+        "upload_this_folder_zip": str(out) + ".zip"
+    }, indent=2))
+
+
+if __name__ == "__main__":
+    main()

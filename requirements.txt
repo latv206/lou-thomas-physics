@@ -1,0 +1,4 @@
+# Tested direct dependencies. Legacy archive scripts may require other packages.
+numpy==2.5.3
+scipy==1.18.1
+matplotlib==3.11.2

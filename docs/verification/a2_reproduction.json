@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "scope": "sealed instrument reproduction, not a derivation",
+  "source_sha256": "35fd365916395f171fee9278480bd102b267f545fb389d6039cfe0058c78aae8",
+  "gates_passed": 13,
+  "row_counts": {
+    "production_scan_rows.csv": 42,
+    "production_family_summary.csv": 3,
+    "folded_gflat_diagnostics.csv": 14,
+    "claim_rows.csv": 22,
+    "flagged_rows.csv": 20
+  },
+  "relative_tolerance": 1e-07,
+  "absolute_tolerance": 1e-09
+}

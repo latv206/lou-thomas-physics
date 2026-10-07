@@ -1,0 +1,775 @@
+#!/usr/bin/env python3
+"""
+BIH-VI C3 REAL RUN 02 — edge-safe full-covariance regression hardening.
+
+This script is empirical pipeline hardening only. It does not modify BIH-VI theory.
+
+Inputs expected under WORK:
+  c33_joined/c33_sn_density_regression_table.csv
+  c33_joined/c33_covariance_aligned.txt
+  c33_joined/c33_join_verdict.json
+  c33_joined/c33_covariance_report.json
+  c34_preflight/c34_preflight_verdict.json
+  c32_results/* from Run 01
+
+Outputs:
+  reports/C3_REAL_RUN_01_DIAGNOSTIC_BASELINE_20260701/
+  c32_run02_edge_safe_fullcov/
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import shutil
+import time
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import pandas as pd
+
+
+TARGET_RS = [5, 10, 25, 50, 100, 200, 300]
+ZCUTS = [None, 0.01, 0.02, 0.03, 0.04]
+H_DEFAULT = 0.6736
+RNG_SEED = 732451
+
+
+def ensure_dir(p: Path) -> Path:
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_json(path: Path, obj: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2), encoding="utf-8")
+
+
+def read_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def zcut_label(zcut: float | None) -> str:
+    if zcut is None:
+        return "all"
+    return f"zgt_{zcut:.3f}".replace(".", "p")
+
+
+def density_col(R: int) -> str:
+    return f"logrho_R{int(R)}"
+
+
+def effective_R_mpc_h(R: int, h: float = H_DEFAULT) -> float:
+    # Public 2M++ native smoothing is 4 Mpc/h. Run 01 used native-floor for R=5.
+    if int(R) == 5:
+        return 4.0
+    return float(R) * h
+
+
+def corr_safe(a, b) -> float:
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    m = np.isfinite(a) & np.isfinite(b)
+    if int(m.sum()) < 3:
+        return float("nan")
+    aa = a[m]
+    bb = b[m]
+    if float(np.nanstd(aa)) == 0.0 or float(np.nanstd(bb)) == 0.0:
+        return float("nan")
+    return float(np.corrcoef(aa, bb)[0, 1])
+
+
+def load_cov(path: Path) -> np.ndarray:
+    return np.loadtxt(path)
+
+
+def subset_cov(cov: np.ndarray, indices: np.ndarray) -> np.ndarray:
+    idx = np.asarray(indices, dtype=int)
+    return cov[np.ix_(idx, idx)]
+
+
+def archive_run01(work: Path) -> None:
+    archive = ensure_dir(work / "reports" / "C3_REAL_RUN_01_DIAGNOSTIC_BASELINE_20260701")
+    copy_specs = [
+        ("c34_preflight", work / "c34_preflight"),
+        ("c33_joined", work / "c33_joined"),
+        ("c32_results", work / "c32_results"),
+        ("manifests", work / "manifests"),
+    ]
+
+    copied = []
+    for name, src in copy_specs:
+        if not src.exists():
+            continue
+        dst = archive / name
+        if not dst.exists():
+            if src.is_dir():
+                shutil.copytree(src, dst)
+            else:
+                ensure_dir(dst.parent)
+                shutil.copy2(src, dst)
+        copied.append({"name": name, "source": str(src), "archive": str(dst)})
+
+    rows = []
+    for p in sorted(archive.rglob("*")):
+        if p.is_file() and p.suffix.lower() in [".json", ".csv", ".md", ".txt", ".log"]:
+            rows.append({
+                "relative_path": str(p.relative_to(archive)),
+                "bytes": p.stat().st_size,
+                "sha256": sha256(p),
+            })
+    pd.DataFrame(rows).to_csv(archive / "RUN01_ARCHIVE_SHA256_MANIFEST.csv", index=False)
+    write_json(archive / "RUN01_ARCHIVE_REPORT.json", {
+        "status": "RUN01_ARCHIVED_OR_ALREADY_PRESENT",
+        "archive_path": str(archive),
+        "copied_or_present": copied,
+        "n_hashed_files": len(rows),
+        "note": "Run 01 preserved. Run 02 must not overwrite these artifacts.",
+    })
+
+
+def load_inputs(work: Path):
+    joined_path = work / "c33_joined" / "c33_sn_density_regression_table.csv"
+    cov_path = work / "c33_joined" / "c33_covariance_aligned.txt"
+    c33_verdict = work / "c33_joined" / "c33_join_verdict.json"
+    c33_cov_report = work / "c33_joined" / "c33_covariance_report.json"
+    c34_verdict = work / "c34_preflight" / "c34_preflight_verdict.json"
+
+    for p in [joined_path, cov_path, c33_verdict, c33_cov_report, c34_verdict]:
+        if not p.exists():
+            raise FileNotFoundError(f"Required Run 01 artifact missing: {p}")
+
+    df = pd.read_csv(joined_path)
+    cov = load_cov(cov_path)
+
+    if cov.shape != (len(df), len(df)):
+        raise ValueError(f"Aligned covariance shape {cov.shape} != table length {len(df)}")
+
+    required_cols = ["mu_resid", "mu_err", "z", "x_gal_mpc_h", "y_gal_mpc_h", "z_gal_mpc_h"]
+    for c in required_cols:
+        if c not in df.columns:
+            raise ValueError(f"Regression table missing required column: {c}")
+
+    for R in TARGET_RS:
+        c = density_col(R)
+        if c not in df.columns:
+            raise ValueError(f"Regression table missing density column: {c}")
+
+    return df, cov, {
+        "joined_path": str(joined_path),
+        "cov_path": str(cov_path),
+        "c33_verdict": read_json(c33_verdict),
+        "c33_cov_report": read_json(c33_cov_report),
+        "c34_verdict": read_json(c34_verdict),
+    }
+
+
+def add_edge_distance(df: pd.DataFrame) -> pd.DataFrame:
+    d = df.copy()
+    x = d["x_gal_mpc_h"].to_numpy(float)
+    y = d["y_gal_mpc_h"].to_numpy(float)
+    z = d["z_gal_mpc_h"].to_numpy(float)
+    d["edge_dist_mpc_h"] = np.minimum.reduce([200.0 - np.abs(x), 200.0 - np.abs(y), 200.0 - np.abs(z)])
+    return d
+
+
+def edge_summary(df: pd.DataFrame, out: Path) -> None:
+    x = df["edge_dist_mpc_h"].to_numpy(float)
+    rows = [{
+        "n_sne": len(df),
+        "edge_min": float(np.nanmin(x)),
+        "edge_p05": float(np.nanpercentile(x, 5)),
+        "edge_p10": float(np.nanpercentile(x, 10)),
+        "edge_p25": float(np.nanpercentile(x, 25)),
+        "edge_p50": float(np.nanpercentile(x, 50)),
+        "edge_p75": float(np.nanpercentile(x, 75)),
+        "edge_p90": float(np.nanpercentile(x, 90)),
+        "edge_max": float(np.nanmax(x)),
+        "n_edge_negative": int(np.sum(x < 0)),
+    }]
+    pd.DataFrame(rows).to_csv(out / "c32_run02_edge_distance_summary.csv", index=False)
+
+
+def density_conditioning(df: pd.DataFrame, out: Path, h: float = H_DEFAULT) -> pd.DataFrame:
+    rows = []
+    z = df["z"].to_numpy(float)
+    edge = df["edge_dist_mpc_h"].to_numpy(float)
+    mu = df["mu_resid"].to_numpy(float)
+
+    for R in TARGET_RS:
+        c = density_col(R)
+        x = df[c].to_numpy(float)
+        q10, q25, q50, q75, q90 = np.nanpercentile(x, [10, 25, 50, 75, 90])
+        std = float(np.nanstd(x))
+        iqr = float(q75 - q25)
+        span = float(q90 - q10)
+        eff = effective_R_mpc_h(R, h)
+        strict_n = int(np.sum(edge > eff))
+        loose_n = int(np.sum(edge > 0.5 * eff))
+
+        model_selectable = bool(std >= 0.01 and loose_n >= max(50, int(0.10 * len(df))) and eff < 200.0)
+
+        rows.append({
+            "R_s_Mpc": R,
+            "effective_R_mpc_h": eff,
+            "native_floor_used": bool(R == 5),
+            "std_logrho": std,
+            "iqr_logrho": iqr,
+            "p10_logrho": float(q10),
+            "p25_logrho": float(q25),
+            "p50_logrho": float(q50),
+            "p75_logrho": float(q75),
+            "p90_logrho": float(q90),
+            "span_10_90": span,
+            "corr_logrho_z": corr_safe(x, z),
+            "corr_logrho_edge_dist": corr_safe(x, edge),
+            "corr_logrho_mu_resid": corr_safe(x, mu),
+            "edge_safe_strict_n": strict_n,
+            "edge_safe_loose_n": loose_n,
+            "box_half_width_mpc_h": 200.0,
+            "effective_R_over_box_half_width": eff / 200.0,
+            "model_selectable": model_selectable,
+            "conditioning_note": (
+                "R=300 is expected to be finite-volume sensitive in a +/-200 Mpc/h cube"
+                if R == 300 else ""
+            ),
+        })
+
+    cond = pd.DataFrame(rows)
+    cond.to_csv(out / "c32_run02_density_conditioning.csv", index=False)
+    return cond
+
+
+def edge_safe_by_scale(df: pd.DataFrame, out: Path, h: float = H_DEFAULT) -> None:
+    edge = df["edge_dist_mpc_h"].to_numpy(float)
+    rows = []
+    for R in TARGET_RS:
+        eff = effective_R_mpc_h(R, h)
+        rows.append({
+            "R_s_Mpc": R,
+            "effective_R_mpc_h": eff,
+            "edge_safe_strict_rule": "edge_dist_mpc_h > effective_R_mpc_h",
+            "edge_safe_loose_rule": "edge_dist_mpc_h > 0.5 * effective_R_mpc_h",
+            "n_total": len(df),
+            "n_strict": int(np.sum(edge > eff)),
+            "frac_strict": float(np.mean(edge > eff)),
+            "n_loose": int(np.sum(edge > 0.5 * eff)),
+            "frac_loose": float(np.mean(edge > 0.5 * eff)),
+        })
+    pd.DataFrame(rows).to_csv(out / "c32_run02_edge_safe_by_scale_summary.csv", index=False)
+
+
+def one_hot(series: pd.Series, prefix: str) -> pd.DataFrame:
+    return pd.get_dummies(series.astype(str), prefix=prefix, drop_first=True, dtype=float)
+
+
+def build_design(df: pd.DataFrame, density: str | None, model: str) -> tuple[np.ndarray, list[str]]:
+    cols = ["intercept"]
+    parts = [np.ones((len(df), 1))]
+
+    if density is not None:
+        vals = df[density].to_numpy(float)
+        parts.append(vals.reshape(-1, 1))
+        cols.append(density)
+
+    base_terms = []
+    for c in ["host_mass_step", "host_logmass", "dust", "MWEBV", "VPEC"]:
+        if c in df.columns and c not in base_terms:
+            vals = df[c].to_numpy(float)
+            if np.isfinite(vals).sum() >= 3 and np.nanstd(vals) > 0:
+                base_terms.append(c)
+
+    if "VPECERR" in df.columns:
+        vals = df["VPECERR"].to_numpy(float)
+        if np.isfinite(vals).sum() >= 3 and np.nanstd(vals) > 0:
+            base_terms.append("VPECERR")
+
+    for c in base_terms:
+        vals = df[c].to_numpy(float)
+        vals = np.nan_to_num(vals - np.nanmean(vals), nan=0.0)
+        parts.append(vals.reshape(-1, 1))
+        cols.append(c)
+
+    if model in ["B", "C"]:
+        z = df["z"].to_numpy(float)
+        extra = {
+            "z_centered": z - np.nanmean(z),
+            "z2_centered": z**2 - np.nanmean(z**2),
+            "edge_dist_centered": df["edge_dist_mpc_h"].to_numpy(float) - np.nanmean(df["edge_dist_mpc_h"].to_numpy(float)),
+        }
+        for name, vals in extra.items():
+            vals = np.nan_to_num(vals, nan=0.0)
+            if np.nanstd(vals) > 0:
+                parts.append(vals.reshape(-1, 1))
+                cols.append(name)
+
+    if model == "C" and "survey_id" in df.columns:
+        oh = one_hot(df["survey_id"], "survey")
+        for c in oh.columns:
+            vals = oh[c].to_numpy(float)
+            if np.nanstd(vals) > 0:
+                parts.append(vals.reshape(-1, 1))
+                cols.append(c)
+
+    X = np.hstack(parts).astype(float)
+
+    keep = [0]
+    for j in range(1, X.shape[1]):
+        if np.nanstd(X[:, j]) > 0:
+            keep.append(j)
+
+    return X[:, keep], [cols[j] for j in keep]
+
+
+def fit_gls(y: np.ndarray, X: np.ndarray, cov: np.ndarray) -> dict[str, Any]:
+    n, k = X.shape
+    if n <= k + 2:
+        raise ValueError(f"Too few rows for GLS: n={n}, k={k}")
+
+    try:
+        Cinv = np.linalg.inv(cov)
+    except np.linalg.LinAlgError:
+        Cinv = np.linalg.pinv(cov)
+
+    XtCi = X.T @ Cinv
+    XtCiX = XtCi @ X
+
+    try:
+        cov_beta = np.linalg.inv(XtCiX)
+    except np.linalg.LinAlgError:
+        cov_beta = np.linalg.pinv(XtCiX)
+
+    beta = cov_beta @ (XtCi @ y)
+    resid = y - X @ beta
+    chi2 = float(resid.T @ Cinv @ resid)
+    dof = int(n - k)
+    aic = chi2 + 2 * k
+    bic = chi2 + k * math.log(n)
+
+    se = np.sqrt(np.clip(np.diag(cov_beta), 0, np.inf))
+    return {"beta": beta, "se": se, "resid": resid, "chi2": chi2, "dof": dof, "aic": aic, "bic": bic}
+
+
+def classify(R: int, lam: float, se: float, delta_bic: float, model_selectable: bool) -> str:
+    if not model_selectable:
+        return "not model-selectable / conditioning-edge risk"
+    if not np.isfinite(lam) or not np.isfinite(se) or se <= 0:
+        return "invalid"
+    z = abs(lam / se)
+    if R <= 25 and z >= 3:
+        return "host/small-scale trap"
+    if R >= 50 and z >= 3 and delta_bic < -6:
+        return "large-scale density branch candidate"
+    if z < 2:
+        return "consistent with zero"
+    return "marginal / needs full likelihood"
+
+
+def run_regression_block(df_all: pd.DataFrame, cov_all: np.ndarray, out: Path, conditioning: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    coeff_rows = []
+    cov_reports = []
+    cond_by_R = {int(r["R_s_Mpc"]): r for _, r in conditioning.iterrows()}
+
+    for zcut in ZCUTS:
+        base_mask = np.ones(len(df_all), dtype=bool)
+        if zcut is not None:
+            base_mask &= df_all["z"].to_numpy(float) > zcut
+
+        for edge_mode in ["common", "loose", "strict"]:
+            for R in TARGET_RS:
+                c = density_col(R)
+                mask = base_mask.copy()
+                mask &= np.isfinite(df_all[c].to_numpy(float))
+
+                if edge_mode != "common":
+                    eff = effective_R_mpc_h(R)
+                    edge = df_all["edge_dist_mpc_h"].to_numpy(float)
+                    if edge_mode == "loose":
+                        mask &= edge > 0.5 * eff
+                    elif edge_mode == "strict":
+                        mask &= edge > eff
+
+                idx = np.where(mask)[0]
+                if len(idx) < 25:
+                    rows.append({
+                        "zcut": zcut,
+                        "zcut_label": zcut_label(zcut),
+                        "edge_mode": edge_mode,
+                        "R_s_Mpc": R,
+                        "n_sne": int(len(idx)),
+                        "status": "too_few_rows",
+                    })
+                    continue
+
+                df = df_all.iloc[idx].reset_index(drop=True)
+                cov = subset_cov(cov_all, idx)
+                y = df["mu_resid"].to_numpy(float)
+
+                cov_reports.append({
+                    "zcut": zcut,
+                    "zcut_label": zcut_label(zcut),
+                    "edge_mode": edge_mode,
+                    "R_s_Mpc": R,
+                    "n_sne": int(len(df)),
+                    "cov_shape": list(cov.shape),
+                    "index_min": int(idx.min()),
+                    "index_max": int(idx.max()),
+                })
+
+                for model in ["A", "B", "C"]:
+                    X0, cols0 = build_design(df, None, model)
+                    X1, cols1 = build_design(df, c, model)
+
+                    try:
+                        fit0 = fit_gls(y, X0, cov)
+                        fit1 = fit_gls(y, X1, cov)
+                    except Exception as e:
+                        rows.append({
+                            "zcut": zcut,
+                            "zcut_label": zcut_label(zcut),
+                            "edge_mode": edge_mode,
+                            "R_s_Mpc": R,
+                            "model": model,
+                            "n_sne": int(len(df)),
+                            "status": f"fit_failed: {repr(e)}",
+                        })
+                        continue
+
+                    if c not in cols1:
+                        continue
+
+                    li = cols1.index(c)
+                    lam = float(fit1["beta"][li])
+                    se = float(fit1["se"][li])
+                    delta_bic = float(fit1["bic"] - fit0["bic"])
+
+                    cond = cond_by_R[R]
+                    iqr = float(cond["iqr_logrho"])
+                    span = float(cond["span_10_90"])
+                    effect_iqr = lam * iqr
+                    effect_1090 = lam * span
+                    model_selectable = bool(cond["model_selectable"])
+
+                    rows.append({
+                        "zcut": zcut,
+                        "zcut_label": zcut_label(zcut),
+                        "edge_mode": edge_mode,
+                        "R_s_Mpc": R,
+                        "model": model,
+                        "n_sne": int(len(df)),
+                        "lambda_eff": lam,
+                        "lambda_eff_se": se,
+                        "lambda_eff_z": lam / se if se > 0 else np.nan,
+                        "chi2": fit1["chi2"],
+                        "dof": fit1["dof"],
+                        "aic": fit1["aic"],
+                        "bic": fit1["bic"],
+                        "null_bic": fit0["bic"],
+                        "delta_bic_vs_no_density": delta_bic,
+                        "effect_size_IQR_mag": effect_iqr,
+                        "effect_size_10_90_mag": effect_1090,
+                        "std_logrho": float(cond["std_logrho"]),
+                        "span_10_90": span,
+                        "model_selectable": model_selectable,
+                        "classification": classify(R, lam, se, delta_bic, model_selectable),
+                        "status": "ok",
+                    })
+
+                    for name, beta, stderr in zip(cols1, fit1["beta"], fit1["se"]):
+                        coeff_rows.append({
+                            "zcut": zcut,
+                            "zcut_label": zcut_label(zcut),
+                            "edge_mode": edge_mode,
+                            "R_s_Mpc": R,
+                            "model": model,
+                            "term": name,
+                            "coef": float(beta),
+                            "se": float(stderr),
+                            "z_score": float(beta / stderr) if stderr > 0 else np.nan,
+                        })
+
+    summary = pd.DataFrame(rows)
+    coeffs = pd.DataFrame(coeff_rows)
+    covrep = pd.DataFrame(cov_reports)
+
+    summary.to_csv(out / "c32_run02_common_subset_summary.csv", index=False)
+    coeffs.to_csv(out / "c32_run02_coefficients_all_models.csv", index=False)
+    covrep.to_csv(out / "c32_run02_covariance_slicing_report.csv", index=False)
+    write_json(out / "c32_run02_covariance_slicing_report.json", {
+        "status": "complete",
+        "n_rows": int(len(covrep)),
+        "note": "Each subset covariance is sliced as C[I,I] from the 730x730 Run01 aligned covariance.",
+    })
+
+    ok = summary[summary["status"] == "ok"].copy()
+    if len(ok):
+        ok[[
+            "zcut_label", "edge_mode", "R_s_Mpc", "model", "n_sne",
+            "lambda_eff", "lambda_eff_se", "lambda_eff_z",
+            "delta_bic_vs_no_density", "effect_size_IQR_mag",
+            "effect_size_10_90_mag", "classification"
+        ]].to_csv(out / "c32_run02_effect_size_summary.csv", index=False)
+        ok[ok["model"] == "C"].to_csv(out / "c32_run02_survey_fixed_effects_summary.csv", index=False)
+
+        verdicts = {}
+        for zlab, grp in ok.groupby("zcut_label"):
+            cand = grp[(grp["edge_mode"] == "common") & (grp["model"] == "C")]
+            if len(cand) == 0:
+                cand = grp
+            best = cand.loc[cand["bic"].idxmin()]
+            verdicts[zlab] = {
+                "zcut_label": str(zlab),
+                "n_sne": int(best["n_sne"]),
+                "best_R_s_Mpc_by_BIC": int(best["R_s_Mpc"]),
+                "model": str(best["model"]),
+                "edge_mode": str(best["edge_mode"]),
+                "lambda_eff": float(best["lambda_eff"]),
+                "lambda_eff_se": float(best["lambda_eff_se"]),
+                "delta_bic_vs_no_density": float(best["delta_bic_vs_no_density"]),
+                "effect_size_10_90_mag": float(best["effect_size_10_90_mag"]),
+                "classification": str(best["classification"]),
+            }
+        write_json(out / "c32_run02_zcut_fullcov_verdicts.json", verdicts)
+
+    return summary
+
+
+def make_bins(df: pd.DataFrame) -> pd.Series:
+    z = df["z"].to_numpy(float)
+    try:
+        zbin = pd.qcut(z, q=min(5, max(2, len(df)//50)), duplicates="drop").astype(str)
+    except Exception:
+        zbin = pd.Series(["zbin_all"] * len(df))
+    survey = df["survey_id"].astype(str) if "survey_id" in df.columns else pd.Series(["survey_unknown"] * len(df))
+    cal = df["calibrator_flag"].astype(str) if "calibrator_flag" in df.columns else pd.Series(["cal_unknown"] * len(df))
+    return zbin.astype(str) + "|" + survey.astype(str) + "|" + cal.astype(str)
+
+
+def fit_lambda_for_perm(df: pd.DataFrame, cov: np.ndarray, R: int) -> float:
+    c = density_col(R)
+    y = df["mu_resid"].to_numpy(float)
+    X, cols = build_design(df, c, "C")
+    fit = fit_gls(y, X, cov)
+    return float(fit["beta"][cols.index(c)])
+
+
+def permutation_null(df_all: pd.DataFrame, cov_all: np.ndarray, out: Path, n_perm: int, seed: int = 732451) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    rows = []
+    df = df_all.reset_index(drop=True).copy()
+    cov = cov_all
+    bins = make_bins(df)
+    unique_bins = sorted(pd.unique(bins))
+
+    for R in [50, 100, 200, 300]:
+        c = density_col(R)
+        if c not in df.columns:
+            continue
+
+        try:
+            obs = fit_lambda_for_perm(df, cov, R)
+        except Exception as e:
+            rows.append({"R_s_Mpc": R, "status": f"observed_fit_failed: {repr(e)}"})
+            continue
+
+        null_vals = []
+        for _ in range(n_perm):
+            dperm = df.copy()
+            xnew = dperm[c].to_numpy(float).copy()
+            for b in unique_bins:
+                ii = np.where(bins.to_numpy() == b)[0]
+                if len(ii) > 1:
+                    xnew[ii] = rng.permutation(xnew[ii])
+            dperm[c] = xnew
+            try:
+                null_vals.append(fit_lambda_for_perm(dperm, cov, R))
+            except Exception:
+                continue
+
+        null_vals = np.asarray(null_vals, dtype=float)
+        if len(null_vals) == 0:
+            rows.append({"R_s_Mpc": R, "status": "no_valid_permutations"})
+            continue
+
+        p_emp = (1.0 + np.sum(np.abs(null_vals) >= abs(obs))) / (1.0 + len(null_vals))
+        rows.append({
+            "R_s_Mpc": R,
+            "n_perm_requested": int(n_perm),
+            "n_perm_valid": int(len(null_vals)),
+            "observed_lambda": float(obs),
+            "null_mean": float(np.nanmean(null_vals)),
+            "null_std": float(np.nanstd(null_vals)),
+            "null_p05": float(np.nanpercentile(null_vals, 5)),
+            "null_p50": float(np.nanpercentile(null_vals, 50)),
+            "null_p95": float(np.nanpercentile(null_vals, 95)),
+            "empirical_p_abs_lambda": float(p_emp),
+            "status": "ok",
+            "binning": "redshift_quantile_bin|survey_id|calibrator_flag",
+        })
+
+    p = pd.DataFrame(rows)
+    p.to_csv(out / "c32_run02_permutation_null_summary.csv", index=False)
+    return p
+
+
+def final_verdict(out: Path) -> dict[str, Any]:
+    cond = pd.read_csv(out / "c32_run02_density_conditioning.csv")
+    effect_path = out / "c32_run02_effect_size_summary.csv"
+    effect = pd.read_csv(effect_path) if effect_path.exists() else pd.DataFrame()
+
+    r300_cond = cond[cond["R_s_Mpc"] == 300]
+    r300_selectable = bool(r300_cond["model_selectable"].iloc[0]) if len(r300_cond) else False
+
+    candidates = pd.DataFrame()
+    if len(effect):
+        candidates = effect[
+            (effect["model"] == "C") &
+            (effect["edge_mode"].isin(["common", "loose"])) &
+            (effect["R_s_Mpc"].isin([50, 100, 200])) &
+            (effect["classification"] == "large-scale density branch candidate")
+        ].copy()
+
+    all_zcut_zero = True
+    zcv = out / "c32_run02_zcut_fullcov_verdicts.json"
+    if zcv.exists():
+        v = read_json(zcv)
+        for key, item in v.items():
+            if key == "all":
+                continue
+            if item.get("classification") != "consistent with zero":
+                all_zcut_zero = False
+
+    verdict = {
+        "status": "C3_REAL_RUN_02_COMPLETE",
+        "density_branch_result": "",
+        "r300_model_selectable": r300_selectable,
+        "all_zcut_fullcov_consistent_with_zero": all_zcut_zero,
+        "n_large_scale_candidates_50_100_200": int(len(candidates)),
+        "interpretation": "",
+        "allowed_claim": "",
+        "forbidden_claims": [
+            "Hubble tension solved",
+            "density-coupled branch detected",
+            "blob is real",
+            "BIH-VI late branch proven"
+        ],
+    }
+
+    if len(candidates) > 0:
+        verdict["density_branch_result"] = "survives_second_empirical_gate_candidate"
+        verdict["interpretation"] = "At least one 50-200 Mpc scale survives Model C and edge/common criteria. Requires manual review of permutation null and nuisance stability."
+        verdict["allowed_claim"] = "The density-coupled calibration branch has a Run 02 candidate requiring full likelihood review."
+    elif all_zcut_zero:
+        verdict["density_branch_result"] = "not_supported_in_2mpp_run02"
+        verdict["interpretation"] = "Run 02 z-cut full-covariance robustness remains consistent with zero; density-coupled C3 weakens in 2M++."
+        verdict["allowed_claim"] = "The 2M++ Run 02 diagnostic does not support a robust density-coupled calibration signal."
+    elif not r300_selectable:
+        verdict["density_branch_result"] = "r300_conditioning_edge_artifact_risk"
+        verdict["interpretation"] = "R=300 should not be treated as evidence because it fails conditioning/edge-safe logic."
+        verdict["allowed_claim"] = "The Run 01 R=300 hint is likely finite-volume/conditioning sensitive."
+    else:
+        verdict["density_branch_result"] = "inconclusive"
+        verdict["interpretation"] = "Run 02 remains inconclusive; inspect model tables and permutation nulls."
+        verdict["allowed_claim"] = "The density-coupled branch remains unconfirmed."
+
+    write_json(out / "c32_run02_final_verdict.json", verdict)
+
+    (out / "C3_REAL_RUN_02_SUMMARY.md").write_text(f"""# BIH-VI C3 Real Run 02 — Edge-Safe Full-Cov Regression
+
+Status: **{verdict['status']}**
+
+Density branch result: **{verdict['density_branch_result']}**
+
+Allowed claim:
+
+> {verdict['allowed_claim']}
+
+Interpretation:
+
+> {verdict['interpretation']}
+
+## Rules preserved
+
+- No BIH-VI theory modification.
+- No Hubble-tension solution claim.
+- Run 01 preserved separately.
+- Run 02 tests robustness only.
+
+## Key output files
+
+- `c32_run02_density_conditioning.csv`
+- `c32_run02_edge_distance_summary.csv`
+- `c32_run02_edge_safe_by_scale_summary.csv`
+- `c32_run02_common_subset_summary.csv`
+- `c32_run02_covariance_slicing_report.json`
+- `c32_run02_zcut_fullcov_verdicts.json`
+- `c32_run02_effect_size_summary.csv`
+- `c32_run02_survey_fixed_effects_summary.csv`
+- `c32_run02_permutation_null_summary.csv`
+- `c32_run02_final_verdict.json`
+
+## Forbidden claims
+
+- Hubble tension solved.
+- Density-coupled branch detected.
+- BIH-VI late branch proven.
+""", encoding="utf-8")
+    return verdict
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--work", required=True, help="BIH C3 workspace root")
+    ap.add_argument("--nperm", type=int, default=500, help="Permutation count")
+    ap.add_argument("--skip-permutation", action="store_true")
+    args = ap.parse_args()
+
+    work = Path(args.work)
+    out = ensure_dir(work / "c32_run02_edge_safe_fullcov")
+
+    print("[RUN02] Loading Run 01 inputs")
+    df, cov, meta = load_inputs(work)
+    write_json(out / "c32_run02_input_audit.json", meta)
+
+    print("[RUN02] Archiving Run 01")
+    archive_run01(work)
+
+    print("[RUN02] Adding edge distance")
+    df = add_edge_distance(df)
+    df.to_csv(out / "c32_run02_regression_table_with_edge.csv", index=False)
+
+    print("[RUN02] Writing diagnostics")
+    edge_summary(df, out)
+    cond = density_conditioning(df, out)
+    edge_safe_by_scale(df, out)
+
+    print("[RUN02] Running full-cov regressions")
+    run_regression_block(df, cov, out, cond)
+
+    if args.skip_permutation:
+        pd.DataFrame([{"status": "skipped"}]).to_csv(out / "c32_run02_permutation_null_summary.csv", index=False)
+    else:
+        print(f"[RUN02] Running permutation nulls nperm={args.nperm}")
+        permutation_null(df, cov, out, n_perm=args.nperm)
+
+    print("[RUN02] Final verdict")
+    verdict = final_verdict(out)
+    print(json.dumps(verdict, indent=2))
+    print(f"[DONE] Run 02 outputs: {out}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

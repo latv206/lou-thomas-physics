@@ -1,0 +1,39 @@
+{
+  "verdict": "PASS",
+  "script_sha256": "35fd365916395f171fee9278480bd102b267f545fb389d6039cfe0058c78aae8",
+  "n_total_rows": 42,
+  "n_claim_rows": 22,
+  "n_flagged_rows": 20,
+  "n_equilateral_claim_rows": 11,
+  "n_squeezed_claim_rows": 11,
+  "n_folded_claim_rows": 0,
+  "n_gflat_rows": 14,
+  "n_gflat_pass": 0,
+  "equilateral_fNL": {
+    "min": 0.0223037017322976,
+    "max": 0.038217669289041946,
+    "mean": 0.03146329371294268
+  },
+  "squeezed_fNL": {
+    "min": 0.055074541608155336,
+    "max": 0.05905952410986574,
+    "mean": 0.05769042994101008
+  },
+  "hard_K_min": 0.01,
+  "hard_K_max": 0.06,
+  "gates": {
+    "UT_K": true,
+    "UT_FR": true,
+    "BG_ETA": true,
+    "G_W": true,
+    "CONV": true,
+    "G_S_CONTINUITY_SENTINELS": true,
+    "EQUILATERAL_HARD_ROWS_STABLE": true,
+    "SQUEEZED_HARD_ROWS_STABLE": true,
+    "FOLDED_GFLAT_OR_FLAGGED": true,
+    "NO_FOLDED_CLAIM_WITHOUT_GFLAT": true,
+    "NO_PROVISIONAL_CLAIM": true,
+    "NO_K_GT_0P06_CLAIM": true,
+    "EXECUTION_LOCK": true
+  }
+}

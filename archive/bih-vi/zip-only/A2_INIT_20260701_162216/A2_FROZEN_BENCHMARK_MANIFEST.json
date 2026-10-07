@@ -1,0 +1,36 @@
+{
+  "module": "A2",
+  "status": "INITIALIZED_NOT_CLOSED",
+  "purpose": "Full tree-level EFT bispectrum closure for the frozen BIH-VI exit switch.",
+  "frozen_parameters": {
+    "p": 3,
+    "mu": 1,
+    "c_s": 1,
+    "N_star": 55,
+    "y_g": 0.6666666666666666,
+    "z_g": 0.3333333333333333,
+    "Delta": 0.01,
+    "m_post": 4,
+    "H_c_over_Mpl": 3.8e-06
+  },
+  "baseline_observables": {
+    "n_s": 0.9652,
+    "r": 0.0014,
+    "alpha_s": -0.00058
+  },
+  "known_exit_feature_facts": {
+    "leading_equilateral_peak_K": 3.58,
+    "leading_equilateral_peak_abs_fNL_order": "O(1e3)",
+    "power_ratio_at_peak_order": "O(3e-5)",
+    "k_peak_Mpc_inv": 1.3e+23,
+    "f_peak_Hz": 200000000.0,
+    "interpretation": "Ultra-small-scale; UHF-relic quiet; not ordinary CMB/LSS target."
+  },
+  "hard_boundaries": [
+    "Do not modify frozen Sqrt-Reg/EFT-clock branch.",
+    "Do not claim UV completion.",
+    "Do not reopen C3 late-universe fishing.",
+    "A2 is a perturbative-consistency gate, not a discovery claim.",
+    "Proxy canary is not a physical bispectrum."
+  ]
+}

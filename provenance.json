@@ -1,0 +1,35 @@
+{
+  "release": "2026.10.07.1",
+  "author": "Lou Thomas",
+  "actor": "Codex",
+  "scope": "local distribution preparation; no remote publication",
+  "verdict": "PASS_WITH_REVIEW_FLAGS",
+  "fresh_run": true,
+  "reused_outputs": true,
+  "reused_outputs_explanation": "historical research artifacts are labelled as such; new reproduction runs use fresh folders",
+  "negative_control": "16 passing integrity, publication, and numeric-comparison tests, including tamper rejection",
+  "terminal_verdict_consistency_check": true,
+  "source_roots": [
+    "theories",
+    "hub-backup"
+  ],
+  "physical_sources_rechecked": 577,
+  "selected_source_references": 624,
+  "unique_selected_payloads": 309,
+  "source_mapping": "docs/SOURCE_MAP.csv",
+  "code_review": "docs/CODE_REVIEW.md",
+  "approval": "Owner requested one cohesive GitHub-preparation package, code review, and credit for reuse",
+  "external_sources_modified": false,
+  "remote_upload_performed": false,
+  "review_flags": [
+    "human physics review",
+    "owner publication and rights decision",
+    "DOCX layout not re-rendered",
+    "historical pipelines and figures not all reproduced",
+    "six missing historical GMT HTML figures labelled"
+  ],
+  "integrity_design": "HUB_MANIFEST.csv excludes itself and SHA256SUMS.txt; SHA256SUMS.txt covers every other distributed file",
+  "previous_distribution": "2026.10.07",
+  "privacy_revision": "Public byline minimization, template-contact removal, and exclusion of one damaged alternative animation; original sources unchanged.",
+  "publication_review": "docs/verification/publication_privacy.json"
+}

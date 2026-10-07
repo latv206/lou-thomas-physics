@@ -1,0 +1,44 @@
+[
+  {
+    "file": "archive/foundations/relational-substrate/The_Relational_Substrate_Initiative__RSI_v1.pdf",
+    "before_sha256": "b4c48b6fde168dd34763ef9ec132de8170cf87f1cfefe651edba7e27d084b9f9",
+    "after_sha256": "efc528de4af783d709924e3065f7db62f4dd02bc1d64e2c0240f819bc06a74a1",
+    "pages": 6,
+    "page_count_preserved": true,
+    "changed_pages": [
+      1
+    ],
+    "outside_byline_and_template_contact_regions_pixel_identical": true,
+    "all_other_pages_pixel_identical": true,
+    "dual_text_extraction_passed": true,
+    "change": "Author credit standardized; personal affiliation location and unfilled contact template removed."
+  },
+  {
+    "file": "archive/foundations/relational-substrate/The_Relational_Substrate_Initiative__RSI_v2.pdf",
+    "before_sha256": "67cfd31c12c80eb29adc3bda6770e63c6dc6231705236f3d8f4930992aac6483",
+    "after_sha256": "2a54bb57f9547ba4ab42db781bf50291bd0bb922cdb6867a53d969a41c28e16d",
+    "pages": 5,
+    "page_count_preserved": true,
+    "changed_pages": [
+      1
+    ],
+    "outside_byline_and_template_contact_regions_pixel_identical": true,
+    "all_other_pages_pixel_identical": true,
+    "dual_text_extraction_passed": true,
+    "change": "Author credit standardized; personal affiliation location and unfilled contact template removed."
+  },
+  {
+    "file": "rnsf/manuscript-v3/rnsf_v3_integrated_main.pdf",
+    "before_sha256": "494bbb56da7eb6d1cffb7962b6729c6e6fa76c37006c734ee69b255b54c8a9ce",
+    "after_sha256": "14b1e80c717f1de0b516cf8ee703b3ca8cb2b3d096a715f012b2d7d9ca7e0364",
+    "pages": 13,
+    "page_count_preserved": true,
+    "changed_pages": [
+      1
+    ],
+    "outside_byline_and_template_contact_regions_pixel_identical": true,
+    "all_other_pages_pixel_identical": true,
+    "dual_text_extraction_passed": true,
+    "change": "Author credit standardized; personal affiliation location and unfilled contact template removed."
+  }
+]

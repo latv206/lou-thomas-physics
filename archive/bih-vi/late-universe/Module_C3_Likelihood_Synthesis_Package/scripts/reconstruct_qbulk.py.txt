@@ -1,0 +1,67 @@
+
+"""
+Reconstruct and plot Q_bulk/(H rho_DE) from a BIH-VI C3 chain.
+"""
+from pathlib import Path
+import argparse
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def qbulk(z, w0, wa, w_int=-1.0):
+    w = w0 + wa*z/(1+z)
+    return 3*(w_int - w)
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--chain", required=True)
+    ap.add_argument("--out-dir", default="../qbulk_results")
+    ap.add_argument("--n-draws", type=int, default=200)
+    args = ap.parse_args()
+
+    out = Path(args.out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    df = pd.read_csv(args.chain)
+    df = df.sort_values("chi2")
+    best = df.iloc[0]
+    draws = df.sample(min(args.n_draws, len(df)), random_state=7)
+
+    z = np.linspace(0, 3, 600)
+    q_best = qbulk(z, best["w0"], best["wa"])
+
+    rows = []
+    for _, r in draws.iterrows():
+        q = qbulk(z, r["w0"], r["wa"])
+        rows.append(q)
+    arr = np.vstack(rows)
+    q16, q50, q84 = np.quantile(arr, [0.16, 0.50, 0.84], axis=0)
+
+    pd.DataFrame({
+        "z": z, "q_best": q_best, "q16": q16, "q50": q50, "q84": q84
+    }).to_csv(out / "qbulk_reconstruction_band.csv", index=False)
+
+    plt.figure(figsize=(7.5, 5.2))
+    plt.fill_between(z, q16, q84, alpha=0.25, label="posterior 16-84%")
+    plt.plot(z, q_best, label="best fit")
+    plt.axhline(0, linewidth=1)
+    plt.xlabel("z")
+    plt.ylabel(r"$Q_{\rm bulk}/(H\rho_{\rm DE})$")
+    plt.title("BIH-VI C3 reconstructed substrate exchange")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out / "qbulk_reconstruction_band.png", dpi=180)
+
+    metrics = {
+        "best_w0": float(best["w0"]),
+        "best_wa": float(best["wa"]),
+        "q_min": float(np.min(q_best)),
+        "q_max": float(np.max(q_best)),
+        "dq_abs_max": float(np.max(np.abs(np.gradient(q_best, z)))),
+        "d2q_rms": float(np.sqrt(np.mean(np.gradient(np.gradient(q_best, z), z)**2))),
+        "sign_changes": int(np.sum(np.diff(np.signbit(q_best)) != 0)),
+    }
+    pd.DataFrame([metrics]).to_csv(out / "qbulk_smoothness_metrics.csv", index=False)
+    print(metrics)
+
+if __name__ == "__main__":
+    main()

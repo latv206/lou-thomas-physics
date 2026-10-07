@@ -1,0 +1,328 @@
+% =============================================================================
+% A2 MANUSCRIPT DRAFT — assembled 2026-07-06 from the accepted final data lock
+% [local path omitted]
+% Claim wording is bound VERBATIM to locked/A2_ALLOWED_CLAIMS.md.
+% Locked inputs enter via \input from locked/ (byte-identical, hash-verified).
+% Final draft: theory-pass citation/context slots filled; locked results/tables remain unchanged.
+% =============================================================================
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{pdflscape}
+
+\title{Surface-independent stability of equilateral and squeezed bispectra\\
+on the frozen BIH-VI benchmark: a bounded-$\eta_H$ all-operator production scan}
+\author{Lou Thomas\\ \small Independent researcher; Boundary-Inversion Cosmology project}
+\date{July 6, 2026 --- draft assembled from locked production data}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report a production-scale stability scan of the primordial curvature bispectrum on the frozen
+BIH-VI benchmark background, an effective-field-theory (EFT) clock realization of an
+entropy-selected density-shield scenario. The scan applies a validated bounded-$\eta_H$
+all-operator instrument --- a finite-basis cubic-action ledger with sealed kernels, independent
+unit-test engines, and declared hard gates --- to equilateral, squeezed
+($q = 10^{-3}$), and folded triangle configurations over a hard grid $K \in [0.010, 0.060]$ and a
+provisional grid $K \in \{0.072, 0.090, 0.119\}$. All 13 declared production gates pass. In the
+claim-bearing hard envelope $K \leq 0.06$, equilateral and squeezed configurations are stable under
+the sealed surface-independence (G-S) criteria, with $f_{\rm NL}$ in
+$[0.02230, 0.03822]$ (equilateral) and $[0.05507, 0.05906]$ (squeezed) at the reference surface.
+Folded/flattened configurations are diagnostic/report-only under the current sealed instrument; in
+this run, no folded/flattened row passed the G-FLAT diagnostic. Every reported number is bound to a
+cryptographically hashed artifact chain with two-party verification; the complete locked data
+package accompanies this paper. This is an EFT-level methodology and stability result; no
+UV-completion claim is made.
+\end{abstract}
+
+\section{Introduction}
+Stability of a computed observable under changes of bookkeeping choices --- evaluation surface,
+regulator resolution, operator-basis completion --- is a precondition for treating that observable
+as physical rather than artifactual. This paper reports such a stability program, executed to
+completion, for the tree-level curvature bispectrum on a single frozen benchmark background of the
+BIH-VI construction. The calculation is deliberately framed within the standard language of
+single-clock inflationary perturbation theory and the effective field theory of inflation
+\cite{maldacena2003,cheung2008}, where the curvature perturbation is the observable clock fluctuation
+and cubic interactions must be combined with the appropriate constraint and field-redefinition terms.
+Sharp time-dependent features are known to create localized oscillatory signatures in correlation
+functions and to stress numerical in-in implementations \cite{chen2007,adshead2012}. The present work
+uses that setting as a methodology test: a sharp exit transition is allowed, but every reported
+bispectrum number must survive operator-completion, normalization, convergence, and surface-independence
+gates before it is treated as claim-bearing.
+
+The background motivation for BIH-VI is an entropy-selected apparent-horizon density shield, in the
+spirit of horizon-thermodynamic approaches to gravitational dynamics \cite{jacobson1995,hayward1998}.
+For observational orientation, the frozen benchmark was chosen from a Planck-compatible scalar/tensor
+parameter island \cite{planck2018params}. These motivations do not enter as additional claims in this
+paper: the scan below tests only the stated EFT-clock benchmark and its bounded-$\eta_H$ bispectrum
+instrument.
+
+The working discipline throughout is that frame- or scheme-dependent descriptions must be reduced
+to invariant, operationally measurable statements before they count as physics. Concretely: every
+claim in this paper is (i) evaluated at multiple hypersurfaces and gated on surface independence,
+(ii) computed from a sealed operator ledger whose kernels are verified against an independent
+engine, and (iii) bound to hash-locked artifacts so that each number is reproducible from the
+archived instrument.
+
+Three boundaries are declared at the outset. First, the BIH-VI benchmark is an EFT-level
+realization and phenomenological test set, not a final ultraviolet-complete microscopic theory; no
+UV-completion claim is made. Second, the claim-bearing results are confined to the hard envelope
+$K \leq 0.06$ in the equilateral and squeezed families; no all-shape closure is claimed.
+$K \leq 0.06$ is the current claim-bearing boundary of the sealed A2 instrument for the frozen
+benchmark, not a physical cliff in the EFT-clock model. Third,
+folded/flattened configurations are reported under a diagnostic-only disposition (Decision~A,
+Section~\ref{sec:production}); no physical conclusion --- neither stability nor instability --- is
+drawn from them.
+
+\subsection*{Nomenclature and definitions}
+\begin{description}
+\item[hard envelope] The claim-bearing set: equilateral and squeezed hard-grid claim rows with
+  $K \leq 0.06$.
+\item[$K$ (grid label)] The production-grid label used throughout this paper (the per-mode scale;
+  for equilateral rows $k_1 = k_2 = k_3 = K$). The triangle perimeter
+  $K_\Sigma = k_1 + k_2 + k_3$ is not used as a variable in this paper; where a perimeter is
+  needed it is written explicitly.
+\item[sealed G-S criteria] The pre-registered G-S surface-independence, frozen-window, Wronskian,
+  convergence, and continuity-sentinel checks, fixed before the production run.
+\item[claim-bearing rows] Rows included in \texttt{claim\_rows.csv} and authorized by
+  \texttt{A2\_ALLOWED\_CLAIMS.md}.
+\item[non-claim-bearing rows] Rows reported for diagnostics, provisional context, or flagged
+  status but excluded from the A2 claim.
+\item[folded/flattened rows] Diagnostic/report-only unless G-FLAT explicitly passes; in this run,
+  no folded/flattened row passed G-FLAT.
+\end{description}
+
+\section{Benchmark background}
+\label{sec:benchmark}
+The frozen BIH-VI benchmark is specified by
+\begin{equation}
+H^2 = H_c^2\, y(2-y), \qquad
+y_N = -m(y)\, y, \qquad
+m(y) = \mu (1-y)^p + m_{\rm post}\, S(y),
+\end{equation}
+with switch profile
+\begin{equation}
+S(y) = \frac{1}{1 + \exp\!\big[(y - y_g)/\Delta\big]},
+\end{equation}
+and parameters
+\begin{equation}
+p = 3,\quad \mu = 1,\quad c_s = 1,\quad N_* = 55,\quad y_g = \tfrac{2}{3},\quad
+\Delta = 0.01,\quad m_{\rm post} = 4,\quad H_c = 3.8\times 10^{-6}\, M_{\rm Pl}.
+\end{equation}
+Numerics use the dimensionless convention $H(y_g) = 1$; the value of $H_c/M_{\rm Pl}$ enters only
+as provenance for physical-amplitude conversions. ($c_s = 1$ is implicit in the mode equation of
+the sealed instrument; $c_s$ and $N_*$ are fixed by the frozen benchmark specification,
+hash-referenced in Appendix~\ref{app:repro}.) The background is integrated at
+$\Delta N = 10^{-3}$ over $N \in [-22, 0.45]$ with fully analytic $\eta$ and $\eta_N$ (no numerical
+differentiation through the switch), and the slow-roll functions $(\epsilon, \eta)$ follow from
+$m(y)$ as in the sealed instrument.
+
+\section{Instrument: the bounded-$\eta_H$ all-operator ledger}
+\label{sec:instrument}
+The bispectrum is assembled from the sealed finite-basis ledger
+\begin{equation}
+B_{\rm total} = O_1 + O_2 + O_{3a} + O_{3b} + O_{3c} + V_1 + V_2 + f_2 + f_3 + f_4,
+\end{equation}
+where $O_1 = a^3 \epsilon^2 \zeta \dot\zeta^2$,
+$O_2 = a\,\epsilon^2 \zeta (\partial\zeta)^2$,
+$O_{3a} = -2 a\,\epsilon\, \dot\zeta\, \partial\zeta \cdot \partial\psi$,
+$O_{3b} = (\epsilon/2a)\, \partial\zeta \cdot \partial\psi\, \partial^2\psi$,
+$O_{3c} = (\epsilon/4a)\, \partial^2\zeta\, (\partial\psi)^2$,
+$V_{1,2}$ are the bounded-$\eta$ replacement kinetic and gradient terms, and $f_{2,3,4}$ are the
+nonlocal/decaying field-redefinition contributions. The amplitude is normalized as
+\begin{equation}
+f_{\rm NL} = \frac{5}{6}\, \frac{B_{\rm total}}{P_1 P_2 + P_1 P_3 + P_2 P_3},
+\end{equation}
+with dimensionful power spectra $P_i = |\zeta_{k_i}|^2$; dimensionless $\Delta^2$ combinations are
+excluded from all denominators by construction. The following ledger lines are forbidden and absent:
+$O_5$, standalone boundary terms ($B_{\rm bdry}$) \cite{arroja2011}, standalone equation-of-motion
+terms ($B_{\rm EOM}$), the local $\zeta^2$ field-redefinition line, and any kernel missing its
+assignment sum. Raw $O_4$ never enters any physical row or production observable: it is entirely absent from
+the sealed production script, and in the certified lineage instrument it appears only as an
+internal diagnostic (the synthetic-context kernel unit test and the regulated IBP-identity gate),
+as permitted.
+
+Mode functions are integrated with an RK4 scheme from deep inside the horizon
+($k/aH \geq 60$) with Bunch--Davies initialization, and bulk integrals carry the sealed
+$i\epsilon$ regulator ($\epsilon_{\rm reg} = 0.03$). Kernel implementations are verified against an
+independent vector/bijection engine (gates UT-K, UT-FR, tolerance $10^{-10}$), and the Wronskian
+identity is enforced along every mode (gate G-W).
+
+\section{Validation lineage}
+\label{sec:lineage}
+The instrument used here is sealed: it is the same code path certified by two prior gate programs,
+executed and archived under a hash-locked reproduction protocol (Appendix~\ref{app:repro}).
+\begin{itemize}
+\item \textbf{G-S surface-independence sweep (v3).} The full ledger was evaluated at five
+      hypersurfaces $N \in \{0.20, 0.25, 0.30, 0.35, 0.40\}$ for squeezed and equilateral rows.
+      Per-row spread gates, a vacuous-pass guard, smallest-$K$ asymptotic requirements, and a
+      drift-scaling slope test were all declared in advance; the certified run passed with six
+      primary rows and established the empirical frozen envelope $K \leq 0.06$ used here.
+\item \textbf{BENCH02 flat-gauge cross-check.} An independent ADHL flat-gauge implementation passed
+      11 of 11 declared gates against the same benchmark, closing the residual $v_3$ difference and
+      certifying the template, background, phase, envelope, squeezed, and convergence behavior of
+      the instrument.
+\item \textbf{Production continuity.} The production run verifies continuity sentinels against the
+      certified G-S reference values at $K \in \{0.020, 0.040, 0.060\}$ for both claim families,
+      plus a $\Delta N/2$ convergence sentinel, inside the same gate set
+      (Table~\ref{tab:gates}).
+\end{itemize}
+
+\section{Production scan design}
+\label{sec:production}
+The production configuration scans three triangle families --- equilateral
+($k_1 = k_2 = k_3 = K$), squeezed ($q = k_L/k_S = 10^{-3}$), and folded
+(near-degenerate, $\delta = 10^{-2}$ with a $\delta = 10^{-3}$ tightening probe) --- over the hard
+grid $K \in \{0.010, 0.015, \ldots, 0.060\}$ and the provisional grid
+$K \in \{0.072, 0.090, 0.119\}$. Thirteen gates are declared: the instrument gates (UT-K, UT-FR,
+BG-ETA, G-W, CONV), the G-S continuity sentinels, per-family hard-row stability gates, the folded
+disposition gates (folded rows either pass G-FLAT explicitly or are flagged; no folded claim
+without a G-FLAT pass), claim-hygiene gates (no provisional claim; no $K > 0.06$ claim), and the
+execution lock. Per-family row accounting is summarized in Table~\ref{tab:families}.
+
+\textbf{Decision A (folded/flattened disposition).} Folded/flattened configurations are
+diagnostic/report-only under the current sealed instrument unless G-FLAT explicitly passes. The
+G-FLAT diagnostic probes each folded row three ways: regulator halving
+($\epsilon_{\rm reg} \to \epsilon_{\rm reg}/2$), flattening-parameter tightening
+($\delta = 10^{-2} \to 10^{-3}$), sign-flip and cancellation-factor screens, in addition to the
+standard surface-stability and freeze requirements. This disposition was adopted after an earlier
+wide-grid exploratory scan showed that, near the flattened boundary at the edge of an extended
+$K$ grid, the ledger sum passes through a zero: the total becomes a small residual of large
+cancelling operator contributions, and log-slope estimators straddling the sign change report
+spuriously large scaling exponents. That behavior is an instrument-scope limitation of the sealed
+kernels in the flattened limit --- diagnosed, bounded, and archived --- not a physical instability
+claim; resolving it is deferred to a separately validated instrument revision.
+
+The production scan executed exactly once, under an execution lock requiring explicit
+authorization flags, from a hash-verified script, with the frozen-artifact record confirmed before
+and after execution.
+
+% ===================== LOCKED RESULTS SECTION (verbatim) =====================
+\input{locked/A2_MANUSCRIPT_RESULTS_SECTION.tex}
+% =============================================================================
+
+\section{Scope, limitations, and outlook}
+\label{sec:scope}
+The allowed claim of this paper, in full, is: \emph{The validated bounded-$\eta_H$ all-operator A2
+instrument was applied to the frozen BIH-VI benchmark. In the claim-bearing hard envelope
+$K \leq 0.06$, equilateral and squeezed configurations are stable under the sealed G-S criteria.
+Folded/flattened configurations are diagnostic/report-only under the current sealed instrument; in
+this run, no folded/flattened row passed G-FLAT.}
+
+The following claims are explicitly \emph{not} made: full all-shape closure; folded/flattened
+physical instability; BIH-VI observational detection; UV completion; Hubble-tension solution.
+Nothing in this paper uses parked interpretive material as evidence. The results are confined to
+one frozen benchmark background and to the stated envelope; extension of the claim envelope, or a
+claim-bearing treatment of the flattened limit, requires a separately validated instrument revision
+and its own gate program.
+No interpretive C4/C5/C6 material is used in this manuscript. Such material remains outside the
+load-bearing A2 analysis and is reserved for separate future work.
+
+This audit is specific to the frozen BIH-VI EFT-clock benchmark, the bounded-$\eta_H$ all-operator
+ledger, and the declared A2 regulator/validation contract. Comparisons with other sharp-feature
+calculations require matching conventions, basis choices, field redefinitions, power-spectrum
+normalization, and regulator prescriptions before numerical discrepancies are interpreted
+physically.
+
+\appendix
+\section{Reproducibility and artifact chain}
+\label{app:repro}
+Every number in this paper derives from a hash-locked artifact chain, archived in an append-only
+ledgered hub and verified by two independent parties (generation-side audit and an external
+reviewer recomputation, agreeing on all hashes). The chain is:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+artifact & role & SHA-256 (truncated) \\
+\midrule
+benchmark handoff specification & frozen benchmark definition & \texttt{ceba4ebc\ldots7288fad2} \\
+\texttt{a2\_gs\_surface\_sweep\_v3.py} & certified G-S instrument & \texttt{3289ccb4\ldots4e48daed} \\
+\texttt{bench02\_adhl\_flat.py} & certified flat-gauge cross-check & \texttt{b1071166\ldots ac4fa4646} \\
+\texttt{a2\_production\_scan.py} & sealed production script & \texttt{35fd3659\ldots58c78aae8} \\
+production output package (zip) & primary run record & \texttt{e8500cc3\ldots d2251c266} \\
+final data lock package (zip) & frozen, reviewed data release & \texttt{061dc918\ldots8372cfbe1a} \\
+\bottomrule
+\end{tabular}
+\end{center}
+Full values:
+\begin{flushleft}\footnotesize\ttfamily
+spec:\ ceba4ebce5a5ce9d7fc7eaf44ff35f304f1c91cb1e079eb67df532347288fad2\\
+gs\_v3:\ 3289ccb4d7c0443e335c4b7d01d40946770a484806eb713cf33bed394e48daed\\
+bench02:\ b10711663374cd7e269bec7f83b3b1847e353eb925bd67f46d4f4f5ac4fa4646\\
+production\_scan:\ 35fd365916395f171fee9278480bd102b267f545fb389d6039cfe0058c78aae8\\
+production\_zip:\ e8500cc3db9152200a9ab6242bb22c35c26589976425ccfa978e171d2251c266\\
+data\_lock\_zip:\ 061dc91860f355355fc503d36571e4bf571d70dcacdf1aa0c531fa8372cfbe1a
+\end{flushleft}
+Full 64-hexit hashes for every file \emph{inside} the data release, including all tables printed
+here, are recorded in \texttt{SHA256SUMS.txt} and \texttt{A2\_ARTIFACT\_MANIFEST.csv} within the
+final data lock package, which constitutes the data-availability release for this paper. The
+lineage-artifact and package-level hashes above are recorded in the hub's append-only audit
+ledgers and in the provenance record accompanying this manuscript; the production run wrote its
+own ledger line at completion.
+
+\section{Tables}
+\input{locked/A2_GATE_SUMMARY_TABLE.tex}
+\input{locked/A2_CLAIM_ROWS_TABLE.tex}
+% Wide locked tables are placed on landscape pages; locked file contents are untouched.
+\clearpage
+\begin{landscape}
+\footnotesize
+\input{locked/A2_FAMILY_SUMMARY_TABLE.tex}
+\clearpage
+\tiny
+\setlength{\tabcolsep}{2pt}
+\input{locked/A2_GFLAT_DIAGNOSTICS_TABLE.tex}
+\setlength{\tabcolsep}{6pt}
+\end{landscape}
+\clearpage
+
+
+\begin{thebibliography}{99}
+\bibitem{maldacena2003}
+J.~M. Maldacena,
+``Non-Gaussian features of primordial fluctuations in single field inflationary models,''
+\emph{Journal of High Energy Physics} \textbf{2003}(05), 013 (2003).
+
+\bibitem{cheung2008}
+C.~Cheung, P.~Creminelli, A.~L. Fitzpatrick, J.~Kaplan, and L.~Senatore,
+``The effective field theory of inflation,''
+\emph{Journal of High Energy Physics} \textbf{2008}(03), 014 (2008).
+
+\bibitem{chen2007}
+X.~Chen, R.~Easther, and E.~A. Lim,
+``Large non-Gaussianities in single field inflation,''
+\emph{Journal of Cosmology and Astroparticle Physics} \textbf{2007}(06), 023 (2007).
+
+\bibitem{adshead2012}
+P.~Adshead, C.~Dvorkin, W.~Hu, and E.~A. Lim,
+``Non-Gaussianity from step features in the inflationary potential,''
+\emph{Physical Review D} \textbf{85}, 023531 (2012).
+
+\bibitem{arroja2011}
+F.~Arroja and T.~Tanaka,
+``A note on the role of the boundary terms for the non-Gaussianity in general k-inflation,''
+\emph{Journal of Cosmology and Astroparticle Physics} \textbf{2011}(05), 005 (2011).
+
+\bibitem{jacobson1995}
+T.~Jacobson,
+``Thermodynamics of spacetime: The Einstein equation of state,''
+\emph{Physical Review Letters} \textbf{75}, 1260--1263 (1995).
+
+\bibitem{hayward1998}
+S.~A. Hayward,
+``Unified first law of black-hole dynamics and relativistic thermodynamics,''
+\emph{Classical and Quantum Gravity} \textbf{15}, 3147--3162 (1998).
+
+\bibitem{planck2018params}
+Planck Collaboration,
+``Planck 2018 results. VI. Cosmological parameters,''
+\emph{Astronomy \& Astrophysics} \textbf{641}, A6 (2020).
+
+\end{thebibliography}
+
+
+\end{document}

@@ -1,0 +1,307 @@
+#!/usr/bin/env python3
+"""
+BIH-VI C3.4 strict preflight audit.
+
+This is a stricter replacement/companion for c34_preflight_audit.py.
+
+It rejects placeholder metadata such as:
+  - candidate
+  - not finalized
+  - not yet final
+  - MISSING
+  - needed
+  - requires
+  - native only
+  - TBD / TODO
+  - unknown
+  - external table needed
+
+It also verifies:
+  - SN table file existence/hash/row count
+  - required columns exist in the actual SN table
+  - covariance shape matches SN table row count
+  - density field path exists
+  - density metadata arrays have numeric lengths
+  - units/field_type values are from accepted enums
+  - smoothing scales are numeric and include the C3.2 target scan unless explicitly using a density directory with per-scale files
+  - nuisance controls are classified as pass / warning / blocker
+  - PV control must be specified, because low-z density maps and peculiar velocities are confounded
+
+The output is still only a gate:
+  READY_FOR_C33_JOIN / NOT_READY
+No physics conclusion is made here.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+import argparse, json, hashlib, re
+import numpy as np
+import pandas as pd
+
+PLACEHOLDER_PAT = re.compile(
+    r"(candidate|not\s+yet|not\s+final|not finalized|missing|needed|requires|require|tbd|todo|unknown|external .* needed|native only|open|must be defined)",
+    re.IGNORECASE
+)
+
+ALLOWED_UNITS = {"Mpc", "Mpc_h", "Mpc/h"}
+ALLOWED_FIELD_TYPES = {"rho_over_mean", "delta", "logrho"}
+TARGET_RS = [5, 10, 25, 50, 100, 200, 300]
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def add(rows, component, check, passed, detail, severity="blocker"):
+    rows.append({
+        "component": component,
+        "check": check,
+        "pass": bool(passed),
+        "severity": severity,
+        "detail": "" if detail is None else str(detail)
+    })
+
+def is_placeholder(value) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, (list, tuple, dict)):
+        return False
+    s = str(value).strip()
+    if not s:
+        return True
+    return bool(PLACEHOLDER_PAT.search(s))
+
+def read_sn_table(path: Path) -> pd.DataFrame:
+    if path.suffix.lower() == ".csv":
+        return pd.read_csv(path)
+    return pd.read_csv(path, delim_whitespace=True, comment="#")
+
+def cov_shape(path: Path, n_expected: int | None):
+    arr = np.loadtxt(path)
+    if arr.size == 0:
+        return None, None
+    first = arr.flat[0]
+    if abs(first - int(first)) < 1e-8:
+        n = int(first)
+        if arr.size == n*n + 1:
+            return (n, n), True
+    n = int(round(np.sqrt(arr.size)))
+    if n*n == arr.size:
+        return (n, n), False
+    return None, None
+
+def has_per_scale_density_files(path: Path, scales=TARGET_RS) -> tuple[bool, list[str]]:
+    if path.is_file():
+        # Single file accepted only if it is a bundle or the manifest describes it as such.
+        return True, []
+    missing = []
+    for r in scales:
+        candidates = [
+            path / f"density_R{r}.npy",
+            path / f"density_R{r}.npz",
+            path / f"logrho_R{r}.npy",
+            path / f"delta_R{r}.npy",
+        ]
+        if not any(c.exists() for c in candidates):
+            missing.append(f"R{r}")
+    return len(missing) == 0, missing
+
+def numeric_list(value, length=None):
+    if not isinstance(value, list):
+        return False
+    if length is not None and len(value) != length:
+        return False
+    try:
+        [float(x) for x in value]
+        return True
+    except Exception:
+        return False
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--manifest", required=True)
+    ap.add_argument("--out", default="c34_preflight_strict")
+    ap.add_argument("--allow-missing-optional-nuisance", action="store_true",
+                    help="Treat metallicity/sSFR/host dust missingness as warning, not blocker. Host mass, survey, and PV remain required.")
+    args = ap.parse_args()
+
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    manifest_path = Path(args.manifest)
+    m = json.loads(manifest_path.read_text())
+
+    rows = []
+    blockers = []
+    warnings = []
+
+    # Manifest itself.
+    add(rows, "manifest", "file_exists", manifest_path.exists(), manifest_path)
+    add(rows, "manifest", "project_name_present", bool(m.get("project")), m.get("project"))
+
+    # SN table.
+    sn = m.get("sn_table", {})
+    sn_path = Path(sn.get("path", ""))
+    add(rows, "sn_table", "path_exists", sn_path.exists(), sn_path)
+    sn_df = None
+    if sn_path.exists():
+        add(rows, "sn_table", "sha256", True, sha256(sn_path), severity="info")
+        try:
+            sn_df = read_sn_table(sn_path)
+            add(rows, "sn_table", "row_count_readable", len(sn_df) > 0, len(sn_df))
+            if sn.get("row_count") and int(sn.get("row_count")) != len(sn_df):
+                add(rows, "sn_table", "manifest_row_count_matches_file", False, f"manifest={sn.get('row_count')} actual={len(sn_df)}")
+            else:
+                add(rows, "sn_table", "manifest_row_count_matches_file", True, f"manifest={sn.get('row_count')} actual={len(sn_df)}")
+        except Exception as e:
+            add(rows, "sn_table", "readable", False, repr(e))
+    else:
+        add(rows, "sn_table", "readable", False, "SN table missing")
+
+    # Required columns and placeholder checks.
+    column_fields = {
+        "id_column": True,
+        "ra_column": True,
+        "dec_column": True,
+        "redshift_column_for_position": True,
+        "redshift_column_for_distance": False,
+        "residual_column": False,
+        "uncertainty_column": False,
+    }
+    for field, hard in column_fields.items():
+        value = sn.get(field, "")
+        comp = "sn_table"
+        if is_placeholder(value):
+            add(rows, comp, f"{field}_resolved_not_placeholder", False, value, severity="blocker" if hard else "warning")
+            if hard: blockers.append(f"SN {field} unresolved: {value}")
+            else: warnings.append(f"SN {field} unresolved: {value}")
+        else:
+            # If it contains alternatives separated by slashes, strict mode asks for a single final column.
+            if "/" in str(value) or "(" in str(value):
+                add(rows, comp, f"{field}_single_final_value", False, value, severity="blocker" if hard else "warning")
+                if hard: blockers.append(f"SN {field} is not a single final column: {value}")
+                else: warnings.append(f"SN {field} is not a single final column: {value}")
+            else:
+                exists = sn_df is not None and str(value) in sn_df.columns
+                add(rows, comp, f"{field}_exists_in_table", exists, value, severity="blocker" if hard else "warning")
+                if hard and not exists: blockers.append(f"SN column missing in table: {field}={value}")
+                if (not hard) and not exists: warnings.append(f"Optional SN column missing/unresolved: {field}={value}")
+
+    # Covariance.
+    cov = m.get("covariance", {})
+    cov_path = Path(cov.get("path", ""))
+    add(rows, "covariance", "path_exists", cov_path.exists(), cov_path)
+    if cov_path.exists():
+        add(rows, "covariance", "sha256", True, sha256(cov_path), severity="info")
+        shape, leading = cov_shape(cov_path, len(sn_df) if sn_df is not None else None)
+        add(rows, "covariance", "shape_readable", shape is not None, {"shape": shape, "leading_N": leading})
+        if shape and sn_df is not None:
+            match = shape[0] == len(sn_df)
+            add(rows, "covariance", "shape_matches_sn_rows", match, f"cov={shape}, sn_rows={len(sn_df)}")
+            if not match: blockers.append("Covariance shape does not match SN row count")
+    else:
+        blockers.append("Covariance path missing")
+
+    # Density fields.
+    for i, d in enumerate(m.get("density_fields", [])):
+        name = d.get("name", f"density_{i}")
+        comp = f"density_field_{i}_{name}"
+
+        p = Path(d.get("path_or_directory", ""))
+        exists = bool(str(p)) and p.exists()
+        add(rows, comp, "path_exists", exists, p)
+        if not exists:
+            blockers.append(f"{comp} path missing: {p}")
+
+        # Metadata placeholders.
+        for field in ["coordinate_frame", "units", "field_type", "mask_or_edge_policy"]:
+            val = d.get(field, "")
+            ok = not is_placeholder(val)
+            add(rows, comp, f"{field}_resolved_not_placeholder", ok, val)
+            if not ok: blockers.append(f"{comp} {field} unresolved: {val}")
+
+        # Enumerated values.
+        units = d.get("units", "")
+        add(rows, comp, "units_allowed_value", units in ALLOWED_UNITS, units)
+        if units not in ALLOWED_UNITS: blockers.append(f"{comp} units invalid: {units}")
+
+        ftype = d.get("field_type", "")
+        add(rows, comp, "field_type_allowed_value", ftype in ALLOWED_FIELD_TYPES, ftype)
+        if ftype not in ALLOWED_FIELD_TYPES: blockers.append(f"{comp} field_type invalid: {ftype}")
+
+        # Geometry metadata.
+        for field, n in [("box_min", 3), ("box_max", 3), ("grid_shape", 3)]:
+            val = d.get(field, [])
+            ok = numeric_list(val, n)
+            add(rows, comp, f"{field}_numeric_len_{n}", ok, val)
+            if not ok: blockers.append(f"{comp} {field} invalid: {val}")
+
+        scales = d.get("smoothing_scales_Mpc", [])
+        scales_numeric = numeric_list(scales, None)
+        add(rows, comp, "smoothing_scales_numeric", scales_numeric, scales)
+        if not scales_numeric:
+            blockers.append(f"{comp} smoothing scales are not numeric/final: {scales}")
+        else:
+            numeric_scales = [int(round(float(x))) for x in scales]
+            missing_targets = [r for r in TARGET_RS if r not in numeric_scales]
+            ok = len(missing_targets) == 0
+            add(rows, comp, "smoothing_scales_include_C32_targets", ok, f"missing={missing_targets}; have={numeric_scales}")
+            if not ok:
+                blockers.append(f"{comp} missing C3.2 target smoothing scales: {missing_targets}")
+
+        # Per-scale file check if path is a directory.
+        if exists:
+            per_ok, missing = has_per_scale_density_files(p)
+            add(rows, comp, "per_scale_density_files_available_or_bundle", per_ok, f"missing={missing}")
+            if not per_ok:
+                blockers.append(f"{comp} missing per-scale density files: {missing}")
+
+    if not m.get("density_fields"):
+        add(rows, "density_fields", "at_least_one_density_field", False, "none")
+        blockers.append("No density fields listed")
+
+    # Nuisance controls.
+    nuis = m.get("nuisance_controls", {})
+    hard_nuis = ["host_mass", "survey_id", "peculiar_velocity"]
+    optional_nuis = ["metallicity", "sSFR", "dust"]
+    for field in hard_nuis:
+        val = nuis.get(field, "")
+        ok = not is_placeholder(val)
+        add(rows, "nuisance_controls", f"{field}_resolved_not_placeholder", ok, val)
+        if not ok: blockers.append(f"Required nuisance/control unresolved: {field}={val}")
+
+    for field in optional_nuis:
+        val = nuis.get(field, "")
+        ok = not is_placeholder(val)
+        sev = "warning" if args.allow_missing_optional_nuisance else "blocker"
+        add(rows, "nuisance_controls", f"{field}_resolved_not_placeholder", ok, val, severity=sev)
+        if not ok:
+            if args.allow_missing_optional_nuisance:
+                warnings.append(f"Optional nuisance unresolved: {field}={val}")
+            else:
+                blockers.append(f"Optional nuisance unresolved and strict mode blocks: {field}={val}")
+
+    # QA status must not claim ready if blockers exist.
+    qa = m.get("qa_status", {})
+    claimed_ready = bool(qa.get("ready_for_c33_join", False))
+    add(rows, "qa_status", "manifest_not_claiming_ready_with_blockers", not claimed_ready or len(blockers)==0, qa)
+
+    df = pd.DataFrame(rows)
+    df.to_csv(out / "c34_preflight_strict_checks.csv", index=False)
+
+    verdict = {
+        "ready_for_c33_join": len(blockers) == 0,
+        "blocking_issues": sorted(set(blockers)),
+        "warnings": sorted(set(warnings)),
+        "n_checks": int(len(df)),
+        "n_failed_blockers": int(((df["pass"] == False) & (df["severity"] == "blocker")).sum()),
+        "n_failed_warnings": int(((df["pass"] == False) & (df["severity"] == "warning")).sum()),
+        "note": "Strict C3.4 gate. A NOT_READY verdict is an engineering blocker, not a physics result."
+    }
+    (out / "c34_preflight_strict_verdict.json").write_text(json.dumps(verdict, indent=2))
+    print(json.dumps(verdict, indent=2))
+
+if __name__ == "__main__":
+    main()

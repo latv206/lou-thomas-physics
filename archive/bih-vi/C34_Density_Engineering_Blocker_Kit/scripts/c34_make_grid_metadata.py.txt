@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Create/refresh C3.3 grid metadata for a prepared 2M++ smoothed density directory."""
+from pathlib import Path
+import argparse, json, hashlib
+import numpy as np
+import pandas as pd
+
+def sha256(path):
+    h=hashlib.sha256()
+    with open(path,"rb") as f:
+        for chunk in iter(lambda:f.read(1024*1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--density-dir", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--h", type=float, default=0.6736)
+    args=ap.parse_args()
+
+    d=Path(args.density_dir)
+    files=sorted(d.glob("density_R*.npy"))
+    scales=[]
+    for p in files:
+        token=p.stem.replace("density_R","")
+        try: scales.append(int(token))
+        except: pass
+    meta={
+        "description":"2M++ smoothed density grids for BIH-VI C3.3",
+        "coordinate_frame":"Galactic Cartesian comoving",
+        "center":"Local Group / observer",
+        "units":"Mpc_h",
+        "h":args.h,
+        "box_min":[-200.0,-200.0,-200.0],
+        "box_max":[200.0,200.0,200.0],
+        "grid_shape":[257,257,257],
+        "periodic":False,
+        "field_type":"delta",
+        "native_gaussian_smoothing_Mpc_h":4.0,
+        "native_gaussian_smoothing_Mpc":4.0/args.h,
+        "smoothing_scales_Mpc":sorted(scales),
+        "file_pattern":"density_R{R}.npy",
+        "mask_or_edge_policy":"finite cube; outside-grid SN positions are NaN and must be cut with covariance sub-selection C[I,I]; high-Rs products require coverage audit",
+        "files":[{"file":p.name,"sha256":sha256(p),"bytes":p.stat().st_size} for p in files]
+    }
+    Path(args.out).write_text(json.dumps(meta, indent=2))
+    print(json.dumps(meta, indent=2))
+if __name__=="__main__":
+    main()

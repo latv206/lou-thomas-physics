@@ -1,0 +1,22 @@
+{
+  "ready_for_c33_join": false,
+  "blocking_issues": [
+    "Required nuisance/control unresolved: peculiar_velocity=VPEC, VPECERR present; covariance also includes PV effects but explicit C3.2 control/robustness cuts still required",
+    "SN redshift_column_for_position unresolved: zHD (candidate; C3.3 must document zHD/zCMB/zHEL convention)",
+    "density_field_0_2M++ Carrick et al. v1.0 density field mask_or_edge_policy unresolved: finite cube; edge/mask policy and high-Rs smoothing coverage must be defined before C3.3/C3.2",
+    "density_field_0_2M++ Carrick et al. v1.0 density field path missing: ./legacy_data/bih_vi_c34_realdata/data/twompp_density.npy",
+    "density_field_0_2M++ Carrick et al. v1.0 density field smoothing scales are not numeric/final: ['4 Mpc/h native only; C3.2 Rs={5,10,25,50,100,200,300} requires derived smoothing pipeline']"
+  ],
+  "warnings": [
+    "Optional nuisance unresolved: dust=MWEBV present; host dust proxy not present; external table may be needed",
+    "Optional nuisance unresolved: metallicity=not present in Pantheon+SH0ES.dat; external host/anchor table needed",
+    "Optional nuisance unresolved: sSFR=not present in Pantheon+SH0ES.dat; external host table needed",
+    "SN redshift_column_for_distance unresolved: zHD/zHEL per Pantheon+ convention; not yet final for C3.3",
+    "SN residual_column unresolved: MU_SH0ES or externally computed residual; production choice not finalized",
+    "SN uncertainty_column unresolved: MU_SH0ES_ERR_DIAG / covariance dominates; note open GitHub issue re diagonal differences"
+  ],
+  "n_checks": 35,
+  "n_failed_blockers": 5,
+  "n_failed_warnings": 6,
+  "note": "Strict C3.4 gate. A NOT_READY verdict is an engineering blocker, not a physics result."
+}

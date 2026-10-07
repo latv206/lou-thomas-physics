@@ -1,0 +1,30 @@
+{
+  "status": "RUN06_2MPP_CLOSURE_COMPLETE",
+  "purpose": "Freeze BIH-VI C3 2M++ diagnostic sequence and classify density-coupled branch outcome.",
+  "preflight_passed": true,
+  "c33_join": {
+    "n_original": 1701,
+    "n_regression": 730,
+    "covariance_aligned_shape": [
+      730,
+      730
+    ]
+  },
+  "run02_result": "survives_second_empirical_gate_candidate",
+  "run03_result": "stable_candidate_survives_numerical_sanity",
+  "run04_result": "candidate_partially_survives_lockdown",
+  "run05_result": "candidate_is_survey150_dependent",
+  "final_density_branch_classification": "2M++_survey_dependent_not_robust",
+  "allowed_claim": "The 2M++/Pantheon diagnostic found a statistically interesting R100, z>0.03 residual-density slope, but Run05 shows it is survey-150 dependent and not a robust cosmological density-coupled calibration signal.",
+  "next_authorized_empirical_paths": [
+    "C3 pure frame-offset branch Delta_M_B0 against independent anchors",
+    "Independent density reconstruction replication, e.g. BORG/Cosmicflows, before reviving density-coupled C3",
+    "Production Pantheon+ likelihood only if survey-calibration model is formalized"
+  ],
+  "forbidden_claims": [
+    "Hubble tension solved",
+    "density-coupled branch detected",
+    "BIH-VI late branch proven",
+    "blob is real"
+  ]
+}

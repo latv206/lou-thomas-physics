@@ -1,0 +1,82 @@
+{
+  "run": "A2_PRODUCTION_LOCAL",
+  "started_utc": "2026-07-06T20:41:54+00:00",
+  "finished_utc": "2026-07-06T20:42:02+00:00",
+  "runtime_sec": 7.280172109603882,
+  "verdict": "PASS",
+  "script_path": "[local path omitted]",
+  "script_sha256": "35fd365916395f171fee9278480bd102b267f545fb389d6039cfe0058c78aae8",
+  "hub_root": "[local path omitted]",
+  "run_dir": "[local path omitted]",
+  "outbox_dir": "[local path omitted]",
+  "decision": "A",
+  "ledger_terms": [
+    "O1",
+    "O2",
+    "O3a",
+    "O3b",
+    "O3c",
+    "V1",
+    "V2",
+    "f2",
+    "f3",
+    "f4"
+  ],
+  "forbidden_terms": [
+    "O5",
+    "B_bdry",
+    "B_EOM",
+    "local_zeta2_FR",
+    "Delta2_denominator"
+  ],
+  "hard_K_grid": [
+    0.01,
+    0.015,
+    0.02,
+    0.025,
+    0.03,
+    0.035,
+    0.04,
+    0.045,
+    0.05,
+    0.055,
+    0.06
+  ],
+  "provisional_K_grid": [
+    0.072,
+    0.09,
+    0.119
+  ],
+  "claim_families": [
+    "equilateral",
+    "squeezed"
+  ],
+  "diagnostic_families": [
+    "folded"
+  ],
+  "required_outputs": [
+    "production_manifest.json",
+    "run_report.md",
+    "sendback_summary.json",
+    "production_scan_rows.csv",
+    "production_family_summary.csv",
+    "production_gate_summary.json",
+    "script_hash.txt",
+    "folded_gflat_diagnostics.csv",
+    "claim_rows.csv",
+    "flagged_rows.csv"
+  ],
+  "scope_boundary": "EFT-level A2 production scan; no UV-completion claim.",
+  "output_hashes": {
+    "production_manifest.json": "52a3326cf7df68f272df00a578dd9930620d367788449cf3c269ca5c14ee06a8",
+    "run_report.md": "035853a223422181fffac1b61191955e2a533a50bfee63d4adeb61bc0ac8d5dd",
+    "sendback_summary.json": "5705a6e2deb5e569cb81db0ae1d9d7955ca3ca2933cebe19f3b5513130bf8205",
+    "production_scan_rows.csv": "7128a1832e8e750632c6af97b57bfc981dab5c860004fc1255d7cb42311a5cc0",
+    "production_family_summary.csv": "1d01403ba7c4c2f62e145266d1aa700aa8c1315d6f86e5f0afed9423ccfe443e",
+    "production_gate_summary.json": "f622b6b6b71240c69e4062d1c066f65f5e038c56ad6d4cc2b13833ae8c3b5170",
+    "script_hash.txt": "9620c99d2410ac71a473b361c8e23281b712f3f735140e30017cd1607ce16d6b",
+    "folded_gflat_diagnostics.csv": "284b93a436f02b6b09075838d49d81de6218e393d46286e92985900a485b0efa",
+    "claim_rows.csv": "3a496caddc71036613611c351573632280aa81c690e3782c13f0eb2dfb4db820",
+    "flagged_rows.csv": "6e2896d07b24b19f0bef238b3698ac07ba086941e2608700900aa4054cad3823"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "n_shapes": 931,
+  "families": [
+    "equilateral",
+    "folded_flattened",
+    "isosceles",
+    "squeezed"
+  ],
+  "K_min": 0.1,
+  "K_max": 6.0,
+  "triangle_invalid_count": 0
+}

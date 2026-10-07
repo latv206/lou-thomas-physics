@@ -1,0 +1,14 @@
+# ============================================================
+# COPY BIH-VI C3 RUN02 SCRIPTS INTO EXISTING CODEX WORKSPACE
+# ============================================================
+
+$WORK = "[local path omitted]"
+$SCRIPT_DIR = Join-Path $WORK "scripts"
+
+New-Item -ItemType Directory -Force -Path $SCRIPT_DIR | Out-Null
+
+# Copy these two files into $SCRIPT_DIR:
+#   c3_run02_edge_safe_fullcov.py
+#   run_c3_real_run02_edge_safe_fullcov.ps1
+
+powershell -ExecutionPolicy Bypass -File "$SCRIPT_DIR\run_c3_real_run02_edge_safe_fullcov.ps1"

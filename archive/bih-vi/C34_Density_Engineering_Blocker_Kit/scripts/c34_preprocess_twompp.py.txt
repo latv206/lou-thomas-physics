@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+"""
+Preprocess public 2M++ density cube into C3.2 smoothing-scale products.
+
+Input:
+  twompp_density.npy, shape (257,257,257), field_type = delta_g*
+
+Output:
+  density_R{R}.npy files for C3.3 joiner. Values are delta fields, not log density.
+  smoothing_metadata.csv
+  grid_metadata.json
+
+Important:
+  2M++ is already smoothed with a Gaussian of 4 Mpc/h.
+  An exact 5 Mpc physical smoothing product is below that native smoothing for h=0.6736:
+      5 Mpc * h = 3.368 Mpc/h < 4 Mpc/h.
+  With --native-floor, density_R5.npy is a copy of the native cube and metadata records
+  effective_R_s_Mpc = 4/h.
+"""
+from __future__ import annotations
+from pathlib import Path
+import argparse, json, math, hashlib
+import numpy as np
+
+try:
+    from scipy.ndimage import gaussian_filter
+except Exception as e:
+    gaussian_filter = None
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def parse_targets(vals):
+    return [float(v) for v in vals]
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--density", required=True, help="twompp_density.npy")
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--h", type=float, default=0.6736)
+    ap.add_argument("--targets", nargs="+", default=[5,10,25,50,100,200,300])
+    ap.add_argument("--native-smoothing-mpc-h", type=float, default=4.0)
+    ap.add_argument("--grid-spacing-mpc-h", type=float, default=400.0/256.0)
+    ap.add_argument("--native-floor", action="store_true",
+                    help="For targets below native smoothing, write native cube and record effective smoothing floor.")
+    ap.add_argument("--dtype", default="float32")
+    args = ap.parse_args()
+
+    if gaussian_filter is None:
+        raise RuntimeError("scipy.ndimage.gaussian_filter is required for smoothing. Install scipy or run in a SciPy-enabled env.")
+
+    density_path = Path(args.density)
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    arr = np.load(density_path, mmap_mode="r")
+    if tuple(arr.shape) != (257,257,257):
+        raise ValueError(f"Expected density shape (257,257,257), got {arr.shape}")
+
+    targets = parse_targets(args.targets)
+    native = float(args.native_smoothing_mpc_h)
+    dx = float(args.grid_spacing_mpc_h)
+    rows = []
+    produced = []
+
+    # Load into memory once as float32/float64 chosen.
+    data = np.asarray(arr, dtype=args.dtype)
+
+    for R_mpc in targets:
+        target_mpc_h = R_mpc * args.h
+        row = {
+            "target_R_s_Mpc": R_mpc,
+            "target_R_s_Mpc_h": target_mpc_h,
+            "native_smoothing_Mpc_h": native,
+            "grid_spacing_Mpc_h": dx,
+            "native_floor_used": False,
+            "effective_R_s_Mpc_h": target_mpc_h,
+            "effective_R_s_Mpc": R_mpc,
+            "additional_sigma_Mpc_h": 0.0,
+            "additional_sigma_cells": 0.0,
+            "status": "pending",
+            "output_file": ""
+        }
+
+        if target_mpc_h <= native:
+            if not args.native_floor:
+                row["status"] = "blocked_below_native_smoothing"
+                rows.append(row)
+                continue
+            # Cannot unsmooth. Use native cube and record effective smoothing floor.
+            out_arr = data
+            row["native_floor_used"] = True
+            row["effective_R_s_Mpc_h"] = native
+            row["effective_R_s_Mpc"] = native / args.h
+            row["status"] = "native_floor_product"
+        else:
+            # Total target Gaussian sigma already includes native sigma in quadrature.
+            add_sigma_mpc_h = math.sqrt(target_mpc_h**2 - native**2)
+            add_sigma_cells = add_sigma_mpc_h / dx
+            row["additional_sigma_Mpc_h"] = add_sigma_mpc_h
+            row["additional_sigma_cells"] = add_sigma_cells
+            # finite 2M++ cube: nearest mode avoids wrapping across physical boundaries.
+            out_arr = gaussian_filter(data, sigma=add_sigma_cells, mode="nearest")
+            row["status"] = "smoothed"
+
+        outfile = out / f"density_R{int(round(R_mpc))}.npy"
+        np.save(outfile, np.asarray(out_arr, dtype=args.dtype))
+        row["output_file"] = outfile.name
+        row["sha256"] = sha256(outfile)
+        row["bytes"] = outfile.stat().st_size
+        produced.append(int(round(R_mpc)))
+        rows.append(row)
+
+    import pandas as pd
+    meta_csv = out / "smoothing_metadata.csv"
+    pd.DataFrame(rows).to_csv(meta_csv, index=False)
+
+    grid_meta = {
+        "description": "2M++ public density cube preprocessed for BIH-VI C3.2/C3.3",
+        "source_density": str(density_path),
+        "source_density_sha256": sha256(density_path),
+        "coordinate_frame": "Galactic Cartesian comoving",
+        "center": "Local Group / observer at cell [128,128,128]",
+        "units": "Mpc_h",
+        "h": args.h,
+        "box_min": [-200.0, -200.0, -200.0],
+        "box_max": [200.0, 200.0, 200.0],
+        "grid_shape": [257,257,257],
+        "periodic": False,
+        "field_type": "delta",
+        "native_gaussian_smoothing_Mpc_h": native,
+        "native_gaussian_smoothing_Mpc": native / args.h,
+        "grid_spacing_Mpc_h": dx,
+        "smoothing_scales_Mpc": produced,
+        "file_pattern": "density_R{R}.npy",
+        "mask_or_edge_policy": "finite cube; interpolation outside box is NaN; smoothing uses nearest-edge mode; high-Rs coverage must be audited by c33_density_coverage_by_scale.csv",
+        "smoothing_metadata_csv": str(meta_csv.name),
+        "notes": [
+            "Values are density contrast delta_g*, not rho/mean. C3.3 must convert field_type='delta' via log1p(delta).",
+            "R=5 Mpc is below native 4 Mpc/h smoothing for h=0.6736 and is represented by native-floor product when --native-floor is used.",
+            "For final publication, repeat with posterior/sample density fields if available rather than a single deterministic cube."
+        ]
+    }
+    (out / "grid_metadata.json").write_text(json.dumps(grid_meta, indent=2))
+    print(json.dumps({"out": str(out), "produced": produced, "metadata": str(out/"grid_metadata.json")}, indent=2))
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1392 @@
+[
+  {
+    "file": "bih-vi/manuscript/A2_MANUSCRIPT_FINAL.pdf",
+    "format": "pdf",
+    "pages": 10,
+    "source_text_preserved": true
+  },
+  {
+    "file": "bih-vi/reports/Technical_Report_FINAL.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 329,
+        "after": 329
+      },
+      {
+        "element": "tbl",
+        "before": 6,
+        "after": 6
+      },
+      {
+        "element": "drawing",
+        "before": 8,
+        "after": 8
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "bih-vi/reports/Technical_Report_FINAL.pdf",
+    "format": "pdf",
+    "pages": 17,
+    "source_text_preserved": true
+  },
+  {
+    "file": "bih-vi/reports/Module_A_B_Expansion_Addendum.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 191,
+        "after": 191
+      },
+      {
+        "element": "tbl",
+        "before": 5,
+        "after": 5
+      },
+      {
+        "element": "drawing",
+        "before": 10,
+        "after": 10
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "bih-vi/reports/Module_A_B_Expansion_Addendum.pdf",
+    "format": "pdf",
+    "pages": 8,
+    "source_text_preserved": true
+  },
+  {
+    "file": "bih-vi/reports/Open_Work_Addendum.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 88,
+        "after": 88
+      },
+      {
+        "element": "tbl",
+        "before": 2,
+        "after": 2
+      },
+      {
+        "element": "drawing",
+        "before": 4,
+        "after": 4
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "bih-vi/reports/Open_Work_Addendum.pdf",
+    "format": "pdf",
+    "pages": 7,
+    "source_text_preserved": true
+  },
+  {
+    "file": "archive/bih-vi/earlier-addenda/Modules_A-B_Addendum.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 128,
+        "after": 128
+      },
+      {
+        "element": "tbl",
+        "before": 3,
+        "after": 3
+      },
+      {
+        "element": "drawing",
+        "before": 7,
+        "after": 7
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/bih-vi/earlier-addenda/Modules_A-B_Addendum.pdf",
+    "format": "pdf",
+    "pages": 8,
+    "source_text_preserved": true
+  },
+  {
+    "file": "archive/bih-vi/earlier-addenda/Open_Work_Modules_AB_Addendum.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 144,
+        "after": 144
+      },
+      {
+        "element": "tbl",
+        "before": 3,
+        "after": 3
+      },
+      {
+        "element": "drawing",
+        "before": 10,
+        "after": 10
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/bih-vi/earlier-addenda/Open_Work_Modules_AB_Addendum.pdf",
+    "format": "pdf",
+    "pages": 9,
+    "source_text_preserved": true
+  },
+  {
+    "file": "archive/bih-vi/Unified_Manuscript_Assembly_Package/docx/Unified_Manuscript_Skeleton.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 262,
+        "after": 262
+      },
+      {
+        "element": "tbl",
+        "before": 18,
+        "after": 18
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/bih-vi/Unified_Manuscript_Assembly_Package/docx/BIH_VI_unified_manuscript_working_draft.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 110,
+        "after": 110
+      },
+      {
+        "element": "tbl",
+        "before": 2,
+        "after": 2
+      },
+      {
+        "element": "drawing",
+        "before": 10,
+        "after": 10
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/bih-vi/Unified_Manuscript_Assembly_Package/docx/rendered/BIH_VI_unified_manuscript_working_draft.pdf",
+    "format": "pdf",
+    "pages": 10,
+    "source_text_preserved": true
+  },
+  {
+    "file": "archive/bih-vi/Unified_Manuscript_Assembly_Package/latex/BIH_VI_unified_manuscript.pdf",
+    "format": "pdf",
+    "pages": 15,
+    "source_text_preserved": true
+  },
+  {
+    "file": "foundations/gmt-ssc/GMT_-_SSC_V1.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 87,
+        "after": 87
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/gmt-ssc/All_my_physics_stuff_boiled_down.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 113,
+        "after": 113
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/gmt-ssc/GMT_SSC_Submission_Bundle_With_Extras_V1/GMT_SSC_Theory_Summary.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 18,
+        "after": 18
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 3,
+        "after": 3
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/gmt-ssc/V2/GMT_Theory.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 105,
+        "after": 105
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/phase-shifts/Ultimate_Phase_Shift_Thesis_V2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 19,
+        "after": 19
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/phase-shifts/Ultimate_Phase_Shift_Thesis_V3.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 19,
+        "after": 19
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/phase-shifts/Ultimate_Phase_Shift_Thesis.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 17,
+        "after": 17
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V1.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 7,
+        "after": 7
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 2,
+        "after": 2
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V3.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 55,
+        "after": 55
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V4.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 82,
+        "after": 82
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V5.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 92,
+        "after": 92
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V6.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 94,
+        "after": 94
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/light-and-projection/The_Timeless_Nature_of_Light_V7.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 109,
+        "after": 109
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/light-and-projection/The_Timeless_Nature_of_Light_V8.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 186,
+        "after": 186
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_Alt_Final.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 56,
+        "after": 56
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_Final_-_V2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 67,
+        "after": 67
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_Final_-_V2.pdf",
+    "format": "pdf",
+    "pages": 6,
+    "source_text_preserved": true
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_Final.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 65,
+        "after": 65
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 25,
+        "after": 25
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V3.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 81,
+        "after": 81
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V4.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 69,
+        "after": 69
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V5.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 49,
+        "after": 49
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V6.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 49,
+        "after": 49
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V7.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 71,
+        "after": 71
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V7.pdf",
+    "format": "pdf",
+    "pages": 7,
+    "source_text_preserved": true
+  },
+  {
+    "file": "foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V8.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 58,
+        "after": 58
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/quantum-and-observers/Quantum_Physics_Thesis_-_V8.pdf",
+    "format": "pdf",
+    "pages": 6,
+    "source_text_preserved": true
+  },
+  {
+    "file": "archive/foundations/quantum-and-observers/Quantum_Physics_Thesis.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 35,
+        "after": 35
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/quantum-and-observers/The_Giant_Observer_Paradox.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 66,
+        "after": 66
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/Lattice_Emergence/Lattice_Emergence_V1.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 122,
+        "after": 122
+      },
+      {
+        "element": "tbl",
+        "before": 3,
+        "after": 3
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/Lattice_Emergence/Lattice_emergence_V2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 122,
+        "after": 122
+      },
+      {
+        "element": "tbl",
+        "before": 3,
+        "after": 3
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/Unified_Theory_of_Existence/Unified_Theory_of_Existence.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 88,
+        "after": 88
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/recursive-lattice/The_Theory_of_Everything_V1.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 139,
+        "after": 139
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/recursive-lattice/The_Theory_of_Everything_V2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 137,
+        "after": 137
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 12,
+        "after": 12
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/recursive-lattice/Recursive_Lattice_Cosmology_-_Scientific_Paper.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 75,
+        "after": 75
+      },
+      {
+        "element": "tbl",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/recursive-lattice/The_Theory_of_Everything_V3_-_Explanation_Manual.pdf",
+    "format": "pdf",
+    "pages": 6,
+    "source_text_preserved": true
+  },
+  {
+    "file": "foundations/recursive-lattice/The_Theory_of_Everything_V3.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 120,
+        "after": 120
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/recursive-lattice/The_Theory_of_Everything_V3.pdf",
+    "format": "pdf",
+    "pages": 5,
+    "source_text_preserved": true
+  },
+  {
+    "file": "foundations/dimensional-projection/Born_Rule_Fix_and_Gauge_Field.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 238,
+        "after": 238
+      },
+      {
+        "element": "tbl",
+        "before": 2,
+        "after": 2
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/dimensional-projection/COMPLETE_PAPER_Dimensional_Projection_Born_Rule.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 187,
+        "after": 187
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/dimensional-projection/Mathematical_Derivations_Working_Document.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 266,
+        "after": 266
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "rnsf/manuscript-v3/rnsf_v3_integrated_main.pdf",
+    "format": "pdf",
+    "pages": 13,
+    "source_text_preserved": false,
+    "reason": "Approved public byline/contact sanitization; research content preserved.",
+    "privacy_revision_verification": "pdf_privacy_revision.json"
+  },
+  {
+    "file": "archive/foundations/dimensional-projection/Scale_Dependent_Observation_1.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 164,
+        "after": 164
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "foundations/dimensional-projection/Scale_Dependent_Observation_2.docx",
+    "format": "docx",
+    "xml_valid": true,
+    "structure_counts": [
+      {
+        "element": "p",
+        "before": 209,
+        "after": 209
+      },
+      {
+        "element": "tbl",
+        "before": 1,
+        "after": 1
+      },
+      {
+        "element": "drawing",
+        "before": 0,
+        "after": 0
+      },
+      {
+        "element": "oMath",
+        "before": 0,
+        "after": 0
+      }
+    ],
+    "visual_rerender": "not_verified"
+  },
+  {
+    "file": "archive/foundations/relational-substrate/The_Relational_Substrate_Initiative__RSI_v1.pdf",
+    "format": "pdf",
+    "pages": 6,
+    "source_text_preserved": false,
+    "reason": "Approved public byline/contact sanitization; research content preserved.",
+    "privacy_revision_verification": "pdf_privacy_revision.json"
+  },
+  {
+    "file": "archive/foundations/relational-substrate/The_Relational_Substrate_Initiative__RSI_v2.pdf",
+    "format": "pdf",
+    "pages": 5,
+    "source_text_preserved": false,
+    "reason": "Approved public byline/contact sanitization; research content preserved.",
+    "privacy_revision_verification": "pdf_privacy_revision.json"
+  }
+]

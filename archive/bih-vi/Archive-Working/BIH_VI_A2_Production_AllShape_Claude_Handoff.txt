@@ -1,0 +1,355 @@
+CLAUDE CODE TASK: BIH-VI A2 PRODUCTION ALL-SHAPE SCAN
+
+Purpose:
+Run the first production all-shape A2 bispectrum scan for the frozen BIH-VI benchmark, using the already validated bounded-eta_H all-operator ledger.
+
+This is a production physics scan, not a theory-development session.
+
+Do not modify frozen validation artifacts.
+Do not reopen G-S.
+Do not reopen BENCH02.
+Do not reopen C3.
+Do not develop C4/C5/C6.
+Do not add new theory branches.
+Do not touch G:.
+Do not publish, replace, move, or regenerate unrelated artifacts.
+
+============================================================
+0. CURRENT CERTIFIED STATE
+============================================================
+
+Local reproduction is closed.
+
+G-S:
+PASS.
+6 primary rows.
+1 demoted hard-band row.
+Empirical envelope K <= 0.06 for squeezed and equilateral.
+
+BENCH02:
+PASS.
+11/11 gates.
+v3 diff closed.
+Flat script hash matched:
+b10711663374cd7e269bec7f83b3b1847e353eb925bd67f46d4f4f5ac4fa4646
+
+Execution validation phase is closed.
+The next live question is the production all-shape A2 scan.
+
+============================================================
+1. WORKSPACE / BRANCH RULE
+============================================================
+
+Use a new execution branch or new run folder.
+Do not edit anything under Hub\frozen.
+Do not overwrite G-S or BENCH02 validation folders.
+Do not reuse an old production folder.
+
+Root:
+[local path omitted]
+
+Create:
+[local path omitted]
+[local path omitted]
+
+Optional convenience copy:
+[local path omitted]
+
+If using a git/code branch, name it:
+A2_PRODUCTION_ALLSHAPE_RUN01
+
+Do not use a “new branch” to create new physics. This is only an execution isolation branch.
+
+============================================================
+2. REQUIRED INPUTS
+============================================================
+
+Expected frozen reference scripts:
+
+[local path omitted]
+SHA-256 must equal:
+3289ccb4d7c0443e335c4b7d01d40946770a484806eb713cf33bed394e48daed
+
+[local path omitted]
+SHA-256 must equal:
+b10711663374cd7e269bec7f83b3b1847e353eb925bd67f46d4f4f5ac4fa4646
+
+Verify hashes before doing anything.
+If either hash mismatches, STOP and report.
+Do not patch or re-download silently.
+
+============================================================
+3. FROZEN BIH-VI BENCHMARK
+============================================================
+
+Use exactly this benchmark:
+
+p = 3
+mu = 1
+c_s = 1
+N_star = 55
+y_g = 2/3
+Delta = 0.01
+m_post = 4
+H_c = 3.8e-6 M_Pl
+
+Background equations:
+
+H^2 = H_c^2 y(2-y)
+
+y_N = -m(y)y
+
+m(y) = mu(1-y)^3 + m_post*S(y)
+
+S(y) = 1/[1 + exp((y-y_g)/Delta)]
+
+Use the same dimensionless H convention as G-S v3 / run03_v2: H(y_g)=1 numerically, H_c/M_Pl recorded as provenance only.
+
+============================================================
+4. VALIDATED LEDGER — USE EXACTLY THIS
+============================================================
+
+The physical all-operator ledger is:
+
+B_total = O1 + O2 + O3a + O3b + O3c + V1 + V2 + f2 + f3 + f4
+
+Mandatory operators:
+O1  = a^3 eps^2 zeta zdot^2
+O2  = a eps^2 zeta (grad zeta)^2
+O3a = -2a eps zdot grad zeta grad psi
+O3b = (eps/2a) grad zeta grad psi lap psi
+O3c = (eps/4a) lap zeta (grad psi)^2
+V1  = bounded-eta replacement kinetic term
+V2  = bounded-eta replacement gradient term
+f2,f3,f4 = nonlocal/decaying field-redefinition terms
+
+Forbidden ledger lines:
+O5
+B_bdry
+B_EOM
+local zeta^2 field redefinition
+Delta^2 denominators
+missing Wick/assignment sums
+standalone raw O4 as a physical result
+
+Raw O4 may be used only as an internal diagnostic against the bounded basis, never as a production observable.
+
+All f_NL denominators must use dimensionful P(k), not Delta^2(k).
+
+============================================================
+5. PRODUCTION SHAPE GRID
+============================================================
+
+Use K_total = k1 + k2 + k3 as the shape-scale variable.
+Record K_total explicitly for every row.
+Record k1,k2,k3 explicitly for every row.
+Do not overload K to mean both individual k and perimeter.
+
+A. Control rows
+Include the G-S frozen control rows:
+K_control = 0.02, 0.04, 0.06
+families: squeezed q=0.001 and equilateral
+These are sanity rows only and should reproduce G-S-scale behavior.
+
+B. Equilateral production band
+k1 = k2 = k3 = K_total/3.
+K_total grid:
+0.50 to 6.00 step 0.10
+plus dense grid 3.00 to 4.20 step 0.02.
+Deduplicate rows.
+
+C. Squeezed production band
+q = k_L/k_S.
+k_S = K_total/(2+q)
+k_L = q*k_S
+Use triangles:
+(k1,k2,k3) = (k_L,k_S,k_S)
+q grid:
+1e-3, 3e-3, 1e-2, 3e-2, 1e-1
+K_total grid:
+0.06, 0.50, 1.00, 2.00, 3.00, 3.58, 4.00, 5.00, 6.00
+Flag which rows have frozen long mode / frozen short mode.
+Do not claim squeezed consistency outside the frozen/superhorizon regime.
+
+D. Folded / flattened production band
+Use symmetric flattened triangles:
+k1 = (1-delta)*K_total/2
+k2 = k3 = (K_total-k1)/2 = (1+delta)*K_total/4
+
+delta grid:
+1e-2, 3e-3, 1e-3
+K_total grid:
+1.00, 2.00, 3.00, 3.58, 4.00, 5.00, 6.00
+
+E. Isosceles grid
+Let k2 = k3 and r = k1/k2.
+Use r grid:
+0.20, 0.35, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 1.90
+For each K_total:
+k2 = k3 = K_total/(r+2)
+k1 = r*k2
+K_total grid:
+1.00, 2.00, 3.00, 3.58, 4.00, 5.00, 6.00
+Reject invalid triangles if any occur.
+
+============================================================
+6. REQUIRED GATES
+============================================================
+
+Gate 1 — Source-hash gate
+Input frozen script hashes must match the expected hashes above.
+
+Gate 2 — No artifact mutation gate
+Confirm frozen scripts unchanged after run.
+Confirm no G: writes.
+Confirm no G: publish/replace/move/delete/copy.
+
+Gate 3 — Control-row gate
+Control rows must remain finite and consistent with validated G-S scale behavior.
+If the G-S control rows fail, stop and report.
+
+Gate 4 — Finite-output gate
+Every production row must produce finite:
+B operator pieces
+B_total
+P1,P2,P3
+SPP = P1P2 + P1P3 + P2P3
+f_NL
+absolute B proxy
+perturbativity proxy
+
+Any NaN or Infinity is a hard fail.
+
+Gate 5 — Denominator gate
+All f_NL denominators must use dimensionful P(k).
+Do not use Delta^2 products.
+Emit a denominator audit column:
+D_fNL = P1P2 + P1P3 + P2P3
+
+Gate 6 — G-FLAT gate for folded/flattened rows
+For each K_total in folded/flattened rows, compare delta = 1e-2, 3e-3, 1e-3.
+Compute:
+slope_B = d log(|B_total|) / d log(1/delta)
+slope_fNL = d log(|f_NL|) / d log(1/delta)
+
+Hard fail if:
+- any nonfinite value appears; or
+- slope_B > 0.5 for non-tiny |B_total|; or
+- a clear delta^{-p} absolute-B pole is present.
+
+Do not fail solely because normalized f_NL grows if absolute B remains finite and the denominator is suppressed.
+Flag those rows as normalized-ratio-sensitive.
+
+Gate 7 — Perturbativity / localization classification
+Do not claim detection.
+Classify each high-amplitude row:
+- finite_localized_feature
+- denominator_suppressed_ratio
+- flattened_sensitive_review
+- nonfinite_fail
+- perturbativity_review
+
+Gate 8 — Shape consistency gate
+Report equilateral, squeezed, folded/flattened, and isosceles results separately.
+Do not collapse them into one headline number.
+
+Gate 9 — Reproducibility gate
+Emit manifest with:
+source hashes
+script hashes
+parameter grid
+shape grid
+runtime
+Python/numpy versions
+working directory
+no-G confirmation
+frozen-artifact unchanged confirmation
+
+============================================================
+7. OUTPUT FILES
+============================================================
+
+Write these files in the run folder:
+
+A2_PRODUCTION_RUN_REPORT.md
+A2_PRODUCTION_manifest.json
+A2_PRODUCTION_verdict.json
+A2_PRODUCTION_shape_grid.csv
+A2_PRODUCTION_operator_pieces.csv
+A2_PRODUCTION_summary_by_shape.csv
+A2_PRODUCTION_flattened_GFLAT.csv
+A2_PRODUCTION_control_rows.csv
+A2_PRODUCTION_stdout.log
+
+Copy the same files to:
+[local path omitted]
+
+Also copy to:
+[local path omitted]
+
+Do not zip unless Lou explicitly asks.
+
+============================================================
+8. VERDICT LANGUAGE
+============================================================
+
+Allowed verdicts:
+
+A2_PRODUCTION_PASS_CONTROLLED_FEATURE
+All gates pass; feature finite; no G-FLAT pole; no nonfinite rows.
+
+A2_PRODUCTION_PASS_WITH_REVIEW_FLAGS
+All hard gates pass but some rows need perturbativity / denominator / flattened review.
+
+A2_PRODUCTION_FAIL_NUMERICAL
+NaN/Infinity, denominator failure, source hash mismatch, or control-row failure.
+
+A2_PRODUCTION_FAIL_FLATTENED_POLE
+G-FLAT finds an absolute-B flattened/folded pole.
+
+A2_PRODUCTION_ABORTED
+Script hash mismatch, frozen artifact mutation, G: write attempt, or manual stop.
+
+Forbidden claims:
+BIH-VI proven.
+Hubble tension solved.
+Exit feature detected observationally.
+UV-complete substrate found.
+Dark matter / C4 / C5 / C6 implications.
+
+============================================================
+9. FINAL REPORT BACK TO LOU
+============================================================
+
+Final response must include:
+
+1. Final verdict.
+2. Run folder path.
+3. Outbox folder path.
+4. Source script hashes verified.
+5. No G: writes confirmation.
+6. Frozen artifacts unchanged confirmation.
+7. Number of total shape rows.
+8. Number of finite rows.
+9. Number of failed rows, if any.
+10. Max |f_NL| by shape family.
+11. Max |B_total| proxy by shape family.
+12. G-FLAT verdict.
+13. Summary of flagged rows.
+14. SHA-256 of every output file.
+
+If anything fails:
+Stop.
+Do not patch.
+Report exact failure and paths.
+
+============================================================
+10. OPERATIONAL SUMMARY
+============================================================
+
+This run is the first real production A2 physics output.
+It is not theory generation.
+It is not a new branch of BIH-VI.
+It is the validated all-operator instrument applied to the frozen BIH-VI benchmark.
+
+Proceed only if Lou explicitly authorizes production A2 scan.

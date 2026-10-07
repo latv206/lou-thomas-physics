@@ -1,0 +1,33 @@
+Gravitogenic Matter Theory & Spacetime-Scaling Continuum: Executive Summary
+
+Author: Lou Thomas
+Date: July 2025
+
+Core Claim:
+Gravity is not caused by mass. Mass, time, light, and collapse emerge from recursive tension across a geometric lattice field τ(x, t).
+
+Key Innovations:
+• Gravity = geometric tension (not mass-induced curvature)
+• Mass = stable recursive knots in τ
+• Time = rate of lattice scale unfolding
+• Collapse = phase decoherence from observer resolution
+• Redshift = scale-memory, not velocity
+• Consciousness = recursive coherence access
+
+Mathematics:
+- Lagrangian: L = ½(∂τ)^2 − V(τ), with V(τ) = ½m²τ² + ¼λτ⁴
+- Scale factor: a(t) = exp(τ)
+- Collapse operator: D_O(τ, R_O) = -κ(x)·τ
+
+Validated By:
+✔️ Numerical ODEs and PDEs
+✔️ Energy conservation
+✔️ Phase portraits
+✔️ Rupture and recovery
+✔️ Observer-induced decoherence
+
+Implications:
+• Replaces general relativity’s causality (mass → gravity)
+• Reinterprets redshift, inflation, collapse
+• Offers a deterministic theory of measurement
+• Provides falsifiable predictions (JWST, sub-mm gravity, decoherence)

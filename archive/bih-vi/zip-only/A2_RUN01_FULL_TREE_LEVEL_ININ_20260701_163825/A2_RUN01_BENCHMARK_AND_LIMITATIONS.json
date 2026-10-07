@@ -1,0 +1,34 @@
+{
+  "module": "A2_RUN01",
+  "status": "TREE_LEVEL_KERNEL_PASS_NOT_FINAL_CLOSURE",
+  "frozen_parameters": {
+    "p": 3,
+    "mu": 1.0,
+    "c_s": 1.0,
+    "N_star": 55,
+    "y_g": 0.6666666666666666,
+    "z_g": 0.3333333333333333,
+    "Delta": 0.01,
+    "m_post": 4.0,
+    "H_c_over_Mpl": 3.8e-06
+  },
+  "numerical_grid": {
+    "N_min": -8.0,
+    "N_max": 6.0,
+    "N_steps": 7001,
+    "i_epsilon_regulator": 0.025,
+    "a_g": 1.0,
+    "H_g": 1.0
+  },
+  "mode_model": "instantaneous_BD_slow_variation",
+  "important_limitations": [
+    "This run computes numerical in-in kernels using approximate instantaneous BD modes.",
+    "Full Mukhanov-Sasaki mode-function replacement is still required for final closure.",
+    "O3 is schematic and O5 is a missing boundary/field-redefinition placeholder."
+  ],
+  "shape_metadata": {
+    "a2_init_found": true,
+    "a2_init_path": "[local path omitted]",
+    "shape_grid_source": "[local path omitted]"
+  }
+}

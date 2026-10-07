@@ -1,0 +1,118 @@
+
+"""
+Minimal external MCMC runner for BIH-VI C3.
+
+Usage:
+  python run_c3_mcmc.py --data-dir ../data --out-dir ../chains --steps 20000 --pantheon
+
+Place the Pantheon+ files in data/:
+  Pantheon+SH0ES.dat
+  Pantheon+SH0ES_STAT+SYS.cov
+
+The script always uses the embedded DESI DR2 compressed BAO files unless you replace them.
+"""
+from pathlib import Path
+import argparse, json, math
+import numpy as np
+import pandas as pd
+
+from bih_vi_c3_likelihood import (
+    C3Params, DESIDR2BAOLikelihood, PantheonPlusSH0ESLikelihood,
+    CMBThetaStarPrior, DeltaMBPrior, total_chi2, qbulk_smoothness_metrics
+)
+
+def perturb(theta, scale, rng):
+    return theta + rng.normal(0.0, scale, size=theta.size)
+
+def theta_to_params(theta):
+    return C3Params(
+        h=theta[0],
+        omega_m=theta[1],
+        omega_k=theta[2],
+        omega_b_h2=theta[3],
+        w0=theta[4],
+        wa=theta[5],
+        M_B_geom=theta[6],
+        Delta_M_B=theta[7],
+    )
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data-dir", default="../data")
+    ap.add_argument("--out-dir", default="../chains")
+    ap.add_argument("--steps", type=int, default=20000)
+    ap.add_argument("--burn", type=int, default=4000)
+    ap.add_argument("--seed", type=int, default=20260701)
+    ap.add_argument("--pantheon", action="store_true", help="Use Pantheon+ full covariance if files exist.")
+    args = ap.parse_args()
+
+    data_dir = Path(args.data_dir)
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    bao = DESIDR2BAOLikelihood(data_dir / "desi_dr2_embedded_mean.csv", data_dir / "desi_dr2_embedded_cov.txt")
+    cmb = CMBThetaStarPrior()
+    dmb = DeltaMBPrior()
+
+    sne = None
+    if args.pantheon:
+        dat = data_dir / "Pantheon+SH0ES.dat"
+        cov = data_dir / "Pantheon+SH0ES_STAT+SYS.cov"
+        if not dat.exists() or not cov.exists():
+            raise FileNotFoundError("Pantheon+ files not found. Put Pantheon+SH0ES.dat and Pantheon+SH0ES_STAT+SYS.cov in data/.")
+        sne = PantheonPlusSH0ESLikelihood(dat, cov, include_calibrators=True)
+
+    rng = np.random.default_rng(args.seed)
+
+    theta = np.array([0.6736, 0.3158, 0.0, 0.02237, -0.92, -0.11, -19.42, 0.179655], dtype=float)
+    scale = np.array([0.003, 0.008, 0.006, 0.00025, 0.035, 0.12, 0.01, 0.01], dtype=float)
+
+    p = theta_to_params(theta)
+    chi2, comps = total_chi2(p, bao=bao, sne=sne, cmb=cmb, dmb_prior=dmb)
+    logp = -0.5 * chi2
+    rows = []
+    accepted = 0
+
+    for i in range(args.steps):
+        cand = perturb(theta, scale, rng)
+        pc = theta_to_params(cand)
+        chi2_c, comps_c = total_chi2(pc, bao=bao, sne=sne, cmb=cmb, dmb_prior=dmb)
+        logp_c = -0.5 * chi2_c
+        if np.isfinite(logp_c) and np.log(rng.uniform()) < (logp_c - logp):
+            theta, p, chi2, comps, logp = cand, pc, chi2_c, comps_c, logp_c
+            accepted += 1
+
+        if i >= args.burn:
+            metrics = qbulk_smoothness_metrics(p)
+            rows.append({
+                "step": i, "h": p.h, "omega_m": p.omega_m, "omega_k": p.omega_k,
+                "omega_b_h2": p.omega_b_h2, "w0": p.w0, "wa": p.wa,
+                "M_B_geom": p.M_B_geom, "Delta_M_B": p.Delta_M_B,
+                "chi2": chi2, **{f"chi2_{k}": v for k, v in comps.items() if isinstance(v, (int,float))},
+                **metrics,
+            })
+
+    df = pd.DataFrame(rows)
+    df.to_csv(out_dir / "bih_vi_c3_chain.csv", index=False)
+    best = df.loc[df["chi2"].idxmin()].to_dict()
+    summary = {
+        "steps": args.steps,
+        "burn": args.burn,
+        "acceptance": accepted / args.steps,
+        "used_pantheon": bool(sne is not None),
+        "best": best,
+        "quantiles": {
+            col: {
+                "q16": float(df[col].quantile(0.16)),
+                "q50": float(df[col].quantile(0.50)),
+                "q84": float(df[col].quantile(0.84)),
+            }
+            for col in ["h","omega_m","omega_k","omega_b_h2","w0","wa","M_B_geom","Delta_M_B","chi2","q_abs_max","dq_abs_max","d2q_rms","sign_changes"]
+            if col in df
+        },
+    }
+    (out_dir / "bih_vi_c3_chain_summary.json").write_text(json.dumps(summary, indent=2))
+    print(json.dumps(summary, indent=2))
+
+if __name__ == "__main__":
+    main()

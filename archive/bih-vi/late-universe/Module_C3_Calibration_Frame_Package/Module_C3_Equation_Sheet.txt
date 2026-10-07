@@ -1,0 +1,61 @@
+
+BIH-VI Module C3: Calibration-Frame Equations
+
+1. Branch declaration
+
+Metric-distance branch:
+    nu_metric(z) = 1
+
+Calibration/readout branch:
+    H0_ladder = nu_cal H0_geom
+    nu_cal = 73.17 / 67.36 = 1.08625...
+
+2. Absolute-magnitude equivalent
+
+At low z:
+    D_L ~ cz/H0
+
+For a local-ladder H0 uplift:
+    Delta M_B = M_B^ladder - M_B^geom
+              = 5 log10(H0_ladder/H0_geom)
+              = 5 log10(nu_cal)
+
+For the current target:
+    Delta M_B ~ 0.18 mag
+
+3. Geometry sector
+
+    E_BIH^2(z) =
+        Omega_r(1+z)^4
+      + Omega_m(1+z)^3
+      + Omega_DE,0 f_DE(z)
+
+CPL diagnostic:
+    w_eff(z) = w0 + wa z/(1+z)
+
+    f_DE(z) =
+        (1+z)^{3(1+w0+wa)}
+        exp[-3 wa z/(1+z)]
+
+Distances:
+    D_C(z) = c int_0^z dz'/[H0_geom E_BIH(z')]
+    D_M = D_C for flat diagnostic
+    D_H = c/[H0_geom E_BIH(z)]
+    D_L = (1+z)D_M
+
+4. Bulk exchange reconstruction
+
+    dot rho_DE + 3H(1+w_int)rho_DE = Q_bulk
+
+Effective equation:
+    dot rho_DE + 3H(1+w_eff)rho_DE = 0
+
+Therefore:
+    Q_bulk/(H rho_DE) = 3(w_int - w_eff)
+
+For w_int = -1:
+    Q_bulk/(H rho_DE) = -3[1+w_eff(z)]
+
+Interpretation:
+    w_eff < -1  => Q_bulk > 0, energy enters DE-like sector.
+    w_eff > -1  => Q_bulk < 0, energy drains from DE-like sector.

@@ -1,0 +1,48 @@
+{
+  "status": "RUN07_FRAME_OFFSET_ANCHOR_AUDIT_COMPLETE",
+  "purpose": "Test pure Delta_M_B0 frame-offset branch after 2M++ density-coupled branch closed as survey-dependent.",
+  "H0_geom": 67.4,
+  "sigma_geom": 0.5,
+  "SH0ES_like_Delta_M_B0": {
+    "Delta_M_B0_mag": 0.17450433995461362,
+    "sigma": 0.03486381880378454,
+    "H0": 73.04,
+    "sigma_H0": 1.04
+  },
+  "all_anchor_weighted_Delta_M_B0": {
+    "mean": 0.13148300722592401,
+    "sigma": 0.02396777350509897,
+    "n": 6
+  },
+  "independent_geometric_weighted_Delta_M_B0": {
+    "mean": 0.1999227092975297,
+    "sigma": 0.08961156659185103,
+    "n": 1,
+    "note": "Currently dominated by megamaser because Planck is the baseline and not counted as test anchor."
+  },
+  "non_SH0ES_weighted_Delta_M_B0": {
+    "mean": 0.0929298685157215,
+    "sigma": 0.033003720171637274,
+    "n": 5
+  },
+  "SH0ES_target_vs_independent_geometric": {
+    "difference_mag": -0.02541836934291608,
+    "sigma_difference": 0.0961546604623451,
+    "tension_sigma": -0.26434880244697145
+  },
+  "SH0ES_target_vs_non_SH0ES_all": {
+    "difference_mag": 0.08157447143889211,
+    "sigma_difference": 0.04800761821576714,
+    "tension_sigma": 1.6991984703815322
+  },
+  "run06_closure_found": true,
+  "run06_closure_path": "[local path omitted]",
+  "forbidden_claims": [
+    "Hubble tension solved",
+    "pure frame offset proven",
+    "density branch detected",
+    "BIH-VI late branch proven"
+  ],
+  "frame_offset_result": "method_dependent_frame_offset",
+  "allowed_claim": "The frame-offset burden appears method-dependent: SH0ES-like Cepheid/SN anchors require a large offset, while other anchors prefer a smaller one."
+}

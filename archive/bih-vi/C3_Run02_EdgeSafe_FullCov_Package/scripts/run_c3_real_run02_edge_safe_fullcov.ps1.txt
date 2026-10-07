@@ -1,0 +1,54 @@
+# ============================================================
+# BIH-VI C3 REAL RUN 02 — EDGE-SAFE FULL-COV REGRESSION
+# Launch wrapper
+# ============================================================
+
+$ErrorActionPreference = "Stop"
+
+$WORK = "[local path omitted]"
+$SCRIPT = Join-Path $WORK "scripts\c3_run02_edge_safe_fullcov.py"
+$LOGDIR = Join-Path $WORK "logs"
+New-Item -ItemType Directory -Force -Path $LOGDIR | Out-Null
+
+if (!(Test-Path -LiteralPath $WORK)) { throw "Missing work dir: $WORK" }
+if (!(Test-Path -LiteralPath $SCRIPT)) { throw "Missing Run02 script: $SCRIPT" }
+
+$PY_EXE = $null
+$PY_ARGS = @()
+
+if (Get-Command py -ErrorAction SilentlyContinue) {
+  & py -3 -c "import sys, numpy, pandas; print(sys.executable); print('ok')" | Out-Host
+  if ($LASTEXITCODE -eq 0) { $PY_EXE = "py"; $PY_ARGS = @("-3") }
+}
+if ($null -eq $PY_EXE -and (Get-Command python -ErrorAction SilentlyContinue)) {
+  & python -c "import sys, numpy, pandas; print(sys.executable); print('ok')" | Out-Host
+  if ($LASTEXITCODE -eq 0) { $PY_EXE = "python"; $PY_ARGS = @() }
+}
+if ($null -eq $PY_EXE) { throw "No Python with numpy+pandas found." }
+
+$LOG = Join-Path $LOGDIR ("c3_run02_edge_safe_fullcov_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
+
+Write-Host "============================================================"
+Write-Host "BIH-VI C3 REAL RUN 02"
+Write-Host "WORK: $WORK"
+Write-Host "SCRIPT: $SCRIPT"
+Write-Host "LOG: $LOG"
+Write-Host "============================================================"
+
+& $PY_EXE @PY_ARGS $SCRIPT --work $WORK --nperm 500 2>&1 | Tee-Object -FilePath $LOG
+
+if ($LASTEXITCODE -ne 0) {
+  throw "Run 02 failed. See log: $LOG"
+}
+
+$VERDICT = Join-Path $WORK "c32_run02_edge_safe_fullcov\c32_run02_final_verdict.json"
+Write-Host ""
+Write-Host "============================================================"
+Write-Host "RUN 02 FINAL VERDICT"
+Write-Host "============================================================"
+if (Test-Path -LiteralPath $VERDICT) {
+  Get-Content -LiteralPath $VERDICT
+} else {
+  Write-Host "Missing verdict: $VERDICT"
+}
+Write-Host "============================================================"

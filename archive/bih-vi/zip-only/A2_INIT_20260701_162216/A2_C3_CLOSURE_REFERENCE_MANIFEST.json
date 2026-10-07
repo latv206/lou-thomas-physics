@@ -1,0 +1,26 @@
+{
+  "status": "C3_REFERENCE_LINKED",
+  "note": "C3 remains closed as calibration-sector diagnostic. These are references only.",
+  "files": [
+    {
+      "source": "[local path omitted]",
+      "copied_to": "[local path omitted]",
+      "sha256": "635a0fba368266cf247d576ecd756ccd4a9871f44ec989568cfd427459bb9e1c"
+    },
+    {
+      "source": "[local path omitted]",
+      "copied_to": "[local path omitted]",
+      "sha256": "636ef265c994b02f0f78944fdef90c5f248fb16753e6463eec34a4b750ed7c70"
+    },
+    {
+      "source": "[local path omitted]",
+      "copied_to": "[local path omitted]",
+      "sha256": "36a04ed8b86d071c711f8b8632be36499a654138fa29cca3f2ce959ef123f9ac"
+    },
+    {
+      "source": "[local path omitted]",
+      "copied_to": "[local path omitted]",
+      "sha256": "8e766e3536929252afa78dc7498de208b5621d3633aeb6bae5ec4dc2aa5b62a1"
+    }
+  ]
+}

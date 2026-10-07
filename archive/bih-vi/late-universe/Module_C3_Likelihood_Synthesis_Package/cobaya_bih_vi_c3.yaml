@@ -1,0 +1,51 @@
+
+likelihood:
+  bih_vi_c3_cobaya_likelihood.BIHVIC3Likelihood:
+    python_path: ./scripts
+    data_dir: ./data
+    use_pantheon: true
+    use_bao: true
+    use_theta_star: true
+    use_delta_MB_prior: true
+
+params:
+  h:
+    prior: {min: 0.55, max: 0.85}
+    ref: 0.6736
+    proposal: 0.003
+  omega_m:
+    prior: {min: 0.15, max: 0.5}
+    ref: 0.3158
+    proposal: 0.008
+  omega_k:
+    prior: {min: -0.15, max: 0.15}
+    ref: 0.0
+    proposal: 0.005
+  omega_b_h2:
+    prior: {min: 0.018, max: 0.026}
+    ref: 0.02237
+    proposal: 0.0002
+  w0:
+    prior: {min: -2.0, max: -0.2}
+    ref: -0.92
+    proposal: 0.035
+  wa:
+    prior: {min: -3.0, max: 3.0}
+    ref: -0.11
+    proposal: 0.12
+  M_B_geom:
+    prior: {min: -20.5, max: -18.0}
+    ref: -19.42
+    proposal: 0.01
+  Delta_M_B:
+    prior: {min: -0.2, max: 0.5}
+    ref: 0.179655
+    proposal: 0.01
+
+sampler:
+  mcmc:
+    max_samples: 200000
+    Rminus1_stop: 0.02
+    Rminus1_cl_stop: 0.2
+
+output: chains/bih_vi_c3

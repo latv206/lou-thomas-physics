@@ -1,0 +1,2 @@
+H0_geom_km_s_Mpc,sigma_H0_geom,H0_ladder_km_s_Mpc,sigma_H0_ladder,nu_cal,delta_cal,sigma_delta_cal,Delta_M_B_mag_SH0ES_minus_geom,sigma_Delta_M_B_mag,interpretation
+67.36,0.54,73.17,0.86,1.0862529691211402,0.08625296912114022,0.015454212155759898,0.17965488270899993,0.030893720211595508,Calibration/readout offset only; not inserted into BAO/SN distance integrals.

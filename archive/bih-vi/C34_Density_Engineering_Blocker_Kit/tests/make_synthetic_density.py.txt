@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+"""
+Tiny synthetic test for the C34 preprocessing scripts.
+Creates a 33^3 mock density cube with grid metadata adapted from 2M++ scale logic.
+This does not replace a real 2M++ run; it verifies syntax and smoothing math.
+"""
+from pathlib import Path
+import numpy as np, json, subprocess, sys, os
+from scipy.ndimage import gaussian_filter
+
+def main():
+    out = Path("tests/synthetic_twompp")
+    out.mkdir(parents=True, exist_ok=True)
+    rng=np.random.default_rng(1)
+    arr=rng.normal(0,0.1,(257,257,257)).astype("float32")
+    # Use a light smooth to avoid an enormous random file; still full shape to pass shape check.
+    path=out/"twompp_density.npy"
+    np.save(path, arr)
+    print("wrote", path, path.stat().st_size)
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,229 @@
+from docx import Document
+from docx.shared import Inches, Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.enum.section import WD_SECTION
+import pandas as pd, os, math
+
+OUT='./legacy_data/BIH-VI_Module_A_B_Expansion_Addendum.docx'
+
+def set_cell_shading(cell, fill):
+    tcPr = cell._tc.get_or_add_tcPr()
+    shd = OxmlElement('w:shd')
+    shd.set(qn('w:fill'), fill)
+    tcPr.append(shd)
+
+def set_cell_text(cell, text, bold=False):
+    cell.text = ''
+    p = cell.paragraphs[0]
+    r = p.add_run(str(text))
+    r.bold = bold
+    r.font.size = Pt(8.5)
+
+def add_table(doc, df, title=None):
+    if title:
+        p=doc.add_paragraph()
+        p.style='Caption'
+        p.add_run(title).bold=True
+    table = doc.add_table(rows=1, cols=len(df.columns))
+    table.style = 'Table Grid'
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    hdr = table.rows[0].cells
+    for i,col in enumerate(df.columns):
+        set_cell_text(hdr[i], col, bold=True)
+        set_cell_shading(hdr[i], 'D9EAF7')
+    for _,row in df.iterrows():
+        cells=table.add_row().cells
+        for i,val in enumerate(row):
+            set_cell_text(cells[i], val)
+            cells[i].vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+    return table
+
+def add_fig(doc, path, caption, width=6.2):
+    if os.path.exists(path):
+        p=doc.add_paragraph()
+        p.alignment=WD_ALIGN_PARAGRAPH.CENTER
+        run=p.add_run()
+        run.add_picture(path, width=Inches(width))
+        cp=doc.add_paragraph()
+        cp.style='Caption'
+        cp.alignment=WD_ALIGN_PARAGRAPH.CENTER
+        cp.add_run(caption)
+    else:
+        doc.add_paragraph(f'[Missing figure: {path}]')
+
+def add_eq(doc, text):
+    p=doc.add_paragraph()
+    p.style='Intense Quote'
+    r=p.add_run(text)
+    r.font.name='Courier New'
+    r._element.rPr.rFonts.set(qn('w:eastAsia'), 'Courier New')
+    r.font.size=Pt(9)
+
+def add_h(doc, text, level=1):
+    doc.add_heading(text, level=level)
+
+doc=Document()
+sec=doc.sections[0]
+sec.top_margin=Inches(0.7)
+sec.bottom_margin=Inches(0.7)
+sec.left_margin=Inches(0.7)
+sec.right_margin=Inches(0.7)
+
+styles=doc.styles
+styles['Normal'].font.name='Aptos'
+styles['Normal'].font.size=Pt(10)
+styles['Caption'].font.size=Pt(8)
+styles['Caption'].font.italic=True
+styles['Intense Quote'].font.size=Pt(9)
+
+# Title
+p=doc.add_paragraph()
+p.alignment=WD_ALIGN_PARAGRAPH.CENTER
+r=p.add_run('BIH-VI Module A/B Expansion Addendum')
+r.bold=True; r.font.size=Pt(18)
+p=doc.add_paragraph()
+p.alignment=WD_ALIGN_PARAGRAPH.CENTER
+r=p.add_run('Exit Bispectrum, Scale Mapping, and Ultra-High-Frequency Relic Assessment')
+r.italic=True; r.font.size=Pt(11)
+p=doc.add_paragraph()
+p.alignment=WD_ALIGN_PARAGRAPH.CENTER
+p.add_run('Scope: technical expansion of the BIH-VI EFT-clock report, not a UV-complete microscopic derivation.').bold=True
+
+add_h(doc,'Executive summary',1)
+doc.add_paragraph('This addendum extends the frozen BIH-VI technical report by resolving two open modules: Module A, the leading exit-switch bispectrum/non-Gaussianity diagnostic; and Module B, the scale mapping of the exit feature into present-day physical wavenumber and gravitational-wave frequency. The result is favorable but narrower than the initial intuition. The BIH-VI benchmark remains pivot-safe and Planck-compatible, but the exit feature is pushed to ultra-small comoving scales for N_* = 55.')
+
+bullets=[
+'Pivot-scale observables remain unchanged: n_s = 0.9652, r = 1.4e-3, alpha_s = -5.8e-4 for p=3, mu=1, c_s=1, N_*=55, z_e=1/3.',
+'Module A finds CMB-pivot-side feature non-Gaussianity is negligible, while exit-scale modes show a localized, large normalized equilateral feature amplitude.',
+'Module A high-resolution scan yields peak |f_NL^{eq,feat}| ~ 3e3 near K ~ 3.58, coincident with deep scalar-power suppression P_switch/P_cubic ~ 3e-5.',
+'The absolute bispectrum proxy remains smooth and finite; the large normalized f_NL is primarily a feature-ratio effect caused by the suppressed two-point denominator.',
+'Module B maps the exit feature to k_peak ~ 1.3e23 Mpc^-1, corresponding to f_peak ~ 2.0e8 Hz or ~200 MHz today.',
+'The exit feature is not a CMB, LSS, or ordinary 21-cm target. It is an ultra-small-scale relic. Its scalar-induced GW channel is expected to be extremely weak in this benchmark because scalar power is suppressed at the feature.',
+'Conclusion: BIH-VI remains a stable, falsifiable EFT-clock realization. Its primary observational hook is still n_s ~ 0.965 and r ~ 10^-3; the exit feature is a secondary ultra-small-scale relic.'
+]
+for b in bullets:
+    doc.add_paragraph(b, style='List Bullet')
+
+add_h(doc,'1. Baseline BIH-VI benchmark',1)
+add_eq(doc, 'H^2 = H_c^2 y(2-y),   z = 1-y,   m(y) = mu z^3 + m_post S(y)')
+add_eq(doc, 'S(y) = 1/[1 + exp((y-y_g)/Delta)]')
+add_eq(doc, 'Benchmark: p=3, mu=1, c_s=1, N_*=55, y_g=2/3, Delta=0.01, m_post=4')
+doc.add_paragraph('The benchmark branch sits in the Planck-compatible observable island identified in the main report. The switch width Delta=0.01 is pivot-safe and localized near the exit region.')
+
+add_h(doc,'2. Module A: exit bispectrum and non-Gaussianity',1)
+doc.add_paragraph('The dominant switch-enhanced cubic interaction used for the first feature diagnostic is')
+add_eq(doc, 'S_3^switch ⊃ (M_Pl^2/2) ∫ dt d^3x a^3 epsilon_H dot(eta_H) zeta^2 dot(zeta)')
+doc.add_paragraph('This term is the leading contribution associated with the rapid time variation of epsilon_H through the exit switch. The in-in estimate was evaluated in equilateral configurations and feature-isolated by subtracting the smooth cubic baseline.')
+
+add_fig(doc, './legacy_data/bih_vi_bispectrum_eta_proxy.png', 'Module A proxy: switch-generated |eta_H| for several transition widths. The pivot is not contaminated for Delta=0.01.', 5.8)
+add_fig(doc, './legacy_data/bih_vi_bispectrum_etaN_proxy.png', 'Module A proxy: |d eta_H/dN|. The switch is non-adiabatic near the exit, as expected.', 5.8)
+
+add_h(doc,'2.1 Delta-dependence scan',2)
+try:
+    ds=pd.read_csv('./legacy_data/bih_vi_fnl_delta_summary.csv')
+    ds2=ds.copy()
+    for c in ['peak_K','peak_abs_fNL','power_ratio_at_peak','max_abs_fNL_K_lt_1','min_power_ratio','max_power_ratio']:
+        if c in ds2.columns: ds2[c]=ds2[c].map(lambda x: f'{x:.3g}')
+    add_table(doc, ds2[['Delta','peak_K','peak_abs_fNL','power_ratio_at_peak','max_abs_fNL_K_lt_1','min_power_ratio','max_power_ratio']], 'Table 1. Delta-dependence of the leading equilateral feature estimate.')
+except Exception as e:
+    doc.add_paragraph(f'Delta summary table unavailable: {e}')
+add_fig(doc, './legacy_data/bih_vi_fnl_delta_scan.png', 'Delta-dependence of the equilateral feature estimate. Pivot-side K<1 remains safe; exit-scale K>1 carries the feature.', 5.9)
+add_fig(doc, './legacy_data/bih_vi_fnl_power_delta_scan.png', 'Power-spectrum feature paired with the bispectrum scan. Large normalized f_NL appears near deep power suppression.', 5.9)
+
+add_h(doc,'2.2 Local high-resolution scan',2)
+try:
+    hs=pd.read_csv('./legacy_data/bih_vi_fnl_local_highres_summary.csv')
+    hs2=hs.copy()
+    for c in ['peak_K','peak_abs_fNL','power_ratio_at_peak','B_abs_proxy_at_peak','min_power_ratio','max_power_ratio','max_abs_B_proxy']:
+        if c in hs2.columns: hs2[c]=hs2[c].map(lambda x: f'{x:.3g}')
+    add_table(doc, hs2[['dN','x_init','peak_K','peak_abs_fNL','power_ratio_at_peak','B_abs_proxy_at_peak','min_power_ratio','max_power_ratio']], 'Table 2. Local high-resolution convergence for Delta=0.01 around the exit-feature peak.')
+except Exception as e:
+    doc.add_paragraph(f'High-resolution summary table unavailable: {e}')
+add_fig(doc, './legacy_data/bih_vi_fnl_local_highres_convergence.png', 'High-resolution convergence of |f_NL^{eq,feat}| around the exit feature.', 5.9)
+add_fig(doc, './legacy_data/bih_vi_absB_local_highres_convergence.png', 'Absolute bispectrum proxy. It remains smooth and finite even where normalized f_NL spikes.', 5.9)
+add_fig(doc, './legacy_data/bih_vi_power_local_highres_convergence.png', 'Local power-feature convergence. The peak f_NL coincides with a deep power-spectrum dip.', 5.9)
+
+add_h(doc,'2.3 Module A interpretation',2)
+doc.add_paragraph('The high-resolution result should be interpreted carefully. The normalized feature amplitude reaches order 10^3 near K ~ 3.58, but the scalar power at the same scale is suppressed by roughly five orders of magnitude relative to the cubic baseline. The absolute bispectrum proxy does not diverge. Therefore this is a localized exit-scale feature, not broad-band catastrophic primordial non-Gaussianity.')
+add_eq(doc, '|f_NL^{eq,feat}|_peak ~ 3e3 near K ~ 3.58,   P_switch/P_cubic ~ 3e-5')
+doc.add_paragraph('For K<1, the feature contribution is small. This preserves the CMB-pivot safety of the benchmark.')
+
+add_h(doc,'3. Module B: scale mapping and transfer conclusion',1)
+doc.add_paragraph('Module B maps the exit feature from switch units K=k/(a_g H_g) to present-day comoving wavenumber. With k_pivot=0.05 Mpc^-1 and N_*=55, the switch and peak scales are exponentially separated from CMB/LSS scales.')
+try:
+    sm=pd.read_csv('./legacy_data/bih_vi_module_b_scale_mapping_summary.csv')
+    sm2=sm[['k_pivot_Mpc_inv','N_star','K_pivot','k_switch_K_equals_1_Mpc_inv','k_peak_K_3p583_Mpc_inv','wavelength_peak_meters']].copy()
+    for c in sm2.columns:
+        sm2[c]=sm2[c].map(lambda x: f'{x:.4g}')
+    add_table(doc, sm2, 'Table 3. Scale mapping for the BIH-VI exit feature.')
+except Exception as e:
+    doc.add_paragraph(f'Scale summary table unavailable: {e}')
+add_fig(doc, './legacy_data/bih_vi_module_b_scale_map.png', 'Physical scale map. The exit feature lies far beyond ordinary CMB/LSS scales.', 5.9)
+add_fig(doc, './legacy_data/bih_vi_module_b_exit_feature_physical_k.png', 'Exit feature mapped to physical k. The feature is ultra-small scale, not CMB scale.', 5.9)
+
+add_h(doc,'4. 200 MHz ultra-high-frequency relic stress estimate',1)
+doc.add_paragraph('The present-day frequency corresponding to comoving wavenumber k is')
+add_eq(doc, 'f = (c/2π) k ≈ 1.546e-15 (k / Mpc^-1) Hz')
+doc.add_paragraph('Using k_peak ~ 1.306e23 Mpc^-1 gives')
+add_eq(doc, 'f_peak ≈ 2.02e8 Hz ≈ 200 MHz')
+doc.add_paragraph('This is far above PTA, LISA, and ground-based interferometer bands. It lies in an ultra-high-frequency gravitational-wave regime. However, the scalar power at the exit feature is strongly suppressed, so standard scalar-induced gravitational waves are expected to be extremely weak in the current benchmark.')
+try:
+    igw=pd.read_csv('./legacy_data/bih_vi_igw_frequency_stress_summary.csv')
+    igw2=igw.copy()
+    for c in igw2.columns: igw2[c]=igw2[c].map(lambda x: f'{x:.4g}')
+    add_table(doc, igw2, 'Table 4. BIH-VI exit feature frequency and induced-GW order-of-magnitude proxy.')
+except Exception as e:
+    doc.add_paragraph(f'IGW summary table unavailable: {e}')
+add_fig(doc, './legacy_data/bih_vi_igw_frequency_map.png', 'Present-day frequency of the BIH-VI exit feature compared with standard gravitational-wave bands.', 5.9)
+
+add_h(doc,'5. Updated observational hierarchy',1)
+rows=pd.DataFrame([
+    ['Primary CMB-facing signal','n_s ~ 0.965, r ~ 1e-3, alpha_s ~ -6e-4','Active benchmark prediction'],
+    ['Exit power feature','Localized small-scale suppression near K ~ 3.6','Secondary ultra-small-scale relic'],
+    ['Exit bispectrum','Large normalized feature near suppressed power dip','Feature diagnostic; not broad CMB non-Gaussianity'],
+    ['CMB/LSS transfer','Smooth pivot spectrum only','Boltzmann transfer sees no exit feature for N_*=55'],
+    ['Induced GW channel','f_peak ~ 200 MHz with tiny scalar-induced amplitude proxy','Dark relic / speculative UHF-GW channel']
+], columns=['Layer','Result','Status'])
+add_table(doc, rows, 'Table 5. Updated BIH-VI observational hierarchy.')
+
+add_h(doc,'6. Scope boundaries added by Modules A/B',1)
+for b in [
+    'The bispectrum estimate uses the dominant switch-enhanced cubic interaction and equilateral configurations. A full all-operator EFT bispectrum and folded/squeezed triangle scan remain open.',
+    'The large normalized f_NL at exit scales should not be compared directly with Planck local/equilateral templates; it is a localized feature amplitude where the two-point power is deeply suppressed.',
+    'The Module B scale map shows that the exit feature is not a conventional CMB, LSS, or LiteBIRD target. LiteBIRD remains relevant for r ~ 10^-3, not for the exit splash.',
+    'The 200 MHz scale is an ultra-high-frequency relic estimate. The scalar-induced GW amplitude proxy is extremely small in the benchmark and should not be marketed as a loud signal.',
+    'BIH-VI remains an EFT-level completion of the Sqrt-Reg background, not a microscopic UV-complete substrate theory.'
+]:
+    doc.add_paragraph(b, style='List Bullet')
+
+add_h(doc,'7. Report-ready replacement language',1)
+add_eq(doc, 'Primary claim: BIH-VI contains a stable EFT-clock realization of the Sqrt-Reg entropy background whose parameter island overlaps current CMB constraints.')
+add_eq(doc, 'Secondary claim: the exit switch produces an ultra-small-scale localized power suppression and feature bispectrum, mapped to k ~ 1e23 Mpc^-1 and f ~ 200 MHz today.')
+add_eq(doc, 'Scope claim: the exit feature is a controlled relic of the EFT switch, not a CMB-pivot contaminant and not yet a microscopic substrate signature.')
+
+add_h(doc,'8. References',1)
+refs=[
+'Cheung et al., The Effective Field Theory of Inflation, arXiv:0709.0293.',
+'Maldacena, Non-Gaussian features of primordial fluctuations in single field inflationary models, astro-ph/0210603.',
+'Planck Collaboration, Planck 2018 results. X. Constraints on inflation, arXiv:1807.06211.',
+'BICEP/Keck Collaboration, Improved constraints on primordial gravitational waves using Planck, WMAP, and BICEP/Keck, arXiv:2110.00483.',
+'LiteBIRD mission overview and forecasts, e.g. arXiv:2406.02724 and LiteBIRD forecasts reporting delta r ~ 0.001.',
+'Boyle and Buonanno, Relating gravitational-wave constraints from primordial nucleosynthesis, pulsar timing, laser interferometers, and the CMB, Phys. Rev. D 78, 043531 (2008).',
+'Moore, Cole, and Berry, Gravitational-wave sensitivity curves, Class. Quant. Grav. 32, 015014 (2015).'
+]
+for r in refs:
+    doc.add_paragraph(r, style='List Number')
+
+# footer with date? no date perhaps.
+for section in doc.sections:
+    footer=section.footer.paragraphs[0]
+    footer.text='BIH-VI Module A/B Expansion Addendum - EFT-level scope, not UV-complete final theory'
+    footer.alignment=WD_ALIGN_PARAGRAPH.CENTER
+    for run in footer.runs:
+        run.font.size=Pt(8)
+
+doc.save(OUT)
+print(OUT)

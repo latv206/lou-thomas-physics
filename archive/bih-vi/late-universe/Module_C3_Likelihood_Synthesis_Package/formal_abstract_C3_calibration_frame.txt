@@ -1,0 +1,20 @@
+
+Draft abstract: BIH-VI late-universe calibration-frame branch
+=============================================================
+
+We extend the frozen Boundary-Inversion Cosmology VI (BIH-VI) EFT-clock framework to late-universe
+distance data by separating metric geometry from local calibration readout. The early BIH-VI branch
+is kept fixed as a Sqrt-Reg entropy-selected density shield with stable scalar/tensor EFT perturbations.
+A direct low-redshift metric-lapse interpretation, H_obs(z)=nu(z)H_geom(z), is rejected because an
+8.6 percent local uplift produces unacceptable supernova-shape and BAO-distance distortions. We
+therefore define a calibration-frame branch in which nu_metric(z)=1 for all light-propagation and BAO
+distance integrals, while the local distance ladder measures H0_ladder=nu_cal H0_geom. The current
+SH0ES/Planck-scale target corresponds to nu_cal=1.08625 or an equivalent absolute-magnitude offset
+Delta M_B=5 log10(nu_cal)=0.180 mag. The geometry sector is tested with a CPL effective dark-energy
+scaffold and then translated into a substrate-exchange history Q_bulk via
+Q_bulk/(H rho_DE)=3(w_int-w_eff), with w_int=-1. The falsifiability criterion is not merely goodness
+of fit: viable posterior samples must reconstruct a smooth, low-redshift Q_bulk(z) without discontinuous
+or high-frequency structure, while preserving DESI DR2 BAO distances, Pantheon+ supernova covariance,
+and the Planck acoustic scale theta_*. This positions the late BIH-VI branch as a calibration-frame
+model of the Hubble discrepancy plus a separately testable substrate-stress reconstruction, rather than
+a universal warped-distance model.

@@ -1,0 +1,43 @@
+input OK A2_PRODUCTION_shape_grid.csv
+input OK A2_PRODUCTION_operator_pieces.csv
+
+== folded B_total(K) per delta + ALL zero-crossings ==
+delta=0.01: K1:+1.528e+06  K2:-4.606e+04  K3:-9791  K3.58:-4174  K4:-2288  K5:-505.2  K6:-26.14
+  crossing #1: K* = 1.971 (interpolated)
+  crossing #2: K* = 6.055 (extrapolated-past-grid-edge)
+delta=0.003: K1:+6.327e+05  K2:-6.73e+04  K3:-1.149e+04  K3.58:-4447  K4:-2256  K5:-350.9  K6:+59.15
+  crossing #1: K* = 1.904 (interpolated)
+  crossing #2: K* = 5.856 (interpolated)
+delta=0.001: K1:+1.682e+05  K2:-7.454e+04  K3:-1.173e+04  K3.58:-4389  K4:-2164  K5:-286.8  K6:+85.22
+  crossing #1: K* = 1.693 (interpolated)
+  crossing #2: K* = 5.771 (interpolated)
+
+== B_total at fixed K=6.0 across delta (the gated family) ==
+  B(6, 1e-2)=-26.14   B(6, 3e-3)=+59.15   B(6, 1e-3)=+85.22
+  SIGN FLIP inside the delta family: True (zero of B_total crossed between samples)
+  interval log|B| slopes: [1e-2 -> 3e-3] 0.678 (sign-flip interval, estimator-invalid)  [3e-3 -> 1e-3] 0.332
+  DECELERATING (0.68 -> 0.33); a delta^-p pole accelerates or holds p
+
+== |B_total| at K=4,5,6 per delta (magnitude collapse toward the zero) ==
+delta=0.01: |B(4)|=2288  |B(5)|=505.2  |B(6)|=26.14  ratio |B(6)|/|B(5)| = 0.052
+delta=0.003: |B(4)|=2256  |B(5)|=350.9  |B(6)|=59.15  ratio |B(6)|/|B(5)| = 0.169
+delta=0.001: |B(4)|=2164  |B(5)|=286.8  |B(6)|=85.22  ratio |B(6)|/|B(5)| = 0.297
+
+== operator cancellation at folded K_total=6.0 ==
+folded:d0.01_K6.00: B_total=-26.14  sum|pieces|=8303  cancellation=318x  top pieces: B_V2=+3125, B_V1=-2334, B_f2=-1669
+folded:d0.003_K6.00: B_total=+59.15  sum|pieces|=8369  cancellation=141x  top pieces: B_V2=+3222, B_V1=-2333, B_f2=-1700
+folded:d0.001_K6.00: B_total=+85.22  sum|pieces|=8388  cancellation=98x  top pieces: B_V2=+3251, B_V1=-2332, B_f2=-1709
+
+== cross-family check (equilateral / isosceles) ==
+  equilateral sign changes in [0.5, 6.0]: NONE — B_total negative throughout
+  equilateral B(5.90)=-677.2  B(6.00)=-610.1
+  isosceles K=6: r0.2:-563  r0.35:-608  r0.5:-536  r0.75:-604  r1:-610  r1.25:-567  r1.5:-503  r1.75:-313  r1.9:-103
+  -> the near-K~6 zero-crossing is FOLDED-SPECIFIC (not present in equilateral or isosceles at K=6; isosceles positive rows: 0/9)
+
+== fNL at folded K=6 (no amplitude blowup) ==
+  delta=0.01: fNL=-0.0244  pert_proxy=1.8e-07
+  delta=0.003: fNL=+0.0534  pert_proxy=3.94e-07
+  delta=0.001: fNL=+0.0762  pert_proxy=5.62e-07
+
+EVIDENCE NOTE + DERIVED CSV WRITTEN (v2 — corrected crossing detection,
+equilateral-corroboration hypothesis refuted and replaced by folded-specific caveat)

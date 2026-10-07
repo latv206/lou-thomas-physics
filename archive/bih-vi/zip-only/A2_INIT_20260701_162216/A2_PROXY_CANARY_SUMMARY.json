@@ -1,0 +1,21 @@
+{
+  "status": "A2_INIT_CANARY_COMPLETE",
+  "not_final_physics": true,
+  "max_abs_fNL_proxy": {
+    "shape_id": "equilateral_K3.5750",
+    "family": "equilateral",
+    "K": 3.575,
+    "fNL_shape_proxy": 2997.3969632870267,
+    "power_ratio_proxy": 0.0009006502709204556
+  },
+  "max_abs_B_proxy": {
+    "shape_id": "equilateral_K3.4000",
+    "family": "equilateral",
+    "K": 3.4,
+    "B_abs_proxy": 444.2305036096893
+  },
+  "n_cmb_side_proxy_failures": 0,
+  "n_absolute_finiteness_proxy_failures": 397,
+  "n_localization_proxy_failures": 19,
+  "interpretation": "Canary validates reporting logic only. A2_RUN01 must replace proxies with exact tree-level in-in integrals."
+}

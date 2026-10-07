@@ -1,0 +1,23 @@
+\section{Results}
+
+\subsection{Production Run State}
+
+The validated bounded-$\eta_H$ all-operator A2 instrument (script SHA-256 \texttt{35fd365916395f17\ldots}) was applied once to the frozen BIH-VI benchmark under Decision~A. The production run (\texttt{A2\_PRODUCTION\_LOCAL}) completed with verdict PASS in 7.280172109603882~s, scanning 42 shape rows over the hard grid $K \in [0.01, 0.06]$ (step $0.005$) and the provisional grid $K \in \{0.072, 0.090, 0.119\}$ for the equilateral, squeezed ($q = 10^{-3}$), and folded families.
+
+\subsection{Gate Summary}
+
+All 13 declared gates passed (Table~\ref{tab:gates}): kernel unit tests (UT-K, UT-FR $\leq 10^{-10}$), background consistency (BG-ETA), the Wronskian identity (G-W), $\Delta N/2$ convergence (CONV), continuity sentinels against the certified G-S reference values, per-family hard-row stability, and the four claim-hygiene gates (no folded claim without G-FLAT, no provisional claim, no $K > 0.06$ claim, execution lock).
+
+\subsection{Claim-Bearing Rows}
+
+The claim-bearing set (Table~\ref{tab:claims}) comprises 22 rows: 11 equilateral and 11 squeezed hard-envelope configurations with $K \leq 0.06$, each frozen at all five evaluation surfaces and stable under the sealed G-S criteria. Over this envelope $f_{\rm NL}$ spans $[0.02230, 0.03822]$ (equilateral, mean $0.03146$) and $[0.05507, 0.05906]$ (squeezed, mean $0.05769$).
+
+\subsection{Folded/Flattened Diagnostics}
+
+Folded/flattened configurations are diagnostic/report-only under the current sealed instrument (Decision~A). Of 14 G-FLAT diagnostic evaluations, 0 passed; all folded rows are therefore reported with full diagnostics (Table~\ref{tab:gflat}) and excluded from claims. No physical conclusion is drawn from flagged folded rows.
+
+\subsection{Scope and Forbidden Claims}
+
+The validated bounded-$\eta_H$ all-operator A2 instrument was applied to the frozen BIH-VI benchmark. In the claim-bearing hard envelope K $\leq$ 0.06, equilateral and squeezed configurations are stable under the sealed G-S criteria. Folded/flattened configurations are diagnostic/report-only under the current sealed instrument; in this run, no folded/flattened row passed G-FLAT.
+
+This is an EFT-level A2 production scan; no UV-completion claim is made. The following claims are explicitly not made: full all-shape closure; folded/flattened physical instability; BIH-VI observational detection; Hubble-tension solution.

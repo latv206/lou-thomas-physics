@@ -1,0 +1,705 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+import math
+import shutil
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+
+
+# ============================================================
+# Numerical conventions
+# ============================================================
+
+MPL = 1.0
+HC_OVER_MPL = 3.8e-6
+
+# Frozen BIH-VI benchmark
+P = 3
+MU = 1.0
+CS = 1.0
+N_STAR = 55
+Y_G = 2.0 / 3.0
+Z_G = 1.0 / 3.0
+DELTA = 0.01
+M_POST = 4.0
+
+# Dimensionless normalization: a_g = 1, H_g = 1.
+# Shape grid K means perimeter/(3 a_g H_g).
+N_MIN = -8.0
+N_MAX = 6.0
+N_STEPS = 7001
+
+# In-in contour damping for early oscillations.
+I_EPS = 0.025
+
+
+# ============================================================
+# Utilities
+# ============================================================
+
+def ensure_dir(p: Path) -> Path:
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def write_json(path: Path, obj: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2), encoding="utf-8")
+
+
+def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        path.write_text("", encoding="utf-8")
+        return
+    cols = list(rows[0].keys())
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=cols)
+        w.writeheader()
+        w.writerows(rows)
+
+
+def read_csv_dicts(path: Path) -> list[dict[str, Any]]:
+    with path.open("r", newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def latest_dir(root: Path, prefix: str) -> Path | None:
+    if not root.exists():
+        return None
+    dirs = sorted([p for p in root.glob(prefix + "*") if p.is_dir()])
+    return dirs[-1] if dirs else None
+
+
+def trapz(y, x):
+    if hasattr(np, "trapezoid"):
+        return np.trapezoid(y, x)
+    return np.trapz(y, x)
+
+
+def safe_float(x, default=np.nan):
+    try:
+        y = float(x)
+        return y if math.isfinite(y) else default
+    except Exception:
+        return default
+
+
+# ============================================================
+# Shape grid
+# ============================================================
+
+def build_shape_grid() -> list[dict[str, Any]]:
+    rows = []
+    K_values = list(np.concatenate([
+        np.linspace(0.1, 1.0, 10),
+        np.linspace(1.25, 3.25, 9),
+        np.linspace(3.35, 3.85, 21),
+        np.linspace(4.0, 6.0, 9),
+    ]))
+
+    for K in K_values:
+        rows.append({
+            "shape_id": f"equilateral_K{K:.4f}",
+            "family": "equilateral",
+            "K": float(K),
+            "q1": 1.0,
+            "q2": 1.0,
+            "q3": 1.0,
+            "triangle_valid": True
+        })
+
+    for q in [1e-3, 1e-2, 1e-1]:
+        for K in K_values:
+            rows.append({
+                "shape_id": f"squeezed_q{q:g}_K{K:.4f}",
+                "family": "squeezed",
+                "K": float(K),
+                "q1": float(q),
+                "q2": 1.0,
+                "q3": 1.0,
+                "triangle_valid": bool(q > 0.0)
+            })
+
+    for delta in [1e-2, 1e-3]:
+        for K in K_values:
+            # k1=k2=a, k3=2a(1-delta). Store ratios to k3.
+            q1 = 1.0 / (2.0 * (1.0 - delta))
+            q2 = q1
+            rows.append({
+                "shape_id": f"folded_delta{delta:g}_K{K:.4f}",
+                "family": "folded_flattened",
+                "K": float(K),
+                "q1": float(q1),
+                "q2": float(q2),
+                "q3": 1.0,
+                "triangle_valid": True
+            })
+
+    for q in [1e-3, 3e-3, 1e-2, 3e-2, 0.1, 0.2, 0.5, 0.8, 1.0, 1.2, 1.5, 1.8, 1.95]:
+        for K in K_values:
+            rows.append({
+                "shape_id": f"isosceles_q{q:g}_K{K:.4f}",
+                "family": "isosceles",
+                "K": float(K),
+                "q1": float(q),
+                "q2": 1.0,
+                "q3": 1.0,
+                "triangle_valid": bool(q > 0.0 and q < 2.0)
+            })
+
+    return rows
+
+
+def locate_a2_init(c3_work: Path, a2_work: Path) -> Path | None:
+    candidates = []
+    for base in [c3_work / "_HANDOFF", a2_work / "_HANDOFF"]:
+        if base.exists():
+            candidates += [p for p in base.glob("A2_INIT_*") if p.is_dir()]
+    if not candidates:
+        return None
+    return sorted(candidates)[-1]
+
+
+def load_shape_grid(c3_work: Path, a2_work: Path, out: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    init = locate_a2_init(c3_work, a2_work)
+    meta = {
+        "a2_init_found": bool(init),
+        "a2_init_path": str(init) if init else None,
+        "shape_grid_source": "generated_fallback"
+    }
+    if init:
+        grid = init / "A2_SHAPE_SCAN_GRID.csv"
+        if grid.exists():
+            dst = out / "A2_INIT_SHAPE_GRID_USED.csv"
+            shutil.copy2(grid, dst)
+            meta["shape_grid_source"] = str(grid)
+            return read_csv_dicts(grid), meta
+    rows = build_shape_grid()
+    write_csv(out / "A2_INIT_SHAPE_GRID_GENERATED_FALLBACK.csv", rows)
+    return rows, meta
+
+
+# ============================================================
+# Frozen BIH-VI background
+# ============================================================
+
+def switch_S(y):
+    arg = (y - Y_G) / DELTA
+    arg = np.clip(arg, -700, 700)
+    return 1.0 / (1.0 + np.exp(arg))
+
+
+def m_of_y(y):
+    z = 1.0 - y
+    return MU * (z ** P) + M_POST * switch_S(y)
+
+
+def dy_dN(y):
+    return -m_of_y(y) * y
+
+
+def rk4_step(y, h):
+    k1 = dy_dN(y)
+    k2 = dy_dN(y + 0.5 * h * k1)
+    k3 = dy_dN(y + 0.5 * h * k2)
+    k4 = dy_dN(y + h * k3)
+    yn = y + (h / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
+    return float(np.clip(yn, 1.0e-9, 1.0 - 1.0e-9))
+
+
+def build_background() -> dict[str, Any]:
+    N = np.linspace(N_MIN, N_MAX, N_STEPS)
+    i0 = int(np.argmin(np.abs(N)))
+    y = np.empty_like(N)
+    y[i0] = Y_G
+
+    for i in range(i0, len(N)-1):
+        h = N[i+1] - N[i]
+        y[i+1] = rk4_step(y[i], h)
+
+    for i in range(i0, 0, -1):
+        h = N[i-1] - N[i]
+        y[i-1] = rk4_step(y[i], h)
+
+    m = m_of_y(y)
+    H_raw = np.sqrt(np.maximum(y * (2.0 - y), 1e-30))
+    H_g = math.sqrt(Y_G * (2.0 - Y_G))
+    H = H_raw / H_g
+    eps = m * (1.0 - y) / (2.0 - y)
+    eps = np.maximum(eps, 1e-14)
+    ln_eps = np.log(eps)
+    eta = np.gradient(ln_eps, N)
+    eta_N = np.gradient(eta, N)
+    a = np.exp(N)
+
+    return {
+        "N": N,
+        "a": a,
+        "y": y,
+        "m": m,
+        "H": H,
+        "eps": eps,
+        "eta": eta,
+        "eta_N": eta_N
+    }
+
+
+# ============================================================
+# Mode model and kernels
+# ============================================================
+
+def zeta_mode(k: float, bg: dict[str, Any]) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Instantaneous Bunch-Davies / slow-variation mode model.
+
+    This is a numerical tree-level kernel pass, not the final MS-mode integration.
+    A2_RUN02 should replace this with exact Mukhanov-Sasaki mode functions.
+    """
+    N = bg["N"]
+    a = bg["a"]
+    H = bg["H"]
+    eps = bg["eps"]
+
+    x = k / np.maximum(a * H, 1e-30)
+    amp = H / (2.0 * np.sqrt(eps) * (k ** 1.5) + 1e-300)
+    u = amp * (1.0 + 1j * x) * np.exp(-1j * x)
+
+    u_N = np.gradient(u, N)
+    return u, u_N
+
+
+def dot_products(k1, k2, k3):
+    # Triangle law: k1·k2 = (k3^2 - k1^2 - k2^2)/2
+    d12 = 0.5 * (k3*k3 - k1*k1 - k2*k2)
+    d13 = 0.5 * (k2*k2 - k1*k1 - k3*k3)
+    d23 = 0.5 * (k1*k1 - k2*k2 - k3*k3)
+    return d12, d13, d23
+
+
+def shape_to_ks(row: dict[str, Any]) -> tuple[float, float, float]:
+    K = safe_float(row.get("K"))
+    q1 = safe_float(row.get("q1"))
+    q2 = safe_float(row.get("q2"))
+    q3 = safe_float(row.get("q3"))
+    s = q1 + q2 + q3
+    scale = 3.0 * K / s
+    return scale * q1, scale * q2, scale * q3
+
+
+def compute_shape(row: dict[str, Any], bg: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    N = bg["N"]
+    a = bg["a"]
+    H = bg["H"]
+    eps = bg["eps"]
+    eta_N = bg["eta_N"]
+
+    shape_id = row["shape_id"]
+    family = row["family"]
+    K = safe_float(row["K"])
+    k1, k2, k3 = shape_to_ks(row)
+
+    u1, u1N = zeta_mode(k1, bg)
+    u2, u2N = zeta_mode(k2, bg)
+    u3, u3N = zeta_mode(k3, bg)
+
+    u10 = u1[-1]
+    u20 = u2[-1]
+    u30 = u3[-1]
+    outside = u10 * u20 * u30
+
+    d12, d13, d23 = dot_products(k1, k2, k3)
+    xsum = (k1 + k2 + k3) / np.maximum(a * H, 1e-30)
+    regulator = np.exp(-I_EPS * xsum)
+
+    # Conjugate mode products for in-in integrand.
+    v1 = np.conjugate(u1)
+    v2 = np.conjugate(u2)
+    v3 = np.conjugate(u3)
+    v1N = np.conjugate(u1N)
+    v2N = np.conjugate(u2N)
+    v3N = np.conjugate(u3N)
+
+    # O1: zeta dot(zeta)^2
+    C1 = (a**3) * (eps**2) * H
+    K1 = C1 * (
+        v1 * v2N * v3N +
+        v2 * v1N * v3N +
+        v3 * v1N * v2N
+    ) * regulator
+
+    # O2: zeta (grad zeta)^2 / a^2
+    # Gradient factors use k_i dot k_j. Overall sign convention is tracked but not used as proof.
+    C2 = a * (eps**2) / np.maximum(H, 1e-30)
+    K2 = C2 * (
+        (-d23) * v1 * v2 * v3 +
+        (-d13) * v2 * v1 * v3 +
+        (-d12) * v3 * v1 * v2
+    ) * regulator
+
+    # O3: dot(zeta) partial_i zeta partial_i chi
+    # Constraint kernel included in a conservative schematic form.
+    # It must be replaced/audited against the exact chi constraint in A2_RUN02.
+    C3 = (a**3) * (eps**2) * H
+    invk1 = 1.0 / max(k1*k1, 1e-300)
+    invk2 = 1.0 / max(k2*k2, 1e-300)
+    invk3 = 1.0 / max(k3*k3, 1e-300)
+    K3 = C3 * (
+        (d23 * invk1) * v1N * v2 * v3 +
+        (d13 * invk2) * v2N * v1 * v3 +
+        (d12 * invk3) * v3N * v1 * v2
+    ) * regulator
+
+    # O4: epsilon dot(eta) zeta^2 dot(zeta)
+    C4 = 0.5 * (a**3) * eps * H * eta_N
+    K4 = C4 * (
+        v1 * v2 * v3N +
+        v1 * v3 * v2N +
+        v2 * v3 * v1N
+    ) * regulator
+
+    kernels = {
+        "O1_zeta_dotzeta2": K1,
+        "O2_zeta_gradzeta2": K2,
+        "O3_dotzeta_gradzeta_gradchi_SCHEMATIC": K3,
+        "O4_switch_eps_doteta_zeta2_dotzeta": K4
+    }
+
+    P1 = (k1**3 / (2.0 * math.pi**2)) * abs(u10)**2
+    P2 = (k2**3 / (2.0 * math.pi**2)) * abs(u20)**2
+    P3 = (k3**3 / (2.0 * math.pi**2)) * abs(u30)**2
+    Psum = P1*P2 + P2*P3 + P3*P1
+    Psum = max(float(Psum), 1e-300)
+
+    rows = []
+    Bsum = 0.0 + 0.0j
+
+    for op, kern in kernels.items():
+        integ = trapz(kern, N)
+        B = -2.0 * np.imag(outside * integ)
+        Bc = complex(float(B), 0.0)
+        Bsum += Bc
+        fNL = (5.0 / 6.0) * (B / Psum)
+        RB = abs(B) / Psum
+
+        status = "ok"
+        if "SCHEMATIC" in op:
+            status = "requires_exact_constraint_kernel_audit"
+
+        rows.append({
+            "shape_id": shape_id,
+            "family": family,
+            "K": K,
+            "k1": k1,
+            "k2": k2,
+            "k3": k3,
+            "operator": op,
+            "B_real": float(np.real(Bc)),
+            "B_imag": float(np.imag(Bc)),
+            "B_abs": float(abs(Bc)),
+            "fNL_shape": float(fNL),
+            "R_B": float(RB),
+            "P1": float(P1),
+            "P2": float(P2),
+            "P3": float(P3),
+            "Psum": float(Psum),
+            "mode_model": "instantaneous_BD_slow_variation",
+            "kernel_status": status
+        })
+
+    # O5 boundary/field redefinition placeholder.
+    rows.append({
+        "shape_id": shape_id,
+        "family": family,
+        "K": K,
+        "k1": k1,
+        "k2": k2,
+        "k3": k3,
+        "operator": "O5_field_redefinition_boundary_TODO",
+        "B_real": 0.0,
+        "B_imag": 0.0,
+        "B_abs": 0.0,
+        "fNL_shape": 0.0,
+        "R_B": 0.0,
+        "P1": float(P1),
+        "P2": float(P2),
+        "P3": float(P3),
+        "Psum": float(Psum),
+        "mode_model": "not_computed",
+        "kernel_status": "required_for_final_A2_closure_NOT_COMPUTED_IN_RUN01"
+    })
+
+    Bsum_real = float(np.real(Bsum))
+    fNL_sum = (5.0 / 6.0) * (Bsum_real / Psum)
+    RB_sum = abs(Bsum_real) / Psum
+
+    sumrow = {
+        "shape_id": shape_id,
+        "family": family,
+        "K": K,
+        "k1": k1,
+        "k2": k2,
+        "k3": k3,
+        "B_sum_real_O1_to_O4": Bsum_real,
+        "B_sum_abs_O1_to_O4": abs(Bsum_real),
+        "fNL_sum_O1_to_O4": float(fNL_sum),
+        "R_B_sum_O1_to_O4": float(RB_sum),
+        "P1": float(P1),
+        "P2": float(P2),
+        "P3": float(P3),
+        "Psum": float(Psum),
+        "contains_schematic_O3": True,
+        "missing_O5_boundary": True,
+        "mode_model": "instantaneous_BD_slow_variation",
+        "closure_status": "RUN01_KERNEL_PASS_NOT_FINAL_A2_CLOSURE"
+    }
+
+    return rows, sumrow
+
+
+def classify_summary(sum_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    cmb = [r for r in sum_rows if float(r["K"]) < 1.0]
+    exit_band = [r for r in sum_rows if 3.35 <= float(r["K"]) <= 3.85]
+
+    def max_abs(rows, key):
+        if not rows:
+            return None
+        return max(rows, key=lambda r: abs(float(r[key])))
+
+    max_cmb_f = max_abs(cmb, "fNL_sum_O1_to_O4")
+    max_all_f = max_abs(sum_rows, "fNL_sum_O1_to_O4")
+    max_exit_f = max_abs(exit_band, "fNL_sum_O1_to_O4")
+    max_absB = max_abs(sum_rows, "B_sum_abs_O1_to_O4")
+    max_RB = max_abs(sum_rows, "R_B_sum_O1_to_O4")
+
+    # Strict: Run01 cannot close because O3 is schematic and O5 is missing.
+    result = {
+        "status": "A2_RUN01_TREE_LEVEL_KERNEL_PASS_COMPLETE",
+        "final_A2_closure": False,
+        "reason_not_final": [
+            "O3 constraint kernel included only as schematic v1; exact chi-constraint kernel audit required.",
+            "O5 field-redefinition/boundary contribution is explicitly not computed.",
+            "Mode functions use instantaneous BD/slow-variation approximation, not full numerical Mukhanov-Sasaki modes."
+        ],
+        "allowed_claim": "A2_RUN01 produced an operator-separated tree-level in-in kernel table over the fixed shape grid, suitable for auditing; it is not final A2 closure.",
+        "forbidden_claims": [
+            "A2 is complete",
+            "BIH-VI is proven",
+            "exit bispectrum is physically finalized",
+            "proxy/canary or Run01 kernel values are observational predictions"
+        ],
+        "max_cmb_side_abs_fNL_sum": max_cmb_f,
+        "max_exit_band_abs_fNL_sum": max_exit_f,
+        "max_all_abs_fNL_sum": max_all_f,
+        "max_abs_B_sum": max_absB,
+        "max_R_B_sum": max_RB
+    }
+
+    # Provide a conservative flag for next audit.
+    if max_cmb_f is not None and abs(float(max_cmb_f["fNL_sum_O1_to_O4"])) > 10.0:
+        result["cmb_safety_flag"] = "REQUIRES_REVIEW_large_K_lt_1_kernel_value"
+    else:
+        result["cmb_safety_flag"] = "no_large_K_lt_1_flag_in_Run01_kernel_model"
+
+    return result
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--codex-root", required=True)
+    ap.add_argument("--c3-work", required=True)
+    ap.add_argument("--a2-work", required=True)
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args()
+
+    codex_root = Path(args.codex_root)
+    c3_work = Path(args.c3_work)
+    a2_work = Path(args.a2_work)
+    out = ensure_dir(Path(args.out))
+
+    shape_rows, shape_meta = load_shape_grid(c3_work, a2_work, out)
+    shape_rows = [r for r in shape_rows if str(r.get("triangle_valid", "true")).lower() in ["true", "1", "yes"]]
+
+    bg = build_background()
+
+    # Save background table.
+    bg_rows = []
+    for i in range(len(bg["N"])):
+        if i % 5 == 0 or i in [0, len(bg["N"])-1]:
+            bg_rows.append({
+                "N": float(bg["N"][i]),
+                "a": float(bg["a"][i]),
+                "y": float(bg["y"][i]),
+                "m": float(bg["m"][i]),
+                "H_over_Hg": float(bg["H"][i]),
+                "epsilon_H": float(bg["eps"][i]),
+                "eta_H": float(bg["eta"][i]),
+                "eta_N": float(bg["eta_N"][i])
+            })
+    write_csv(out / "A2_RUN01_BACKGROUND_TABLE.csv", bg_rows)
+
+    benchmark = {
+        "module": "A2_RUN01",
+        "status": "TREE_LEVEL_KERNEL_PASS_NOT_FINAL_CLOSURE",
+        "frozen_parameters": {
+            "p": P,
+            "mu": MU,
+            "c_s": CS,
+            "N_star": N_STAR,
+            "y_g": Y_G,
+            "z_g": Z_G,
+            "Delta": DELTA,
+            "m_post": M_POST,
+            "H_c_over_Mpl": HC_OVER_MPL
+        },
+        "numerical_grid": {
+            "N_min": N_MIN,
+            "N_max": N_MAX,
+            "N_steps": N_STEPS,
+            "i_epsilon_regulator": I_EPS,
+            "a_g": 1.0,
+            "H_g": 1.0
+        },
+        "mode_model": "instantaneous_BD_slow_variation",
+        "important_limitations": [
+            "This run computes numerical in-in kernels using approximate instantaneous BD modes.",
+            "Full Mukhanov-Sasaki mode-function replacement is still required for final closure.",
+            "O3 is schematic and O5 is a missing boundary/field-redefinition placeholder."
+        ],
+        "shape_metadata": shape_meta
+    }
+    write_json(out / "A2_RUN01_BENCHMARK_AND_LIMITATIONS.json", benchmark)
+
+    op_rows = []
+    sum_rows = []
+
+    for idx, shape in enumerate(shape_rows):
+        rows, srow = compute_shape(shape, bg)
+        op_rows.extend(rows)
+        sum_rows.append(srow)
+        if (idx + 1) % 100 == 0:
+            print(f"computed {idx+1}/{len(shape_rows)} shapes")
+
+    write_csv(out / "A2_RUN01_OPERATOR_SEPARATED_RESULTS.csv", op_rows)
+    write_csv(out / "A2_RUN01_SUMMED_SHAPE_RESULTS.csv", sum_rows)
+
+    summary = classify_summary(sum_rows)
+    summary["n_shapes"] = len(shape_rows)
+    summary["n_operator_rows"] = len(op_rows)
+    summary["operator_rows_note"] = "O1-O4 computed; O5 placeholder rows included to prevent accidental final-closure claim."
+    write_json(out / "A2_RUN01_FINAL_VERDICT.json", summary)
+
+    # Family summaries.
+    fam_rows = []
+    for fam in sorted(set(r["family"] for r in sum_rows)):
+        rr = [r for r in sum_rows if r["family"] == fam]
+        maxf = max(rr, key=lambda r: abs(float(r["fNL_sum_O1_to_O4"])))
+        maxb = max(rr, key=lambda r: abs(float(r["B_sum_abs_O1_to_O4"])))
+        fam_rows.append({
+            "family": fam,
+            "n_shapes": len(rr),
+            "max_abs_fNL_shape_id": maxf["shape_id"],
+            "max_abs_fNL_K": maxf["K"],
+            "max_abs_fNL_sum_O1_to_O4": maxf["fNL_sum_O1_to_O4"],
+            "max_abs_B_shape_id": maxb["shape_id"],
+            "max_abs_B_K": maxb["K"],
+            "max_abs_B_sum_O1_to_O4": maxb["B_sum_abs_O1_to_O4"]
+        })
+    write_csv(out / "A2_RUN01_FAMILY_SUMMARY.csv", fam_rows)
+
+    # Evidence manifest.
+    manifest = []
+    for p in sorted(out.rglob("*")):
+        if p.is_file():
+            manifest.append({
+                "relative_path": str(p.relative_to(out)),
+                "bytes": p.stat().st_size,
+                "sha256": sha256(p)
+            })
+    write_csv(out / "A2_RUN01_EVIDENCE_MANIFEST.csv", manifest)
+
+    md = f"""# BIH-VI A2_RUN01 — Tree-Level In-In Kernel Pass
+
+Status: **{summary['status']}**
+
+Final A2 closure: **{summary['final_A2_closure']}**
+
+Allowed claim:
+
+> {summary['allowed_claim']}
+
+## What this run did
+
+- Loaded the fixed A2 shape grid.
+- Built the frozen BIH-VI benchmark background.
+- Computed operator-separated numerical in-in kernels for:
+  - O1: `zeta dot(zeta)^2`
+  - O2: `zeta (partial zeta)^2 / a^2`
+  - O3: `dot(zeta) partial_i zeta partial_i chi` (**schematic constraint kernel v1**)
+  - O4: `epsilon_H dot(eta_H) zeta^2 dot(zeta)`
+- Added explicit O5 placeholder rows so missing boundary/field-redefinition terms are not hidden.
+- Wrote summed O1-O4 shape results.
+
+## Why this is not final A2 closure
+
+- O3 must be checked against the exact constraint solution for `chi`.
+- O5 field-redefinition/boundary contribution is not computed.
+- Mode functions are instantaneous-BD/slow-variation approximations, not full numerical Mukhanov-Sasaki modes.
+
+## Next required run
+
+`A2_RUN02_MS_MODE_AND_BOUNDARY_COMPLETION`
+
+That run must:
+1. replace the instantaneous-BD modes with numerical Mukhanov-Sasaki modes,
+2. implement exact O3 constraint kernels,
+3. implement O5 boundary/field-redefinition terms,
+4. rerun the same fixed shape grid.
+
+## Main output files
+
+- `A2_RUN01_BENCHMARK_AND_LIMITATIONS.json`
+- `A2_RUN01_BACKGROUND_TABLE.csv`
+- `A2_RUN01_OPERATOR_SEPARATED_RESULTS.csv`
+- `A2_RUN01_SUMMED_SHAPE_RESULTS.csv`
+- `A2_RUN01_FAMILY_SUMMARY.csv`
+- `A2_RUN01_FINAL_VERDICT.json`
+- `A2_RUN01_EVIDENCE_MANIFEST.csv`
+
+## Forbidden claims
+
+- A2 is complete.
+- BIH-VI is proven.
+- Run01 kernel values are final physical bispectrum predictions.
+- The exit bispectrum is observationally detected.
+"""
+    (out / "A2_RUN01_SUMMARY.md").write_text(md, encoding="utf-8")
+
+    print(json.dumps({
+        "status": summary["status"],
+        "final_A2_closure": summary["final_A2_closure"],
+        "n_shapes": len(shape_rows),
+        "n_operator_rows": len(op_rows),
+        "cmb_safety_flag": summary["cmb_safety_flag"],
+        "handoff_folder": str(out),
+        "upload_this_zip": str(out) + ".zip"
+    }, indent=2))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1 @@
+This package was generated in-session. The full equations, constants, BAO vector, covariance, and scan metrics are in README_Module_C_Distance_Gate.txt and the CSV outputs.

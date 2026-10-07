@@ -1,0 +1,25 @@
+
+"""
+Download public data files in a networked environment.
+
+The ChatGPT sandbox that generated this package could not resolve raw.githubusercontent.com,
+so this script is provided for your local workstation / cluster / Cobaya environment.
+"""
+from pathlib import Path
+import urllib.request
+
+DATA = Path(__file__).resolve().parent.parent / "data"
+DATA.mkdir(exist_ok=True)
+
+urls = {
+    "Pantheon+SH0ES.dat": "https://raw.githubusercontent.com/PantheonPlusSH0ES/DataRelease/main/Pantheon%2B_Data/4_DISTANCES_AND_COVAR/Pantheon%2BSH0ES.dat",
+    "Pantheon+SH0ES_STAT+SYS.cov": "https://raw.githubusercontent.com/PantheonPlusSH0ES/DataRelease/main/Pantheon%2B_Data/4_DISTANCES_AND_COVAR/Pantheon%2BSH0ES_STAT%2BSYS.cov",
+    "desi_gaussian_bao_ALL_GCcomb_mean.txt": "https://raw.githubusercontent.com/CobayaSampler/bao_data/master/desi_bao_dr2/desi_gaussian_bao_ALL_GCcomb_mean.txt",
+    "desi_gaussian_bao_ALL_GCcomb_cov.txt": "https://raw.githubusercontent.com/CobayaSampler/bao_data/master/desi_bao_dr2/desi_gaussian_bao_ALL_GCcomb_cov.txt",
+}
+
+for name, url in urls.items():
+    target = DATA / name
+    print("Downloading", name)
+    urllib.request.urlretrieve(url, target)
+    print("  ->", target, target.stat().st_size, "bytes")

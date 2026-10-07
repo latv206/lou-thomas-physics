@@ -1,0 +1,258 @@
+[
+  {
+    "package": "A2_FINAL_DATA_LOCK_20260706_160748",
+    "count": 19,
+    "passed": true,
+    "entries": [
+      {
+        "file": "A2_ALLOWED_CLAIMS.md",
+        "match": true
+      },
+      {
+        "file": "A2_ARTIFACT_MANIFEST.csv",
+        "match": true
+      },
+      {
+        "file": "A2_CLAIM_ROWS_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "A2_FAMILY_SUMMARY_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "A2_FINAL_DATA_LOCK.md",
+        "match": true
+      },
+      {
+        "file": "A2_GATE_SUMMARY_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "A2_GFLAT_DIAGNOSTICS_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_RESULTS_SECTION.tex",
+        "match": true
+      },
+      {
+        "file": "A2_NUMERIC_SUMMARY.json",
+        "match": true
+      },
+      {
+        "file": "source_outputs/claim_rows.csv",
+        "match": true
+      },
+      {
+        "file": "source_outputs/flagged_rows.csv",
+        "match": true
+      },
+      {
+        "file": "source_outputs/folded_gflat_diagnostics.csv",
+        "match": true
+      },
+      {
+        "file": "source_outputs/production_family_summary.csv",
+        "match": true
+      },
+      {
+        "file": "source_outputs/production_gate_summary.json",
+        "match": true
+      },
+      {
+        "file": "source_outputs/production_manifest.json",
+        "match": true
+      },
+      {
+        "file": "source_outputs/production_scan_rows.csv",
+        "match": true
+      },
+      {
+        "file": "source_outputs/run_report.md",
+        "match": true
+      },
+      {
+        "file": "source_outputs/script_hash.txt",
+        "match": true
+      },
+      {
+        "file": "source_outputs/sendback_summary.json",
+        "match": true
+      }
+    ]
+  },
+  {
+    "package": "A2_FINAL_DETECTIVE_HARDENING_20260707_075631",
+    "count": 25,
+    "passed": true,
+    "entries": [
+      {
+        "file": "A2_FINAL_DETECTIVE_INVENTORY.csv",
+        "match": true
+      },
+      {
+        "file": "A2_FINAL_DETECTIVE_REPORT.md",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL_AUDIT.md",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL_CLAIM_AUDIT.md",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL_COMPILE_LOG.txt",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL_MANIFEST.csv",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL_PROVENANCE.json",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL.pdf",
+        "match": true
+      },
+      {
+        "file": "A2_MANUSCRIPT_FINAL.tex",
+        "match": true
+      },
+      {
+        "file": "locked/A2_ALLOWED_CLAIMS.md",
+        "match": true
+      },
+      {
+        "file": "locked/A2_CLAIM_ROWS_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked/A2_FAMILY_SUMMARY_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked/A2_GATE_SUMMARY_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked/A2_GFLAT_DIAGNOSTICS_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked/A2_MANUSCRIPT_RESULTS_SECTION.tex",
+        "match": true
+      },
+      {
+        "file": "locked/A2_NUMERIC_SUMMARY.json",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_ALLOWED_CLAIMS.md",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_CLAIM_ROWS_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_FAMILY_SUMMARY_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_GATE_SUMMARY_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_GFLAT_DIAGNOSTICS_TABLE.tex",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_MANUSCRIPT_RESULTS_SECTION.tex",
+        "match": true
+      },
+      {
+        "file": "locked_inputs/A2_NUMERIC_SUMMARY.json",
+        "match": true
+      },
+      {
+        "file": "source_package_manifest/source_package_files.csv",
+        "match": true
+      },
+      {
+        "file": "source_package_manifest/source_package.txt",
+        "match": true
+      }
+    ]
+  },
+  {
+    "package": "A2_PROGRAM_CLOSEOUT_20260707",
+    "count": 8,
+    "passed": true,
+    "entries": [
+      {
+        "file": "A2_PROGRAM_STATE.md",
+        "match": true
+      },
+      {
+        "file": "ARTIFACT_MANIFEST.csv",
+        "match": true
+      },
+      {
+        "file": "CLAIMS_AND_LIMITS.md",
+        "match": true
+      },
+      {
+        "file": "EVIDENCE_INDEX.md",
+        "match": true
+      },
+      {
+        "file": "FOR_THE_PHYSICIST.md",
+        "match": true
+      },
+      {
+        "file": "OPEN_DECISIONS.md",
+        "match": true
+      },
+      {
+        "file": "provenance.json",
+        "match": true
+      },
+      {
+        "file": "START_HERE.md",
+        "match": true
+      }
+    ]
+  },
+  {
+    "package": "a2_foundation_audit_evidence_bundle_20260707",
+    "count": 5,
+    "passed": true,
+    "entries": [
+      {
+        "file": "EVIDENCE_INDEX.md",
+        "match": true
+      },
+      {
+        "file": "GPT_REVIEW_PROMPT.md",
+        "match": true
+      },
+      {
+        "file": "HASHES.json",
+        "match": true
+      },
+      {
+        "file": "PRIMARY_EXCERPTS.md",
+        "match": true
+      },
+      {
+        "file": "SUMMARY_FOR_LOU.md",
+        "match": true
+      }
+    ]
+  }
+]

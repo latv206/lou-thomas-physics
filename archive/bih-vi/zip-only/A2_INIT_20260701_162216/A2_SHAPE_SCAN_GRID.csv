@@ -1,0 +1,932 @@
+shape_id,family,K,q1,q2,q3,triangle_valid,notes
+equilateral_K0.1000,equilateral,0.1,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.2000,equilateral,0.2,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.3000,equilateral,0.30000000000000004,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.4000,equilateral,0.4,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.5000,equilateral,0.5,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.6000,equilateral,0.6,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.7000,equilateral,0.7000000000000001,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.8000,equilateral,0.8,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K0.9000,equilateral,0.9,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K1.0000,equilateral,1.0,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K1.2500,equilateral,1.25,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K1.5000,equilateral,1.5,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K1.7500,equilateral,1.75,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K2.0000,equilateral,2.0,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K2.2500,equilateral,2.25,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K2.5000,equilateral,2.5,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K2.7500,equilateral,2.75,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.0000,equilateral,3.0,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.2500,equilateral,3.25,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.3500,equilateral,3.35,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.3750,equilateral,3.375,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.4000,equilateral,3.4,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.4250,equilateral,3.4250000000000003,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.4500,equilateral,3.45,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.4750,equilateral,3.475,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.5000,equilateral,3.5,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.5250,equilateral,3.525,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.5500,equilateral,3.5500000000000003,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.5750,equilateral,3.575,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.6000,equilateral,3.6,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.6250,equilateral,3.625,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.6500,equilateral,3.6500000000000004,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.6750,equilateral,3.6750000000000003,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.7000,equilateral,3.7,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.7250,equilateral,3.725,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.7500,equilateral,3.75,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.7750,equilateral,3.7750000000000004,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.8000,equilateral,3.8000000000000003,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.8250,equilateral,3.825,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K3.8500,equilateral,3.85,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K4.0000,equilateral,4.0,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K4.2500,equilateral,4.25,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K4.5000,equilateral,4.5,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K4.7500,equilateral,4.75,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K5.0000,equilateral,5.0,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K5.2500,equilateral,5.25,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K5.5000,equilateral,5.5,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K5.7500,equilateral,5.75,1.0,1.0,1.0,True,k1=k2=k3
+equilateral_K6.0000,equilateral,6.0,1.0,1.0,1.0,True,k1=k2=k3
+squeezed_q0.001_K0.1000,squeezed,0.1,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.2000,squeezed,0.2,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.3000,squeezed,0.30000000000000004,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.4000,squeezed,0.4,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.5000,squeezed,0.5,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.6000,squeezed,0.6,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.7000,squeezed,0.7000000000000001,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.8000,squeezed,0.8,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K0.9000,squeezed,0.9,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K1.0000,squeezed,1.0,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K1.2500,squeezed,1.25,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K1.5000,squeezed,1.5,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K1.7500,squeezed,1.75,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K2.0000,squeezed,2.0,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K2.2500,squeezed,2.25,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K2.5000,squeezed,2.5,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K2.7500,squeezed,2.75,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.0000,squeezed,3.0,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.2500,squeezed,3.25,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.3500,squeezed,3.35,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.3750,squeezed,3.375,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.4000,squeezed,3.4,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.4250,squeezed,3.4250000000000003,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.4500,squeezed,3.45,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.4750,squeezed,3.475,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.5000,squeezed,3.5,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.5250,squeezed,3.525,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.5500,squeezed,3.5500000000000003,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.5750,squeezed,3.575,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.6000,squeezed,3.6,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.6250,squeezed,3.625,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.6500,squeezed,3.6500000000000004,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.6750,squeezed,3.6750000000000003,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.7000,squeezed,3.7,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.7250,squeezed,3.725,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.7500,squeezed,3.75,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.7750,squeezed,3.7750000000000004,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.8000,squeezed,3.8000000000000003,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.8250,squeezed,3.825,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K3.8500,squeezed,3.85,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K4.0000,squeezed,4.0,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K4.2500,squeezed,4.25,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K4.5000,squeezed,4.5,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K4.7500,squeezed,4.75,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K5.0000,squeezed,5.0,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K5.2500,squeezed,5.25,0.0010000000000000002,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K5.5000,squeezed,5.5,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K5.7500,squeezed,5.75,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.001_K6.0000,squeezed,6.0,0.001,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.1000,squeezed,0.1,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.2000,squeezed,0.2,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.3000,squeezed,0.30000000000000004,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.4000,squeezed,0.4,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.5000,squeezed,0.5,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.6000,squeezed,0.6,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.7000,squeezed,0.7000000000000001,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.8000,squeezed,0.8,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K0.9000,squeezed,0.9,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K1.0000,squeezed,1.0,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K1.2500,squeezed,1.25,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K1.5000,squeezed,1.5,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K1.7500,squeezed,1.75,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K2.0000,squeezed,2.0,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K2.2500,squeezed,2.25,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K2.5000,squeezed,2.5,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K2.7500,squeezed,2.75,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.0000,squeezed,3.0,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.2500,squeezed,3.25,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.3500,squeezed,3.35,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.3750,squeezed,3.375,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.4000,squeezed,3.4,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.4250,squeezed,3.4250000000000003,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.4500,squeezed,3.45,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.4750,squeezed,3.475,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.5000,squeezed,3.5,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.5250,squeezed,3.525,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.5500,squeezed,3.5500000000000003,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.5750,squeezed,3.575,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.6000,squeezed,3.6,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.6250,squeezed,3.625,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.6500,squeezed,3.6500000000000004,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.6750,squeezed,3.6750000000000003,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.7000,squeezed,3.7,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.7250,squeezed,3.725,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.7500,squeezed,3.75,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.7750,squeezed,3.7750000000000004,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.8000,squeezed,3.8000000000000003,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.8250,squeezed,3.825,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K3.8500,squeezed,3.85,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K4.0000,squeezed,4.0,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K4.2500,squeezed,4.25,0.009999999999999998,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K4.5000,squeezed,4.5,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K4.7500,squeezed,4.75,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K5.0000,squeezed,5.0,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K5.2500,squeezed,5.25,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K5.5000,squeezed,5.5,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K5.7500,squeezed,5.75,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.01_K6.0000,squeezed,6.0,0.01,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.1000,squeezed,0.1,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.2000,squeezed,0.2,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.3000,squeezed,0.30000000000000004,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.4000,squeezed,0.4,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.5000,squeezed,0.5,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.6000,squeezed,0.6,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.7000,squeezed,0.7000000000000001,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.8000,squeezed,0.8,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K0.9000,squeezed,0.9,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K1.0000,squeezed,1.0,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K1.2500,squeezed,1.25,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K1.5000,squeezed,1.5,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K1.7500,squeezed,1.75,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K2.0000,squeezed,2.0,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K2.2500,squeezed,2.25,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K2.5000,squeezed,2.5,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K2.7500,squeezed,2.75,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.0000,squeezed,3.0,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.2500,squeezed,3.25,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.3500,squeezed,3.35,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.3750,squeezed,3.375,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.4000,squeezed,3.4,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.4250,squeezed,3.4250000000000003,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.4500,squeezed,3.45,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.4750,squeezed,3.475,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.5000,squeezed,3.5,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.5250,squeezed,3.525,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.5500,squeezed,3.5500000000000003,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.5750,squeezed,3.575,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.6000,squeezed,3.6,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.6250,squeezed,3.625,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.6500,squeezed,3.6500000000000004,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.6750,squeezed,3.6750000000000003,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.7000,squeezed,3.7,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.7250,squeezed,3.725,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.7500,squeezed,3.75,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.7750,squeezed,3.7750000000000004,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.8000,squeezed,3.8000000000000003,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.8250,squeezed,3.825,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K3.8500,squeezed,3.85,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K4.0000,squeezed,4.0,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K4.2500,squeezed,4.25,0.10000000000000002,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K4.5000,squeezed,4.5,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K4.7500,squeezed,4.75,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K5.0000,squeezed,5.0,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K5.2500,squeezed,5.25,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K5.5000,squeezed,5.5,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K5.7500,squeezed,5.75,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+squeezed_q0.1_K6.0000,squeezed,6.0,0.1,1.0,1.0,True,"k1=q*k3, k2=k3"
+folded_delta0.01_K0.1000,folded_flattened,0.1,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.2000,folded_flattened,0.2,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.3000,folded_flattened,0.30000000000000004,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.4000,folded_flattened,0.4,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.5000,folded_flattened,0.5,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.6000,folded_flattened,0.6,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.7000,folded_flattened,0.7000000000000001,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.8000,folded_flattened,0.8,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K0.9000,folded_flattened,0.9,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K1.0000,folded_flattened,1.0,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K1.2500,folded_flattened,1.25,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K1.5000,folded_flattened,1.5,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K1.7500,folded_flattened,1.75,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K2.0000,folded_flattened,2.0,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K2.2500,folded_flattened,2.25,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K2.5000,folded_flattened,2.5,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K2.7500,folded_flattened,2.75,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.0000,folded_flattened,3.0,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.2500,folded_flattened,3.25,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.3500,folded_flattened,3.35,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.3750,folded_flattened,3.375,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.4000,folded_flattened,3.4,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.4250,folded_flattened,3.4250000000000003,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.4500,folded_flattened,3.45,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.4750,folded_flattened,3.475,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.5000,folded_flattened,3.5,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.5250,folded_flattened,3.525,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.5500,folded_flattened,3.5500000000000003,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.5750,folded_flattened,3.575,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.6000,folded_flattened,3.6,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.6250,folded_flattened,3.625,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.6500,folded_flattened,3.6500000000000004,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.6750,folded_flattened,3.6750000000000003,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.7000,folded_flattened,3.7,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.7250,folded_flattened,3.725,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.7500,folded_flattened,3.75,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.7750,folded_flattened,3.7750000000000004,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.8000,folded_flattened,3.8000000000000003,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.8250,folded_flattened,3.825,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K3.8500,folded_flattened,3.85,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K4.0000,folded_flattened,4.0,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K4.2500,folded_flattened,4.25,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K4.5000,folded_flattened,4.5,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K4.7500,folded_flattened,4.75,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K5.0000,folded_flattened,5.0,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K5.2500,folded_flattened,5.25,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K5.5000,folded_flattened,5.5,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.01_K5.7500,folded_flattened,5.75,0.505050505050505,0.505050505050505,1.0,True,near-folded with finite regulator
+folded_delta0.01_K6.0000,folded_flattened,6.0,0.5050505050505051,0.5050505050505051,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.1000,folded_flattened,0.1,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.2000,folded_flattened,0.2,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.3000,folded_flattened,0.30000000000000004,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.4000,folded_flattened,0.4,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.5000,folded_flattened,0.5,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.6000,folded_flattened,0.6,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.7000,folded_flattened,0.7000000000000001,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.8000,folded_flattened,0.8,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K0.9000,folded_flattened,0.9,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K1.0000,folded_flattened,1.0,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K1.2500,folded_flattened,1.25,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K1.5000,folded_flattened,1.5,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K1.7500,folded_flattened,1.75,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K2.0000,folded_flattened,2.0,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K2.2500,folded_flattened,2.25,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K2.5000,folded_flattened,2.5,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K2.7500,folded_flattened,2.75,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.0000,folded_flattened,3.0,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.2500,folded_flattened,3.25,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.3500,folded_flattened,3.35,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.3750,folded_flattened,3.375,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.4000,folded_flattened,3.4,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.4250,folded_flattened,3.4250000000000003,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.4500,folded_flattened,3.45,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.4750,folded_flattened,3.475,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.5000,folded_flattened,3.5,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.5250,folded_flattened,3.525,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.5500,folded_flattened,3.5500000000000003,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.5750,folded_flattened,3.575,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.6000,folded_flattened,3.6,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.6250,folded_flattened,3.625,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.6500,folded_flattened,3.6500000000000004,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.6750,folded_flattened,3.6750000000000003,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.7000,folded_flattened,3.7,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.7250,folded_flattened,3.725,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.7500,folded_flattened,3.75,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.7750,folded_flattened,3.7750000000000004,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.8000,folded_flattened,3.8000000000000003,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.8250,folded_flattened,3.825,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K3.8500,folded_flattened,3.85,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K4.0000,folded_flattened,4.0,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K4.2500,folded_flattened,4.25,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K4.5000,folded_flattened,4.5,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K4.7500,folded_flattened,4.75,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+folded_delta0.001_K5.0000,folded_flattened,5.0,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K5.2500,folded_flattened,5.25,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K5.5000,folded_flattened,5.5,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K5.7500,folded_flattened,5.75,0.5005005005005005,0.5005005005005005,1.0,True,near-folded with finite regulator
+folded_delta0.001_K6.0000,folded_flattened,6.0,0.5005005005005004,0.5005005005005004,1.0,True,near-folded with finite regulator
+isosceles_q0.001_K0.1000,isosceles,0.1,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.2000,isosceles,0.2,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.3000,isosceles,0.30000000000000004,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.4000,isosceles,0.4,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.5000,isosceles,0.5,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.6000,isosceles,0.6,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.7000,isosceles,0.7000000000000001,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.8000,isosceles,0.8,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K0.9000,isosceles,0.9,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K1.0000,isosceles,1.0,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K1.2500,isosceles,1.25,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K1.5000,isosceles,1.5,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K1.7500,isosceles,1.75,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K2.0000,isosceles,2.0,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K2.2500,isosceles,2.25,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K2.5000,isosceles,2.5,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K2.7500,isosceles,2.75,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.0000,isosceles,3.0,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.2500,isosceles,3.25,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.3500,isosceles,3.35,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.3750,isosceles,3.375,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.4000,isosceles,3.4,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.4250,isosceles,3.4250000000000003,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.4500,isosceles,3.45,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.4750,isosceles,3.475,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.5000,isosceles,3.5,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.5250,isosceles,3.525,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.5500,isosceles,3.5500000000000003,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.5750,isosceles,3.575,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.6000,isosceles,3.6,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.6250,isosceles,3.625,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.6500,isosceles,3.6500000000000004,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.6750,isosceles,3.6750000000000003,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.7000,isosceles,3.7,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.7250,isosceles,3.725,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.7500,isosceles,3.75,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.7750,isosceles,3.7750000000000004,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.8000,isosceles,3.8000000000000003,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.8250,isosceles,3.825,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K3.8500,isosceles,3.85,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K4.0000,isosceles,4.0,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K4.2500,isosceles,4.25,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K4.5000,isosceles,4.5,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K4.7500,isosceles,4.75,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K5.0000,isosceles,5.0,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K5.2500,isosceles,5.25,0.0010000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K5.5000,isosceles,5.5,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K5.7500,isosceles,5.75,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.001_K6.0000,isosceles,6.0,0.001,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.1000,isosceles,0.1,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.2000,isosceles,0.2,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.3000,isosceles,0.30000000000000004,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.4000,isosceles,0.4,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.5000,isosceles,0.5,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.6000,isosceles,0.6,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.7000,isosceles,0.7000000000000001,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.8000,isosceles,0.8,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K0.9000,isosceles,0.9,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K1.0000,isosceles,1.0,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K1.2500,isosceles,1.25,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K1.5000,isosceles,1.5,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K1.7500,isosceles,1.75,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K2.0000,isosceles,2.0,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K2.2500,isosceles,2.25,0.0030000000000000005,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K2.5000,isosceles,2.5,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K2.7500,isosceles,2.75,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.0000,isosceles,3.0,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.2500,isosceles,3.25,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.3500,isosceles,3.35,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.3750,isosceles,3.375,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.4000,isosceles,3.4,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.4250,isosceles,3.4250000000000003,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.4500,isosceles,3.45,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.4750,isosceles,3.475,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.5000,isosceles,3.5,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.5250,isosceles,3.525,0.0029999999999999996,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.5500,isosceles,3.5500000000000003,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.5750,isosceles,3.575,0.0029999999999999996,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.6000,isosceles,3.6,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.6250,isosceles,3.625,0.0030000000000000005,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.6500,isosceles,3.6500000000000004,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.6750,isosceles,3.6750000000000003,0.0030000000000000005,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.7000,isosceles,3.7,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.7250,isosceles,3.725,0.0029999999999999996,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.7500,isosceles,3.75,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.7750,isosceles,3.7750000000000004,0.0029999999999999996,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.8000,isosceles,3.8000000000000003,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.8250,isosceles,3.825,0.0029999999999999996,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K3.8500,isosceles,3.85,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K4.0000,isosceles,4.0,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K4.2500,isosceles,4.25,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K4.5000,isosceles,4.5,0.0030000000000000005,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K4.7500,isosceles,4.75,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K5.0000,isosceles,5.0,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K5.2500,isosceles,5.25,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K5.5000,isosceles,5.5,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K5.7500,isosceles,5.75,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.003_K6.0000,isosceles,6.0,0.003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.1000,isosceles,0.1,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.2000,isosceles,0.2,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.3000,isosceles,0.30000000000000004,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.4000,isosceles,0.4,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.5000,isosceles,0.5,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.6000,isosceles,0.6,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.7000,isosceles,0.7000000000000001,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.8000,isosceles,0.8,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K0.9000,isosceles,0.9,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K1.0000,isosceles,1.0,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K1.2500,isosceles,1.25,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K1.5000,isosceles,1.5,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K1.7500,isosceles,1.75,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K2.0000,isosceles,2.0,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K2.2500,isosceles,2.25,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K2.5000,isosceles,2.5,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K2.7500,isosceles,2.75,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.0000,isosceles,3.0,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.2500,isosceles,3.25,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.3500,isosceles,3.35,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.3750,isosceles,3.375,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.4000,isosceles,3.4,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.4250,isosceles,3.4250000000000003,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.4500,isosceles,3.45,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.4750,isosceles,3.475,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.5000,isosceles,3.5,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.5250,isosceles,3.525,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.5500,isosceles,3.5500000000000003,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.5750,isosceles,3.575,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.6000,isosceles,3.6,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.6250,isosceles,3.625,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.6500,isosceles,3.6500000000000004,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.6750,isosceles,3.6750000000000003,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.7000,isosceles,3.7,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.7250,isosceles,3.725,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.7500,isosceles,3.75,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.7750,isosceles,3.7750000000000004,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.8000,isosceles,3.8000000000000003,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.8250,isosceles,3.825,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K3.8500,isosceles,3.85,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K4.0000,isosceles,4.0,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K4.2500,isosceles,4.25,0.009999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K4.5000,isosceles,4.5,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K4.7500,isosceles,4.75,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K5.0000,isosceles,5.0,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K5.2500,isosceles,5.25,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K5.5000,isosceles,5.5,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K5.7500,isosceles,5.75,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.01_K6.0000,isosceles,6.0,0.01,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.1000,isosceles,0.1,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.2000,isosceles,0.2,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.3000,isosceles,0.30000000000000004,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.4000,isosceles,0.4,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.5000,isosceles,0.5,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.6000,isosceles,0.6,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.7000,isosceles,0.7000000000000001,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.8000,isosceles,0.8,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K0.9000,isosceles,0.9,0.030000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K1.0000,isosceles,1.0,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K1.2500,isosceles,1.25,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K1.5000,isosceles,1.5,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K1.7500,isosceles,1.75,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K2.0000,isosceles,2.0,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K2.2500,isosceles,2.25,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K2.5000,isosceles,2.5,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K2.7500,isosceles,2.75,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.0000,isosceles,3.0,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.2500,isosceles,3.25,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.3500,isosceles,3.35,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.3750,isosceles,3.375,0.030000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.4000,isosceles,3.4,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.4250,isosceles,3.4250000000000003,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.4500,isosceles,3.45,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.4750,isosceles,3.475,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.5000,isosceles,3.5,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.5250,isosceles,3.525,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.5500,isosceles,3.5500000000000003,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.5750,isosceles,3.575,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.6000,isosceles,3.6,0.030000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.6250,isosceles,3.625,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.6500,isosceles,3.6500000000000004,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.6750,isosceles,3.6750000000000003,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.7000,isosceles,3.7,0.030000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.7250,isosceles,3.725,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.7500,isosceles,3.75,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.7750,isosceles,3.7750000000000004,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.8000,isosceles,3.8000000000000003,0.030000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.8250,isosceles,3.825,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K3.8500,isosceles,3.85,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K4.0000,isosceles,4.0,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K4.2500,isosceles,4.25,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K4.5000,isosceles,4.5,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K4.7500,isosceles,4.75,0.029999999999999995,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K5.0000,isosceles,5.0,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K5.2500,isosceles,5.25,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K5.5000,isosceles,5.5,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K5.7500,isosceles,5.75,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.03_K6.0000,isosceles,6.0,0.03,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.1000,isosceles,0.1,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.2000,isosceles,0.2,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.3000,isosceles,0.30000000000000004,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.4000,isosceles,0.4,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.5000,isosceles,0.5,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.6000,isosceles,0.6,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.7000,isosceles,0.7000000000000001,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.8000,isosceles,0.8,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K0.9000,isosceles,0.9,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K1.0000,isosceles,1.0,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K1.2500,isosceles,1.25,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K1.5000,isosceles,1.5,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K1.7500,isosceles,1.75,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K2.0000,isosceles,2.0,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K2.2500,isosceles,2.25,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K2.5000,isosceles,2.5,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K2.7500,isosceles,2.75,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.0000,isosceles,3.0,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.2500,isosceles,3.25,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.3500,isosceles,3.35,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.3750,isosceles,3.375,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.4000,isosceles,3.4,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.4250,isosceles,3.4250000000000003,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.4500,isosceles,3.45,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.4750,isosceles,3.475,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.5000,isosceles,3.5,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.5250,isosceles,3.525,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.5500,isosceles,3.5500000000000003,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.5750,isosceles,3.575,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.6000,isosceles,3.6,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.6250,isosceles,3.625,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.6500,isosceles,3.6500000000000004,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.6750,isosceles,3.6750000000000003,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.7000,isosceles,3.7,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.7250,isosceles,3.725,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.7500,isosceles,3.75,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.7750,isosceles,3.7750000000000004,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.8000,isosceles,3.8000000000000003,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.8250,isosceles,3.825,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K3.8500,isosceles,3.85,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K4.0000,isosceles,4.0,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K4.2500,isosceles,4.25,0.10000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K4.5000,isosceles,4.5,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K4.7500,isosceles,4.75,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K5.0000,isosceles,5.0,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K5.2500,isosceles,5.25,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K5.5000,isosceles,5.5,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K5.7500,isosceles,5.75,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.1_K6.0000,isosceles,6.0,0.1,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.1000,isosceles,0.1,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.2000,isosceles,0.2,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.3000,isosceles,0.30000000000000004,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.4000,isosceles,0.4,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.5000,isosceles,0.5,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.6000,isosceles,0.6,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.7000,isosceles,0.7000000000000001,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.8000,isosceles,0.8,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K0.9000,isosceles,0.9,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K1.0000,isosceles,1.0,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K1.2500,isosceles,1.25,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K1.5000,isosceles,1.5,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K1.7500,isosceles,1.75,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K2.0000,isosceles,2.0,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K2.2500,isosceles,2.25,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K2.5000,isosceles,2.5,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K2.7500,isosceles,2.75,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.0000,isosceles,3.0,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.2500,isosceles,3.25,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.3500,isosceles,3.35,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.3750,isosceles,3.375,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.4000,isosceles,3.4,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.4250,isosceles,3.4250000000000003,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.4500,isosceles,3.45,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.4750,isosceles,3.475,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.5000,isosceles,3.5,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.5250,isosceles,3.525,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.5500,isosceles,3.5500000000000003,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.5750,isosceles,3.575,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.6000,isosceles,3.6,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.6250,isosceles,3.625,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.6500,isosceles,3.6500000000000004,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.6750,isosceles,3.6750000000000003,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.7000,isosceles,3.7,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.7250,isosceles,3.725,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.7500,isosceles,3.75,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.7750,isosceles,3.7750000000000004,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.8000,isosceles,3.8000000000000003,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.8250,isosceles,3.825,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K3.8500,isosceles,3.85,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K4.0000,isosceles,4.0,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K4.2500,isosceles,4.25,0.19999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K4.5000,isosceles,4.5,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K4.7500,isosceles,4.75,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K5.0000,isosceles,5.0,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K5.2500,isosceles,5.25,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K5.5000,isosceles,5.5,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K5.7500,isosceles,5.75,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.2_K6.0000,isosceles,6.0,0.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.1000,isosceles,0.1,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.2000,isosceles,0.2,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.3000,isosceles,0.30000000000000004,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.4000,isosceles,0.4,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.5000,isosceles,0.5,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.6000,isosceles,0.6,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.7000,isosceles,0.7000000000000001,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.8000,isosceles,0.8,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K0.9000,isosceles,0.9,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K1.0000,isosceles,1.0,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K1.2500,isosceles,1.25,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K1.5000,isosceles,1.5,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K1.7500,isosceles,1.75,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K2.0000,isosceles,2.0,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K2.2500,isosceles,2.25,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K2.5000,isosceles,2.5,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K2.7500,isosceles,2.75,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.0000,isosceles,3.0,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.2500,isosceles,3.25,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.3500,isosceles,3.35,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.3750,isosceles,3.375,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.4000,isosceles,3.4,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.4250,isosceles,3.4250000000000003,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.4500,isosceles,3.45,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.4750,isosceles,3.475,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.5000,isosceles,3.5,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.5250,isosceles,3.525,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.5500,isosceles,3.5500000000000003,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.5750,isosceles,3.575,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.6000,isosceles,3.6,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.6250,isosceles,3.625,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.6500,isosceles,3.6500000000000004,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.6750,isosceles,3.6750000000000003,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.7000,isosceles,3.7,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.7250,isosceles,3.725,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.7500,isosceles,3.75,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.7750,isosceles,3.7750000000000004,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.8000,isosceles,3.8000000000000003,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.8250,isosceles,3.825,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K3.8500,isosceles,3.85,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K4.0000,isosceles,4.0,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K4.2500,isosceles,4.25,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K4.5000,isosceles,4.5,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K4.7500,isosceles,4.75,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K5.0000,isosceles,5.0,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K5.2500,isosceles,5.25,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K5.5000,isosceles,5.5,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K5.7500,isosceles,5.75,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.5_K6.0000,isosceles,6.0,0.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.1000,isosceles,0.1,0.8000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.2000,isosceles,0.2,0.8000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.3000,isosceles,0.30000000000000004,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.4000,isosceles,0.4,0.8000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.5000,isosceles,0.5,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.6000,isosceles,0.6,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.7000,isosceles,0.7000000000000001,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.8000,isosceles,0.8,0.8000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K0.9000,isosceles,0.9,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K1.0000,isosceles,1.0,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K1.2500,isosceles,1.25,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K1.5000,isosceles,1.5,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K1.7500,isosceles,1.75,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K2.0000,isosceles,2.0,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K2.2500,isosceles,2.25,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K2.5000,isosceles,2.5,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K2.7500,isosceles,2.75,0.7999999999999999,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.0000,isosceles,3.0,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.2500,isosceles,3.25,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.3500,isosceles,3.35,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.3750,isosceles,3.375,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.4000,isosceles,3.4,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.4250,isosceles,3.4250000000000003,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.4500,isosceles,3.45,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.4750,isosceles,3.475,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.5000,isosceles,3.5,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.5250,isosceles,3.525,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.5500,isosceles,3.5500000000000003,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.5750,isosceles,3.575,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.6000,isosceles,3.6,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.6250,isosceles,3.625,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.6500,isosceles,3.6500000000000004,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.6750,isosceles,3.6750000000000003,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.7000,isosceles,3.7,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.7250,isosceles,3.725,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.7500,isosceles,3.75,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.7750,isosceles,3.7750000000000004,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.8000,isosceles,3.8000000000000003,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.8250,isosceles,3.825,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K3.8500,isosceles,3.85,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K4.0000,isosceles,4.0,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K4.2500,isosceles,4.25,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K4.5000,isosceles,4.5,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K4.7500,isosceles,4.75,0.8000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K5.0000,isosceles,5.0,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K5.2500,isosceles,5.25,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K5.5000,isosceles,5.5,0.7999999999999999,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K5.7500,isosceles,5.75,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q0.8_K6.0000,isosceles,6.0,0.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.1000,isosceles,0.1,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.2000,isosceles,0.2,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.3000,isosceles,0.30000000000000004,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.4000,isosceles,0.4,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.5000,isosceles,0.5,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.6000,isosceles,0.6,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.7000,isosceles,0.7000000000000001,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.8000,isosceles,0.8,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K0.9000,isosceles,0.9,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K1.0000,isosceles,1.0,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K1.2500,isosceles,1.25,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K1.5000,isosceles,1.5,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K1.7500,isosceles,1.75,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K2.0000,isosceles,2.0,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K2.2500,isosceles,2.25,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K2.5000,isosceles,2.5,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K2.7500,isosceles,2.75,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.0000,isosceles,3.0,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.2500,isosceles,3.25,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.3500,isosceles,3.35,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.3750,isosceles,3.375,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.4000,isosceles,3.4,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.4250,isosceles,3.4250000000000003,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.4500,isosceles,3.45,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.4750,isosceles,3.475,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.5000,isosceles,3.5,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.5250,isosceles,3.525,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.5500,isosceles,3.5500000000000003,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.5750,isosceles,3.575,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.6000,isosceles,3.6,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.6250,isosceles,3.625,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.6500,isosceles,3.6500000000000004,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.6750,isosceles,3.6750000000000003,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.7000,isosceles,3.7,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.7250,isosceles,3.725,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.7500,isosceles,3.75,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.7750,isosceles,3.7750000000000004,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.8000,isosceles,3.8000000000000003,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.8250,isosceles,3.825,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K3.8500,isosceles,3.85,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K4.0000,isosceles,4.0,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K4.2500,isosceles,4.25,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K4.5000,isosceles,4.5,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K4.7500,isosceles,4.75,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K5.0000,isosceles,5.0,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K5.2500,isosceles,5.25,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K5.5000,isosceles,5.5,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K5.7500,isosceles,5.75,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1_K6.0000,isosceles,6.0,1.0,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.1000,isosceles,0.1,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.2000,isosceles,0.2,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.3000,isosceles,0.30000000000000004,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.4000,isosceles,0.4,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.5000,isosceles,0.5,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.6000,isosceles,0.6,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.7000,isosceles,0.7000000000000001,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.8000,isosceles,0.8,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K0.9000,isosceles,0.9,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K1.0000,isosceles,1.0,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K1.2500,isosceles,1.25,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K1.5000,isosceles,1.5,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K1.7500,isosceles,1.75,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K2.0000,isosceles,2.0,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K2.2500,isosceles,2.25,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K2.5000,isosceles,2.5,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K2.7500,isosceles,2.75,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.0000,isosceles,3.0,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.2500,isosceles,3.25,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.3500,isosceles,3.35,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.3750,isosceles,3.375,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.4000,isosceles,3.4,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.4250,isosceles,3.4250000000000003,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.4500,isosceles,3.45,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.4750,isosceles,3.475,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.5000,isosceles,3.5,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.5250,isosceles,3.525,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.5500,isosceles,3.5500000000000003,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.5750,isosceles,3.575,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.6000,isosceles,3.6,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.6250,isosceles,3.625,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.6500,isosceles,3.6500000000000004,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.6750,isosceles,3.6750000000000003,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.7000,isosceles,3.7,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.7250,isosceles,3.725,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.7500,isosceles,3.75,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.7750,isosceles,3.7750000000000004,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.8000,isosceles,3.8000000000000003,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.8250,isosceles,3.825,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K3.8500,isosceles,3.85,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K4.0000,isosceles,4.0,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K4.2500,isosceles,4.25,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K4.5000,isosceles,4.5,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K4.7500,isosceles,4.75,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K5.0000,isosceles,5.0,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K5.2500,isosceles,5.25,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K5.5000,isosceles,5.5,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K5.7500,isosceles,5.75,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.2_K6.0000,isosceles,6.0,1.2,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.1000,isosceles,0.1,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.2000,isosceles,0.2,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.3000,isosceles,0.30000000000000004,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.4000,isosceles,0.4,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.5000,isosceles,0.5,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.6000,isosceles,0.6,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.7000,isosceles,0.7000000000000001,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.8000,isosceles,0.8,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K0.9000,isosceles,0.9,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K1.0000,isosceles,1.0,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K1.2500,isosceles,1.25,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K1.5000,isosceles,1.5,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K1.7500,isosceles,1.75,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K2.0000,isosceles,2.0,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K2.2500,isosceles,2.25,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K2.5000,isosceles,2.5,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K2.7500,isosceles,2.75,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.0000,isosceles,3.0,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.2500,isosceles,3.25,1.5000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.3500,isosceles,3.35,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.3750,isosceles,3.375,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.4000,isosceles,3.4,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.4250,isosceles,3.4250000000000003,1.4999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.4500,isosceles,3.45,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.4750,isosceles,3.475,1.5000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.5000,isosceles,3.5,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.5250,isosceles,3.525,1.4999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.5500,isosceles,3.5500000000000003,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.5750,isosceles,3.575,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.6000,isosceles,3.6,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.6250,isosceles,3.625,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.6500,isosceles,3.6500000000000004,1.4999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.6750,isosceles,3.6750000000000003,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.7000,isosceles,3.7,1.5000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.7250,isosceles,3.725,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.7500,isosceles,3.75,1.4999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.7750,isosceles,3.7750000000000004,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.8000,isosceles,3.8000000000000003,1.5000000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.8250,isosceles,3.825,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K3.8500,isosceles,3.85,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K4.0000,isosceles,4.0,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K4.2500,isosceles,4.25,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K4.5000,isosceles,4.5,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K4.7500,isosceles,4.75,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K5.0000,isosceles,5.0,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K5.2500,isosceles,5.25,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K5.5000,isosceles,5.5,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K5.7500,isosceles,5.75,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.5_K6.0000,isosceles,6.0,1.5,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.1000,isosceles,0.1,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.2000,isosceles,0.2,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.3000,isosceles,0.30000000000000004,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.4000,isosceles,0.4,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.5000,isosceles,0.5,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.6000,isosceles,0.6,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.7000,isosceles,0.7000000000000001,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.8000,isosceles,0.8,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K0.9000,isosceles,0.9,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K1.0000,isosceles,1.0,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K1.2500,isosceles,1.25,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K1.5000,isosceles,1.5,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K1.7500,isosceles,1.75,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K2.0000,isosceles,2.0,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K2.2500,isosceles,2.25,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K2.5000,isosceles,2.5,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K2.7500,isosceles,2.75,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.0000,isosceles,3.0,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.2500,isosceles,3.25,1.8000000000000003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.3500,isosceles,3.35,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.3750,isosceles,3.375,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.4000,isosceles,3.4,1.8000000000000003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.4250,isosceles,3.4250000000000003,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.4500,isosceles,3.45,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.4750,isosceles,3.475,1.7999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.5000,isosceles,3.5,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.5250,isosceles,3.525,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.5500,isosceles,3.5500000000000003,1.7999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.5750,isosceles,3.575,1.8000000000000003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.6000,isosceles,3.6,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.6250,isosceles,3.625,1.7999999999999998,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.6500,isosceles,3.6500000000000004,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.6750,isosceles,3.6750000000000003,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.7000,isosceles,3.7,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.7250,isosceles,3.725,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.7500,isosceles,3.75,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.7750,isosceles,3.7750000000000004,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.8000,isosceles,3.8000000000000003,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.8250,isosceles,3.825,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K3.8500,isosceles,3.85,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K4.0000,isosceles,4.0,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K4.2500,isosceles,4.25,1.8000000000000003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K4.5000,isosceles,4.5,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K4.7500,isosceles,4.75,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K5.0000,isosceles,5.0,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K5.2500,isosceles,5.25,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K5.5000,isosceles,5.5,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K5.7500,isosceles,5.75,1.8000000000000003,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.8_K6.0000,isosceles,6.0,1.8,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.1000,isosceles,0.1,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.2000,isosceles,0.2,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.3000,isosceles,0.30000000000000004,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.4000,isosceles,0.4,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.5000,isosceles,0.5,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.6000,isosceles,0.6,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.7000,isosceles,0.7000000000000001,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.8000,isosceles,0.8,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K0.9000,isosceles,0.9,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K1.0000,isosceles,1.0,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K1.2500,isosceles,1.25,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K1.5000,isosceles,1.5,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K1.7500,isosceles,1.75,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K2.0000,isosceles,2.0,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K2.2500,isosceles,2.25,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K2.5000,isosceles,2.5,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K2.7500,isosceles,2.75,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.0000,isosceles,3.0,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.2500,isosceles,3.25,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.3500,isosceles,3.35,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.3750,isosceles,3.375,1.9499999999999997,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.4000,isosceles,3.4,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.4250,isosceles,3.4250000000000003,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.4500,isosceles,3.45,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.4750,isosceles,3.475,1.9499999999999997,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.5000,isosceles,3.5,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.5250,isosceles,3.525,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.5500,isosceles,3.5500000000000003,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.5750,isosceles,3.575,1.9499999999999997,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.6000,isosceles,3.6,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.6250,isosceles,3.625,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.6500,isosceles,3.6500000000000004,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.6750,isosceles,3.6750000000000003,1.9499999999999997,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.7000,isosceles,3.7,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.7250,isosceles,3.725,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.7500,isosceles,3.75,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.7750,isosceles,3.7750000000000004,1.9499999999999997,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.8000,isosceles,3.8000000000000003,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.8250,isosceles,3.825,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K3.8500,isosceles,3.85,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K4.0000,isosceles,4.0,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K4.2500,isosceles,4.25,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K4.5000,isosceles,4.5,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K4.7500,isosceles,4.75,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K5.0000,isosceles,5.0,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K5.2500,isosceles,5.25,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K5.5000,isosceles,5.5,1.95,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K5.7500,isosceles,5.75,1.9499999999999997,1.0,1.0,True,k2=k3; broad isosceles scan
+isosceles_q1.95_K6.0000,isosceles,6.0,1.9500000000000002,1.0,1.0,True,k2=k3; broad isosceles scan

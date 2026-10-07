@@ -1,0 +1,32 @@
+[
+  {
+    "operator_id": "O1_zeta_dotzeta2",
+    "symbolic_form": "zeta * dot(zeta)^2",
+    "status": "required_tree_level",
+    "kernel_status": "TODO_exact_inin"
+  },
+  {
+    "operator_id": "O2_zeta_gradzeta2",
+    "symbolic_form": "zeta * (partial zeta)^2 / a^2",
+    "status": "required_tree_level",
+    "kernel_status": "TODO_exact_inin"
+  },
+  {
+    "operator_id": "O3_dotzeta_gradzeta_gradchi",
+    "symbolic_form": "dot(zeta) * partial_i(zeta) * partial_i(chi)",
+    "status": "required_tree_level",
+    "kernel_status": "TODO_exact_inin"
+  },
+  {
+    "operator_id": "O4_switch_eps_doteta_zeta2_dotzeta",
+    "symbolic_form": "epsilon_H * dot(eta_H) * zeta^2 * dot(zeta)",
+    "status": "required_tree_level",
+    "kernel_status": "existing_leading_proxy_must_replace_with_exact"
+  },
+  {
+    "operator_id": "O5_field_redefinition_boundary",
+    "symbolic_form": "field redefinition + boundary terms",
+    "status": "required_for_comparison",
+    "kernel_status": "TODO_exact"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "module": "A2",
+  "pass_gates": [
+    {
+      "gate": "CMB_safety",
+      "rule": "For K<1, all shapes remain observationally safe; no broad local/folded/equilateral leakage."
+    },
+    {
+      "gate": "exit_localization",
+      "rule": "Large normalized fNL, if present, remains localized near K~3.5--3.7."
+    },
+    {
+      "gate": "absolute_finiteness",
+      "rule": "Absolute bispectrum amplitude and perturbativity ratios remain finite and smooth."
+    },
+    {
+      "gate": "squeezed_sanity",
+      "rule": "No broad unsuppressed squeezed/local-type signal leaks to CMB scales."
+    }
+  ],
+  "fail_gates": [
+    {
+      "gate": "CMB_scale_large_NG",
+      "rule": "Any relevant operator or shape produces large unsuppressed non-Gaussianity for K<1."
+    },
+    {
+      "gate": "absolute_divergence",
+      "rule": "Absolute bispectrum amplitude diverges or becomes nonconvergent."
+    },
+    {
+      "gate": "shape_leakage",
+      "rule": "Exit feature leaks broadly across K or shape space."
+    }
+  ]
+}

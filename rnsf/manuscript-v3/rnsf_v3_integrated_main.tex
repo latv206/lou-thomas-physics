@@ -1,0 +1,660 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=blue
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    columns=fullflexible,
+    frame=single,
+    xleftmargin=1em,
+    xrightmargin=1em
+}
+
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Gcg}{\mathcal{G}_{\rm cg}}
+\newcommand{\Jmap}{\mathcal{J}}
+\newcommand{\Pre}{P_i^{(0)}}
+\newcommand{\Pfull}{P_i}
+\newcommand{\Qlink}{Q_{12}^{(\Sigma)}}
+\newcommand{\ph}{PH}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\rel}{\rm rel}
+\newcommand{\eff}{\rm eff}
+
+\begin{document}
+
+\title{Persistent Topological Defects and Direct-Sum Time Sectors\\[0.4em]\large A Formal Research Program and Toy-Model Architecture for a Relational Network Substrate}
+
+\author{Lou Thomas\\\small Independent Researcher}
+% Optional: add a public contact email if desired.
+
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+This paper proposes the Relational Network Substrate Framework (RNSF), a two-layer formal research program in which smooth macroscopic spacetime and field behavior are modeled as coarse-grained descriptions of an underlying discrete relational cell complex \(\Ccal(\tau)\). Rather than taking point particles as primitive objects embedded in a prior spatial arena, RNSF introduces a persistent-homology-based descriptor for particle-like candidates: high-persistence nested cycle-complexes isolated across an embedding-free relational filtration \(K_\bullet\). Recent results from persistent homology in amorphous covalent solids, knot-soliton stabilization in beyond-Standard-Model field theory, and direct-sum formulations of Einstein--Rosen bridge sectors are used strictly as external mathematical motivations and mechanical analogues, not as direct proofs of the framework. We define a coarse-graining ansatz \(\Gcg\), a provisional discrete linking-charge ansatz \(\Qlink\), and a horizon junction map \(\Jmap\) from singular or horizon-bounded Layer-1 descriptions to orthogonal bidirectional Layer-2 Hilbert sectors under imposed norm-preserving consistency conditions. A discrete simulation pipeline is specified to make the framework operational: finite graph ledgers are evolved under localized re-linking rules, filtered by graph accessibility, and analyzed through both Vietoris--Rips and cellular cycle-basis constructions. The paper closes with explicit limitations: RNSF does not yet derive Lorentz invariance, the Born rule, Standard Model masses or couplings, or a quantum-gravity path integral. It is presented as a bounded, AI-disclosed mathematical architecture for testing whether persistent topology, linked defects, and direct-sum horizon sectors can be treated within one relational-substrate language.
+\end{abstract}
+
+\section{Introduction}
+
+A persistent challenge across contemporary quantum-gravity programs is the reconciliation of continuous macroscopic spacetime with discrete or combinatorial structures often hypothesized at microscopic scales. Standard continuum descriptions encounter severe conceptual and mathematical stress at curvature singularities, causal horizons, and early-universe boundaries. Separately, quantum theory requires unitary information preservation, while classical thermodynamic experience presents an apparently one-way arrow of time. The Relational Network Substrate Framework (RNSF) is introduced here as a formal research program for investigating these tensions through a two-layer ontology.
+
+Layer 1, denoted \(\mathrm{L}_1\), represents the familiar emergent domain of smooth manifolds, continuous fields, and macroscopic one-arrow thermodynamic evolution. Layer 2, denoted \(\mathrm{L}_2\), represents a background-independent relational ledger modeled as an evolving cell complex. RNSF does not claim to complete quantum gravity. It defines a disciplined syntax for asking whether matter-like stability, continuum emergence, and horizon information bookkeeping can be modeled as structural consequences of persistent topology in a dynamical relational complex.
+
+The core contribution of this v1 paper is narrow. We define a reusable set of formal objects: an evolving relational complex \(\Ccal(\tau)\), a relational filtration \(K_\bullet\), a coarse-grained relational density \(\varphi_{\rm rel}\), a pre-defect descriptor \(\Pre\), a full particle-like defect descriptor \(\Pfull\), a provisional linking charge \(\Qlink\), and a junction map \(\Jmap\). These are definitions and ansatz-level structures. Their physical correctness remains to be established by future derivations and simulations.
+
+\section{Related Work and Motivating Physical Analogues}
+
+RNSF uses results from topological data analysis, topological soliton theory, and horizon-sector quantum theory as external motivations. These results do not prove RNSF. They show that the mechanisms invoked by RNSF--persistent topology, linked stabilization, and direct-sum sector bookkeeping--are not merely decorative metaphors.
+
+\subsection{Microscopic Network Topology}
+
+Persistent homology provides a way to track topological features across a filtration. In the context of amorphous covalent solids, Minamitani, Nakamura, Obayashi, and Mizuno applied persistent homology to amorphous silicon and reported hierarchical structures in which short-range disorder is embedded within medium-range order, with strong correlations to nonaffine displacement and localized low-energy vibrational features \cite{Minamitani2025}. RNSF interprets this as an external material-network analogue: hidden nested topology can govern macroscopic response in a physical network.
+
+The RNSF extension is conjectural. It asks whether an analogous persistence-based descriptor can be used as a mathematical primitive for matter-like excitations in a deeper relational complex. The claim is not that amorphous silicon proves a spacetime substrate. The claim is that persistent nested topology is a real and computable control structure in at least one physical network.
+
+\subsection{Particle-Scale Stabilization}
+
+A core difficulty for loop-based or knot-based matter pictures is stabilization. A simple isolated loop in a tensioned medium generally shrinks or dissolves. Eto, Hamada, and Nitta demonstrated that knot-like objects can appear as metastable solitons in a realistic extension of the Standard Model involving the QCD axion and right-handed neutrinos \cite{Eto2025}. Their work motivates the RNSF requirement that a particle-like defect cannot be merely a simple graph cycle. It should carry some stabilizing multi-sector structure, such as linking, helicity, chirality, or a Chern--Simons-like charge.
+
+RNSF translates this lesson into a discrete cochain-level ansatz. The translation is not a derivation from their field theory. It is a proposed graph-complex analogue of the stabilizing logic: a matter-like object is a persistent nested cycle-complex whose collapse is blocked by an additional topological constraint.
+
+\subsection{Horizon-Scale Symmetry}
+
+Gazta\~naga, Kumar, and Marto proposed a direct-sum understanding of Einstein--Rosen bridge sectors in which geometric superselection sectors and opposite arrows of temporal evolution become relevant at gravitational horizons \cite{Gaztanaga2026}. RNSF uses this work as motivation for distinguishing ordinary coarse-graining into Layer 1 from a separate horizon junction map \(\Jmap\), invoked only when the Layer-1 description becomes singular, horizon-bounded, or topologically ill-conditioned.
+
+Again, the RNSF claim is limited. The direct-sum ER-bridge proposal does not prove the existence of a relational substrate. It motivates the possibility that a single one-arrow continuum description may be incomplete at boundary conditions where horizon physics is dominant.
+
+\section{Postulates of the Framework}
+
+The architecture of RNSF v1 is organized around five postulates. These are working assumptions for a toy-model research program, not established physical laws.
+
+\begin{description}
+    \item[P1: Substrate Postulate.] Fundamental reality is modeled by an evolving, background-independent relational cell complex
+    \begin{equation}
+        \Ccal(\tau)=(V,E,F,\ldots),
+    \end{equation}
+    where \(V\) denotes discrete update events, \(E\) active relations, \(F\) closed relational faces, and higher cells consistency domains. The internal ordering parameter \(\tau\) is not macroscopic coordinate time.
+
+    \item[P2: Emergence Postulate.] Macroscopic coordinate spacetime, field configurations \((g_{\mu\nu},\phi,A_\mu)\), and their effective Hilbert-space description \(\Hcal_{\rm L1}\) are modeled as coarse-grained descriptions of relational accessibility and connectivity in \(\Ccal(\tau)\).
+
+    \item[P3: Topological Defect Postulate.] Matter-like excitations are modeled as localized, high-persistence homological defect candidates native to a relational filtration \(K_\bullet\), rather than as point objects placed into an independent background space.
+
+    \item[P4: Junction Postulate.] At singular, horizon-bounded, or topologically ill-conditioned boundaries of the Layer-1 description, admissible state maps are modeled by a junction map \(\Jmap\) into orthogonal bidirectional Layer-2 sectors. Norm preservation is imposed as a consistency condition, not derived as a theorem.
+
+    \item[P5: Phase-Transition Postulate.] Global cosmological transitions are modeled as possible structural phase transitions of the relational complex when a coarse-grained relational density crosses a critical threshold. This is a conjectural extension rather than a derived cosmology.
+\end{description}
+
+\section{The Emergence Horizon and Continuum-Limit Mapping}
+\label{sec:emergence-horizon}
+
+A central unresolved problem for any background-free discrete model is the coarse-graining problem: specifying how combinatorial and topological data native to a microscopic relational complex can generate smooth, effective pseudo-Riemannian geometry and field variables at macroscopic observer scales. In RNSF this transition is not treated as a completed derivation. It is introduced as a continuum-limit ansatz whose consistency must be tested by future numerical models.
+
+To avoid confusion with the horizon junction map \(\Jmap\), which maps ill-conditioned Layer-1 states into bidirectional Layer-2 Hilbert sectors, we denote the continuum coarse-graining map by \(\Gcg\).
+
+\subsection{Coarse-Grained Relational Density}
+
+Let the fundamental substrate at internal update step \(\tau\) be represented by the evolving relational cell complex
+\begin{equation}
+    \Ccal(\tau)=(V,E,F,\ldots).
+\end{equation}
+Let \(\Omega_N\subset \Ccal(\tau)\) be a sequence of finite subcomplexes assigned by a coarse-graining chart map
+\begin{equation}
+    \pi_{\rm cg}: \Omega_N \mapsto U_x
+\end{equation}
+to a macroscopic neighborhood \(U_x\) centered at an effective coordinate label \(x^\mu\). The coordinate label \(x^\mu\) is not fundamental; it labels an equivalence class of sufficiently large relational subcomplexes.
+
+For each \(\Omega_N\), define the internal average link degree
+\begin{equation}
+    \bar d(\Omega_N)=\frac{2|E_{\Omega_N}|}{|V_{\Omega_N}|},
+\end{equation}
+where \(V_{\Omega_N}\subseteq V\) and \(E_{\Omega_N}\subseteq E\) denote the vertices and internal active relations of the subcomplex. A scalar relational-density proxy is then defined, when the coarse-graining sequence converges, by
+\begin{equation}
+    \varphi_{\rm rel}(x)
+    =
+    \lim_{N\to\infty}
+    \log\left(1+\frac{\bar d(\Omega_N)}{d_0}\right),
+\end{equation}
+where \(d_0>0\) is a reference degree inserted to make the argument dimensionless.
+
+The scalar \(\varphi_{\rm rel}(x)\) is not a derivation of the full macroscopic metric tensor. A single scalar can at most parameterize a conformal or density-sector approximation to geometry. In the minimal continuum-limit toy ansatz, one may write
+\begin{equation}
+    g_{\mu\nu}^{\rm eff}(x)
+    =
+    e^{2\alpha \varphi_{\rm rel}(x)}q_{\mu\nu}(x),
+\end{equation}
+where \(q_{\mu\nu}\) is a reference effective metric within the chosen coarse-grained chart and \(\alpha\) is a phenomenological scale parameter. Deriving the full Lorentzian metric structure from \(\Ccal(\tau)\) remains an open problem.
+
+\subsection{Persistent Profiles as Continuum Field Sources}
+
+Let \(K_\bullet\) denote the relational filtration associated with \(\Ccal(\tau)\):
+\begin{equation}
+    K_{\lambda_1}\subset K_{\lambda_2}\subset\cdots\subset K_{\lambda_n}.
+\end{equation}
+For each dimension \(k\), define the persistence profile
+\begin{equation}
+    \mathcal T_k(K_\bullet)
+    =
+    \left\{
+    \left([c_a],\lambda_{\rm birth}(c_a),\lambda_{\rm death}(c_a)\right)
+    \right\}_{a}.
+\end{equation}
+Here \([c_a]\in PH_k(K_\bullet)\) denotes a persistent homology class. The persistence lifetime is written as
+\begin{equation}
+    \ell_a=\lambda_{\rm death}(c_a)-\lambda_{\rm birth}(c_a),
+\end{equation}
+reserving \(\tau\) exclusively for the internal update ordering of the substrate.
+
+The continuum coarse-graining map is written schematically as
+\begin{equation}
+    \Gcg:
+    \left(K_\bullet,\{\mathcal T_k(K_\bullet)\}_k,\Qlink\right)
+    \longrightarrow
+    \left(\mathcal M_{\rm eff},g_{\mu\nu}^{\rm eff},\Phi_{\rm eff}\right).
+\end{equation}
+This equation is a proposed mapping, not a theorem. It states that persistent topological profiles, together with candidate linking-charge data, are treated as sources for effective continuum geometry and field descriptors.
+
+If a filtration-depth coordinate is useful for numerical bookkeeping, one may introduce an auxiliary scale coordinate \(s\):
+\begin{equation}
+    \Phi_{\rm eff}(x,s)=\sum_a A_a(x)\chi_a(s),
+\end{equation}
+where \(s\) parameterizes filtration depth rather than a physical extra spatial dimension. This avoids committing the v1 framework to a Kaluza--Klein or brane-world interpretation.
+
+\subsection{Relation to the Horizon Junction Map}
+
+The coarse-graining map \(\Gcg\) should be distinguished from the horizon junction map \(\Jmap\). The former describes emergence into Layer 1 under ordinary coarse-graining. The latter is invoked only when the Layer-1 continuum description becomes singular, horizon-bounded, or topologically ill-conditioned:
+\begin{equation}
+    \Jmap:
+    \Hcal_{\rm L1}
+    \longrightarrow
+    \Hcal_{\rm L2}^{(+)}\oplus \Hcal_{\rm L2}^{(-)}.
+\end{equation}
+Thus, \(\Gcg\) describes emergence into Layer 1, while \(\Jmap\) describes failure of the Layer-1 description and return to bidirectional Layer-2 sector bookkeeping.
+
+\section{Stabilization by Provisional Relational Linking Charge}
+\label{sec:linking-charge}
+
+To translate the idea of linked topological stabilization into a background-free relational complex, RNSF introduces a discrete Chern--Simons-like linking charge as a provisional ansatz.
+
+Let \(a_1\in C^p(\Ccal)\) and \(a_2\in C^q(\Ccal)\) represent discrete relational connection cochains belonging to two independent interacting update sectors of the global complex. Define the candidate discrete relational linking charge \(\Qlink\) by evaluating a cup product against the coboundary operator:
+\begin{equation}
+    \Qlink=\left\langle a_1\smile\delta a_2,[\Sigma]\right\rangle.
+\end{equation}
+Here \(\Sigma\) is a closed, oriented 3-chain or three-dimensional consistency slice isolated within the broader relational complex. For the present toy architecture we take \(a_1,a_2\in C^1(\Ccal)\), so that \(\delta a_2\in C^2(\Ccal)\) and \(a_1\smile\delta a_2\in C^3(\Ccal)\), allowing evaluation on \([\Sigma]\). In this v1 formulation, \(\Qlink\) is introduced strictly as a candidate invariant. Conservation under localized network reconfigurations, such as Pachner-like moves or stochastic edge swaps, remains an open target condition.
+
+Before imposing linking charge or unwinding-energy constraints, define the computational pre-descriptor
+\begin{equation}
+\begin{aligned}
+    \Pre = \{[c_a]\in PH_1(K_\bullet):\;&
+    \ell_a>\ell_{\rm crit},\\
+    &\exists c_b\prec c_a\}.
+\end{aligned}
+\end{equation}
+The nesting relation is defined chain-theoretically rather than spatially:
+\begin{equation}
+    c_b\prec c_a
+    \quad\Longleftrightarrow\quad
+    \supp(c_b)\subset\supp(B_a),
+    \qquad
+    \partial B_a=c_a.
+\end{equation}
+Here \(B_a\) is a selected 2-chain or higher-dimensional cellular support bounded by \(c_a\). This avoids using the spatial phrase ``inside'' and preserves the background-free intent of the model.
+
+The full particle-like descriptor is reserved for candidates that also pass stabilization filters:
+\begin{equation}
+\begin{aligned}
+    \Pfull = \{\Pre:\;&
+    \Qlink\neq 0,\\
+    &\Delta E_{\rm unwind}>E_{\rm barrier}\}.
+\end{aligned}
+\end{equation}
+This should be read as a descriptor definition, not a derivation of Standard Model particles. A useful toy-model mass proxy may be written in natural units as
+\begin{equation}
+    m_{\rm proxy}(\Pfull)\sim E_{\rm rel}(\Pfull),
+\end{equation}
+where \(E_{\rm rel}\) denotes stored relational tension. This is an effective classification proxy only; it is not a calculation of physical particle masses.
+
+\section{Discrete Simulation Pipeline}
+\label{sec:discrete-simulation-pipeline}
+
+The preceding sections define RNSF as a formal architecture rather than as a completed derivation of physical law. To make the framework operational, this section specifies a minimal numerical toy model that can be implemented on a finite graph ledger. The purpose of the simulation is not to prove that the relational substrate is physically real or to derive the Standard Model. Its purpose is narrower: to test whether the proposed definitions of relational density, persistent cycle structure, and candidate pre-defects can be computed reproducibly from a background-free adjacency ledger.
+
+The simulation is designed around four measurable outputs: the response of the relational density proxy \(\varphi_{\rm rel}\) under localized re-linking; the persistence spectra of loop-like structures across an embedding-free filtration; the difference between Vietoris--Rips and cellular cycle-basis treatments of the same graph ledger; and the survival rate of high-persistence pre-defects \(\Pre\) under stochastic graph updates.
+
+\subsection{Initial Graph Ledger}
+
+Let the finite substrate snapshot at update step \(\tau_n\) be represented by a simple undirected graph
+\begin{equation}
+    G(\tau_n)=(V,E_{\tau_n}),
+\end{equation}
+with fixed vertex set \(V=\{v_1,v_2,\ldots,v_N\}\). For the minimal toy model, one may take
+\begin{equation}
+    N=64,\qquad p_0\in[0.08,0.15],
+\end{equation}
+and initialize \(E_{\tau_0}\) from a randomized symmetric adjacency matrix \(A_{ij}\), with
+\begin{equation}
+    A_{ij}=A_{ji},\qquad A_{ii}=0,\qquad A_{ij}\sim{\rm Bernoulli}(p_0).
+\end{equation}
+Disconnected initial samples are rejected or repaired by adding the minimum number of edges required to obtain a connected graph. This condition is imposed only to make shortest-path and resistance-distance filtrations well-defined on the full ledger.
+
+A localized observer subcomplex \(\Omega\subset G(\tau_n)\) is selected by choosing a seed vertex \(v_s\) and collecting vertices within graph distance \(r_\Omega\):
+\begin{equation}
+    V_\Omega(\tau_n)=\{v_i\in V:d_G(v_i,v_s)\le r_\Omega\}.
+\end{equation}
+The induced internal edge set is
+\begin{equation}
+    E_\Omega(\tau_n)=\{(v_i,v_j)\in E_{\tau_n}:v_i,v_j\in V_\Omega(\tau_n)\}.
+\end{equation}
+The localized average degree and finite-graph relational-density proxy are
+\begin{equation}
+    \bar d_\Omega(\tau_n)=\frac{2|E_\Omega(\tau_n)|}{|V_\Omega(\tau_n)|},
+\end{equation}
+\begin{equation}
+    \varphi_{\rm rel}(\Omega,\tau_n)=
+    \log\left(1+\frac{\bar d_\Omega(\tau_n)}{d_0}\right).
+\end{equation}
+
+\subsection{Localized Re-Linking Update Rule}
+
+To model substrate evolution without imposing an external spatial background, each update step applies a local graph-rewrite operation using graph-internal adjacency information. At update step \(\tau_n\), choose a seed vertex \(v_s\) and define a re-linking patch
+\begin{equation}
+    \mathcal P_s(\tau_n)=\{v_i\in V:d_G(v_i,v_s)\le r_{\rm patch}\}.
+\end{equation}
+The update consists of removing a set of \(m_-\) edges and inserting \(m_+\) new patch-local edges:
+\begin{equation}
+    E_{\tau_{n+1}}=\left(E_{\tau_n}\setminus E_{\rm remove}\right)\cup E_{\rm add}.
+\end{equation}
+For a degree-preserving null model one sets \(m_+=m_-\). For a localized compression experiment one takes \(m_+>m_-\). The latter deliberately increases \(\bar d_\Omega\) and tests whether \(\varphi_{\rm rel}\), \(PH_1\), and cycle-basis persistence respond coherently to localized relational densification.
+
+\subsection{Embedding-Free Filtration}
+
+For each graph snapshot \(G(\tau_n)\), compute a graph-internal distance matrix
+\begin{equation}
+    D_{ij}(\tau_n)=d_G(v_i,v_j),
+\end{equation}
+where \(d_G\) is shortest-path distance on the current ledger. A resistance-distance matrix may be used as an alternative in later implementations. The filtration parameter \(\lambda\) is defined over graph accessibility rather than spatial distance:
+\begin{equation}
+    \lambda\in\{1,2,\ldots,\lambda_{\max}\},
+    \qquad
+    \lambda_{\max}\le {\rm diam}(G).
+\end{equation}
+For each \(\lambda\), define a filtered graph
+\begin{equation}
+    G_\lambda(\tau_n)=(V,E_{\lambda,\tau_n}),
+\end{equation}
+with
+\begin{equation}
+    (v_i,v_j)\in E_{\lambda,\tau_n}
+    \quad\Longleftrightarrow\quad
+    D_{ij}(\tau_n)\le \lambda.
+\end{equation}
+This yields a nested graph sequence and corresponding complex sequence \(K_\bullet(\tau_n)\).
+
+\subsection{Dual Complex Construction}
+
+The same filtered graph data are processed through two parallel complex-construction tracks. Track A constructs a clique or Vietoris--Rips complex \(K_\lambda^{\rm VR}\) from each \(G_\lambda\). Every complete subgraph on \(k+1\) vertices is promoted to a \(k\)-simplex. This track is compatible with standard persistent-homology software but can fill loops prematurely in dense neighborhoods.
+
+Track B constructs a cellular cycle-basis complex \(K_\lambda^{\rm cell}\). Let
+\begin{equation}
+    \mathcal B_\lambda=\{b_1,b_2,\ldots,b_M\}
+\end{equation}
+denote a minimal or near-minimal cycle basis. Instead of filling all cliques, the cellular track attaches 2-cells only to selected verified cycles satisfying a chosen stability rule. The comparison
+\begin{equation}
+    PH_1(K_\bullet^{\rm VR})
+    \quad\text{versus}\quad
+    PH_1(K_\bullet^{\rm cell})
+\end{equation}
+is treated as a diagnostic. If a persistent feature exists only in the cellular track, the model flags it as potentially vulnerable to premature clique-filling under the Vietoris--Rips construction.
+
+\subsection{Logged Quantities and Null Model}
+
+Each simulation run should export a ledger table with one row per update step \(\tau_n\). The minimum recommended fields are
+\begin{equation}
+\begin{aligned}
+{
+m row}(\tau_n)=(&\tau_n,|V|,|E|,\bar d,|V_\Omega|,\bar d_\Omega,
+\varphi_{\rm rel},\\
+&\beta_1^{\rm VR},\beta_1^{\rm cell},\max_a\ell_a,
+|\Pre|,N_{\rm survive}).
+\end{aligned}
+\end{equation}
+To distinguish structure from random graph artifacts, each localized re-linking run should be compared against a null ensemble of degree-preserving random edge swaps:
+\begin{equation}
+    G(\tau_n)\longrightarrow G_{\rm null}^{(r)}(\tau_n),
+    \qquad r=1,\ldots,R.
+\end{equation}
+For any logged observable \(X\), define a null-normalized score
+\begin{equation}
+    Z_X(\tau_n)=\frac{X(\tau_n)-\mu_X^{\rm null}(\tau_n)}{\sigma_X^{\rm null}(\tau_n)+\epsilon},
+\end{equation}
+where \(\epsilon>0\) prevents division by zero.
+
+The simulation is informative if localized re-linking reproducibly changes \(\varphi_{\rm rel}\), if cellular cycle-basis tracking preserves high-persistence loops prematurely trivialized by the Vietoris--Rips track, if \(\Pre\) candidates survive significantly longer than null-model features, or if the descriptor fails cleanly and thereby constrains admissible update rules.
+
+\section{Horizon Junction Mapping and Direct-Sum Time Sectors}
+\label{sec:junction}
+
+The transition between macroscopic Layer-1 descriptions and the underlying relational substrate at a horizon boundary is modeled by the junction map
+\begin{equation}
+    \Jmap:
+    \Hcal_{\rm L1}[g_{\mu\nu},\phi,A_\mu]
+    \longrightarrow
+    \Hcal_{\rm L2}^{(+)}[K_\bullet]
+    \oplus
+    \Hcal_{\rm L2}^{(-)}[K_\bullet].
+\end{equation}
+Norm preservation is imposed as a consistency condition on all admissible junction maps:
+\begin{equation}
+    \|\Psi_{\rm L1}\|^2
+    =
+    \|\Psi_{\rm L2}^{(+)}\|^2
+    +
+    \|\Psi_{\rm L2}^{(-)}\|^2.
+\end{equation}
+This equation should not be read as a proof that RNSF resolves the information paradox. It is a boundary condition placed on any admissible map if RNSF is to preserve quantum information at horizon-like interfaces. The connection to direct-sum ER-bridge theory is motivational: RNSF interprets time-reversed mirror sectors not as literal separate universes, but as a possible bookkeeping structure required when a one-arrow continuum description becomes incomplete.
+
+\section{Cosmological Phase Transition and Dark-Relic Conjecture}
+\label{sec:dark-relics}
+
+A natural but speculative extension of the framework is the hypothesis that global cosmological transitions correspond to structural phase transitions of the relational complex. Let \(\rho_{\rm rel}\) denote a coarse-grained relational density, such as a global or regional average of link density, update congestion, or defect-persistence density. A schematic phase-transition condition may be written as
+\begin{equation}
+    \rho_{\rm rel}\rightarrow\rho_{\rm crit}
+    \quad\Longrightarrow\quad
+    \Ccal_{\rm contract}\rightarrow\Ccal_{\rm expand}.
+\end{equation}
+This is a conjectural substrate-level bounce ansatz, not a derived cosmological solution.
+
+Within this conjecture, a candidate dark-sector relic may be defined as a high-persistence defect candidate whose electromagnetic-sector coupling is suppressed while its gravitational-sector contribution remains non-negligible:
+\begin{equation}
+    D_i=
+    \left\{
+    \Pfull:
+    C_{\rm EM}(\Pfull)\approx 0,
+    \quad
+    C_{\rm grav}(\Pfull)>0,
+    \quad
+    \ell_i\gg t_{\rm cosmic}
+    \right\}.
+\end{equation}
+This does not explain dark matter in v1. It defines a candidate dark-sector relic class whose abundance, clustering, coupling structure, and observational viability remain to be calculated.
+
+\section{Framework Limitations and Unresolved Derivations}
+\label{sec:limitations}
+
+The Relational Network Substrate Framework is presented here strictly as a formal research program and toy-model architecture. It does not constitute a complete or predictive theory of quantum gravity. At present, the framework does not derive, calculate, or account for the following:
+
+\begin{enumerate}
+    \item \textbf{Lorentz invariance.} Continuous Lorentz symmetries have not been recovered from the discrete update structure of \(\Ccal(\tau)\).
+    \item \textbf{The Standard Model spectrum.} RNSF does not derive the known particle content, spin representations, gauge groups, coupling constants, masses, or flavor structure.
+    \item \textbf{The Born rule.} Quantum probability is not derived from the relational graph model in v1.
+    \item \textbf{Path integral quantization.} No rigorous path integral or state-sum over histories of \(\Ccal(\tau)\) has been constructed.
+    \item \textbf{Gauge invariance and conservation of \(\Qlink\).} The linking-charge ansatz has not yet been proven invariant under a specified family of admissible local update moves.
+    \item \textbf{Phenomenological constraints.} No quantitative fit to cosmological, collider, gravitational-wave, or laboratory data is presented in this paper.
+\end{enumerate}
+
+These limitations are not incidental. They define the research program's next mathematical tasks.
+
+\section{Conclusion}
+
+RNSF v1 introduces a persistent-homology-based descriptor for particle-like defects in a relational complex and situates that descriptor alongside a provisional linking charge, a continuum coarse-graining ansatz, and a horizon junction map. The paper's contribution is not a completed theory of quantum gravity, but a disciplined language for treating persistent topology, linked soliton-like stabilization, and direct-sum horizon bookkeeping as structurally related mechanisms. The immediate test of the framework is computational: implement the graph-ledger pipeline, compare Vietoris--Rips and cellular cycle-basis persistence, and determine whether \(\Pre\) candidates survive localized re-linking significantly beyond null-model expectations.
+
+\section*{Declarations and AI Disclosure}
+
+Portions of the manuscript organization, wording, mathematical exposition, and \LaTeX{} formatting were developed with AI-assisted editorial support. The scientific claims, responsibility for accuracy, verification of equations, and final submitted text remain the responsibility of the author.
+
+\section*{Acknowledgments}
+The author acknowledges the open-source developers of computational topology and graph-analysis libraries whose tools make numerical tests of relational-complex models possible.
+
+\appendix
+
+\section{Mathematical Status Audit Ledger}
+\label{app:audit}
+
+\begin{table}[h]
+\caption{RNSF v1 mathematical status audit.}
+\label{tab:audit}
+\small
+\begin{tabular}{p{0.16\textwidth}p{0.25\textwidth}p{0.19\textwidth}p{0.31\textwidth}}
+\toprule
+\textbf{Object} & \textbf{Meaning} & \textbf{Status} & \textbf{Unresolved hurdle} \\
+\midrule
+\(\Ccal(\tau)\) & Evolving relational cell complex & Postulate & Derive an emergent manifold or continuum limit. \\
+\(K_\bullet\) & Relational filtration & Definition & Give physically motivated choices of \(\lambda\). \\
+\(PH_k(K_\bullet)\) & Persistent homology classes & Mathematical tool & Establish robustness under admissible updates and noise. \\
+\(\varphi_{\rm rel}\) & Coarse-grained relational density proxy & Ansatz & Connect scalar density to full effective metric data. \\
+\(\Pre\) & High-persistence nested pre-defect & Computable descriptor & Validate against null models and update dynamics. \\
+\(\Qlink\) & Discrete linking-charge candidate & Provisional ansatz & Prove conservation or controlled variation under update moves. \\
+\(\Pfull\) & Stabilized particle-like descriptor & Definition/conjecture & Map to known quantum numbers, if possible. \\
+\(\Jmap\) & Horizon junction map & Proposed mapping & Derive admissible boundary conditions and norm preservation. \\
+\(D_i\) & Dark-sector relic candidate & Conjecture & Calculate relic abundance, clustering, and couplings. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Claim Matrix}
+\label{app:claim-matrix}
+
+\begin{table}[h]
+\caption{Claim discipline matrix.}
+\label{tab:claim-matrix}
+\small
+\begin{tabular}{p{0.19\textwidth}p{0.33\textwidth}p{0.39\textwidth}}
+\toprule
+\textbf{Claim type} & \textbf{Example in this paper} & \textbf{Allowed phrasing} \\
+\midrule
+Postulate & Reality is modeled as \(\Ccal(\tau)\). & ``We postulate'' or ``we model''. \\
+Definition & \(\Pre\), \(\Pfull\), and \(\Qlink\). & ``We define'' or ``we introduce as an ansatz''. \\
+External support & Persistent homology, knot solitons, direct-sum ER sectors. & ``Provides an analogue'' or ``motivates''. \\
+RNSF conjecture & Dark relics and substrate phase transition. & ``We conjecture'' or ``candidate mechanism''. \\
+Prediction target & Null-model survival of \(\Pre\). & ``Can be tested numerically''. \\
+Limitation & No derivation of Lorentz invariance or Born rule. & ``Not yet derived''. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Reference Pseudocode}
+\label{app:pseudocode}
+
+\begin{lstlisting}
+Input:
+    N, p0, T, r_patch, r_Omega,
+    m_add, m_remove, d0, ell_crit, R
+
+Initialize:
+    G0 = connected random graph with N vertices
+    choose observer seed vertex v_s
+
+For tau = 0,...,T:
+    define Omega by graph distance from v_s
+    compute local degree dbar_Omega
+    compute phi_rel = log(1 + dbar_Omega/d0)
+
+    compute shortest-path matrix D_G
+    for lambda = 1,...,diam(G):
+        build filtered graph G_lambda
+        build VR complex K_lambda^VR
+        build cellular cycle-basis complex K_lambda^cell
+
+    compute PH1 persistence for both tracks
+    extract high-persistence features ell_a > ell_crit
+    test chain-support nesting c_b < c_a
+    output pre-descriptor set P_i^(0)
+
+    generate R degree-preserving null graphs
+    compute null-normalized scores Z_X
+
+    apply localized re-linking update:
+        remove m_remove edges
+        add m_add patch-local edges
+
+Output:
+    ledger table of phi_rel, PH1 counts,
+    max persistence, pre-descriptor counts,
+    survival times, and null-model scores
+\end{lstlisting}
+
+\section{Exploratory Framework Extensions}
+\label{app:extensions}
+
+The following subsections are non-binding placeholders for future numerical modeling. They do not constitute completed derivations within the primary RNSF architecture.
+
+\subsection{Candidate Current-Normalization Functional}
+
+A possible future extension is to study whether effective fields generated by \(\Gcg\) admit conserved current-normalization measures. For a complex effective scalar mode decomposed as
+\begin{equation}
+    \Phi_{\rm eff}(x,s)=\psi(x)\chi(s),
+\end{equation}
+one may define the formal current-density expression
+\begin{equation}
+    j_\psi^0(x)=\frac{i}{2}\left(\psi^*\partial_0\psi-\psi\partial_0\psi^*\right).
+\end{equation}
+An associated effective normalization functional may then be written as
+\begin{equation}
+    N_{\rm eff}=
+    \int_\Sigma d^3x\,j_\psi^0(x)
+    \int_{s_-}^{s_+}ds\,w(s)|\chi(s)|^2,
+\end{equation}
+where \(w(s)\) is a positive filtration-weighting function. This is not a derivation of the Born rule. The current \(j_\psi^0\) is a relativistic scalar charge-density analogue and is not automatically positive-definite.
+
+\subsection{Phenomenological Decoherence Placeholder}
+
+Let \(\rho_{\rm off}\) denote the off-diagonal component of a reduced tracking matrix and let \(\|\rho_{\rm off}\|_F\) denote its Frobenius norm. Introduce dimensionless variables
+\begin{equation}
+    \widehat{\varphi}=\frac{\varphi_{\rm rel}}{\varphi_0},
+    \qquad
+    \widehat{\kappa}=\frac{\kappa}{\kappa_0},
+\end{equation}
+and define a non-negative damping profile
+\begin{equation}
+    \mathcal D(\widehat{\varphi},\widehat{\kappa})=
+    \frac{\widehat{\varphi}^{\,2}\widehat{\kappa}}{1+\widehat{\kappa}^{\,2}}.
+\end{equation}
+A phenomenological coherence-decay ansatz is then
+\begin{equation}
+    \frac{d}{dt}\|\rho_{\rm off}\|_F
+    =
+    -\gamma\mathcal D(\widehat{\varphi},\widehat{\kappa})\|\rho_{\rm off}\|_F,
+\end{equation}
+where \(\gamma>0\). This is not proposed as a replacement for the measurement postulate in v1. It is a placeholder for future simulations of decoherence-like behavior.
+
+\begin{thebibliography}{99}
+
+\bibitem{Rovelli2004}
+C. Rovelli,
+\textit{Quantum Gravity}
+(Cambridge University Press, Cambridge, 2004).
+
+\bibitem{Hawking1976}
+S. W. Hawking,
+``Breakdown of predictability in gravitational collapse,''
+\textit{Physical Review D} \textbf{14}, 2460 (1976).
+
+\bibitem{Konopka2008}
+T. Konopka, F. Markopoulou, and S. Severini,
+``Quantum graphity: A model of emergent locality,''
+\textit{Physical Review D} \textbf{77}, 104029 (2008).
+
+\bibitem{Rovelli1996}
+C. Rovelli,
+``Relational quantum mechanics,''
+\textit{International Journal of Theoretical Physics} \textbf{35}, 1637--1678 (1996).
+
+\bibitem{Carlsson2009}
+G. Carlsson,
+``Topology and data,''
+\textit{Bulletin of the American Mathematical Society} \textbf{46}, 255--308 (2009).
+
+\bibitem{Edelsbrunner2002}
+H. Edelsbrunner, D. Letscher, and A. Zomorodian,
+``Topological persistence and simplification,''
+\textit{Discrete \& Computational Geometry} \textbf{28}, 511--533 (2002).
+
+\bibitem{Zomorodian2005}
+A. Zomorodian and G. Carlsson,
+``Computing persistent homology,''
+\textit{Discrete \& Computational Geometry} \textbf{33}, 249--274 (2005).
+
+\bibitem{Ghrist2008}
+R. Ghrist,
+``Barcodes: The persistent topology of data,''
+\textit{Bulletin of the American Mathematical Society} \textbf{45}, 61--75 (2008).
+
+\bibitem{Minamitani2025}
+E. Minamitani, T. Nakamura, I. Obayashi, and H. Mizuno,
+``Persistent homology elucidates hierarchical structures responsible for mechanical properties in covalent amorphous solids,''
+\textit{Nature Communications} \textbf{16}, Article 8226 (2025).
+\url{https://doi.org/10.1038/s41467-025-63424-z}
+
+\bibitem{Eto2025}
+M. Eto, Y. Hamada, and M. Nitta,
+``Tying Knots in Particle Physics,''
+\textit{Physical Review Letters} \textbf{135}, 091603 (2025).
+\url{https://doi.org/10.1103/s3vd-brsn};
+\url{https://arxiv.org/abs/2407.11731}
+
+\bibitem{PecceiQuinn1977}
+R. D. Peccei and H. R. Quinn,
+``CP conservation in the presence of pseudoparticles,''
+\textit{Physical Review Letters} \textbf{38}, 1440--1443 (1977).
+
+\bibitem{Nakahara2003}
+M. Nakahara,
+\textit{Geometry, Topology and Physics}
+(CRC Press, Boca Raton, 2003).
+
+\bibitem{Witten1989}
+E. Witten,
+``Quantum field theory and the Jones polynomial,''
+\textit{Communications in Mathematical Physics} \textbf{121}, 351--399 (1989).
+
+\bibitem{MantonSutcliffe2004}
+N. Manton and P. Sutcliffe,
+\textit{Topological Solitons}
+(Cambridge University Press, Cambridge, 2004).
+
+\bibitem{VachaspatiVilenkin1984}
+T. Vachaspati and A. Vilenkin,
+``Formation and evolution of cosmic strings,''
+\textit{Physical Review D} \textbf{30}, 2036--2045 (1984).
+
+\bibitem{Bombelli1987}
+L. Bombelli, J. Lee, D. Meyer, and R. D. Sorkin,
+``Space-time as a causal set,''
+\textit{Physical Review Letters} \textbf{59}, 521--524 (1987).
+
+\bibitem{BirrellDavies1982}
+N. D. Birrell and P. C. W. Davies,
+\textit{Quantum Fields in Curved Space}
+(Cambridge University Press, Cambridge, 1982).
+
+\bibitem{Gaztanaga2026}
+E. Gazta\~naga, K. Sravan Kumar, and J. Marto,
+``A new understanding of Einstein--Rosen bridges,''
+\textit{Classical and Quantum Gravity} \textbf{43}, 015023 (2026).
+\url{https://doi.org/10.1088/1361-6382/ae3044};
+\url{https://arxiv.org/abs/2512.20691}
+
+\end{thebibliography}
+
+\end{document}

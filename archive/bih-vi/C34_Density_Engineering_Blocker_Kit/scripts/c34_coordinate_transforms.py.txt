@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""
+Coordinate utilities for BIH-VI C3.4/C3.3.
+
+Converts equatorial RA/Dec/comoving distance to the Galactic Cartesian coordinate convention
+used by the public 2M++ grid.
+
+2M++ grid:
+  X,Y,Z in Galactic Cartesian comoving coordinates, Mpc/h.
+  Local Group at origin.
+  Cell centers from -200 to +200 Mpc/h.
+"""
+from __future__ import annotations
+import numpy as np
+
+# J2000 equatorial to Galactic rotation matrix.
+# Rows are Galactic unit axes in equatorial coordinates.
+# Standard matrix used by astropy/SLALIB conventions.
+EQ_TO_GAL = np.array([
+    [-0.0548755604162154, -0.8734370902348850, -0.4838350155487132],
+    [ 0.4941094278755837, -0.4448296299600112,  0.7469822444972189],
+    [-0.8676661490190047, -0.1980763734312015,  0.4559837761750669],
+], dtype=float)
+
+def radec_to_equatorial_unit(ra_deg, dec_deg):
+    ra = np.deg2rad(np.asarray(ra_deg, dtype=float))
+    dec = np.deg2rad(np.asarray(dec_deg, dtype=float))
+    return np.vstack([
+        np.cos(dec) * np.cos(ra),
+        np.cos(dec) * np.sin(ra),
+        np.sin(dec)
+    ]).T
+
+def equatorial_to_galactic_unit(vec_eq):
+    vec_eq = np.asarray(vec_eq, dtype=float)
+    return vec_eq @ EQ_TO_GAL.T
+
+def radec_chi_to_galactic_xyz(ra_deg, dec_deg, chi_mpc, h=0.6736, output_units="Mpc_h"):
+    """
+    Convert RA/Dec and comoving distance chi [Mpc] to Galactic Cartesian coordinates.
+
+    output_units:
+      'Mpc_h' -> multiply Mpc by h for Mpc/h grid.
+      'Mpc'   -> no h scaling.
+    """
+    unit_eq = radec_to_equatorial_unit(ra_deg, dec_deg)
+    unit_gal = equatorial_to_galactic_unit(unit_eq)
+    xyz_mpc = unit_gal * np.asarray(chi_mpc, dtype=float)[:, None]
+    if output_units in ["Mpc_h", "Mpc/h"]:
+        return xyz_mpc * h
+    if output_units == "Mpc":
+        return xyz_mpc
+    raise ValueError(f"Unknown output_units={output_units}")
+
+def xyz_to_2mpp_fractional_index(xyz_mpc_h, box_min=-200.0, box_max=200.0, grid_shape=(257,257,257)):
+    xyz = np.asarray(xyz_mpc_h, dtype=float)
+    shape = np.asarray(grid_shape, dtype=float)
+    bmin = np.asarray([box_min]*3 if np.isscalar(box_min) else box_min, dtype=float)
+    bmax = np.asarray([box_max]*3 if np.isscalar(box_max) else box_max, dtype=float)
+    return (xyz - bmin) / (bmax - bmin) * (shape - 1)
+
+def demo_known_axes():
+    """
+    Returns sanity-check conversions:
+    Galactic center approx RA=266.4051 Dec=-28.936175 should point close to +X.
+    North Galactic Pole approx RA=192.85948 Dec=27.12825 should point close to +Z.
+    """
+    samples = {
+        "galactic_center": (266.4051, -28.936175),
+        "north_galactic_pole": (192.85948, 27.12825),
+    }
+    out = {}
+    for name, (ra, dec) in samples.items():
+        out[name] = equatorial_to_galactic_unit(radec_to_equatorial_unit([ra], [dec]))[0]
+    return out
+
+if __name__ == "__main__":
+    for k, v in demo_known_axes().items():
+        print(k, v)

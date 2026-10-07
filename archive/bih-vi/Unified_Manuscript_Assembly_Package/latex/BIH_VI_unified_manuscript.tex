@@ -1,0 +1,387 @@
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\graphicspath{{../figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\newcommand{\mpl}{M_{\rm Pl}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\chis}{\chi}
+\title{Boundary-Inversion Cosmology VI:\\A Sqrt-Reg EFT-Clock Inflationary Branch and Calibration-Frame Late-Universe Extension}
+\author{Lou [surname to add]\\\small Draft skeleton prepared for external audit}
+\date{Manuscript skeleton -- July 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present Boundary-Inversion Cosmology VI (BIH-VI) as a boundary-anchored effective-field-theory cosmology built around the invariant marginal-horizon seam $\chi=h^{ab}\nabla_aR\nabla_bR=0$, equivalently $R=2GE_{\rm MS}$. The early-universe branch realizes a Sqrt-Reg entropy-selected density shield through a stable EFT clock with background evolution $H^2=H_c^2y(2-y)$, $y_N=-m(y)y$, and $\epsilon_H=m(1-y)/(2-y)$. For the frozen benchmark $m(y)=\mu(1-y)^3$, $\mu=1$, $c_s=1$, and $N_*=55$, the model gives $n_s\simeq0.9652$, $r\simeq1.4\times10^{-3}$, and $\alpha_s\simeq-5.8\times10^{-4}$, with stable scalar and tensor quadratic actions. The exit switch is pivot-safe and produces a localized ultra-small-scale feature mapped to $k\sim1.3\times10^{23}\,\mathrm{Mpc}^{-1}$, or $f\sim200\,\mathrm{MHz}$, while remaining quiet in ordinary CMB/LSS channels.
+
+We then test whether the same boundary-centered framework can be extended to late-universe cosmology without modifying the frozen inflationary branch. The low-density expansion of the Sqrt-Reg background shows that the entropy shield acts as a UV density regulator rather than an infrared dark-energy mechanism. A direct metric-lapse interpretation, $H_{\rm obs}(z)=\nu(z)H_{\rm geom}(z)$, is rejected at the diagnostic level because the required local uplift produces unacceptable supernova-shape and BAO-distance distortions. We therefore define a calibration-frame late branch in which $\nu_{\rm metric}(z)=1$ for light-propagation distance integrals, while the local distance ladder may measure a substrate-dependent calibration offset $H_0^{\rm ladder}=\nu_{\rm cal}H_0^{\rm geom}$, equivalently $\Delta M_B=5\log_{10}\nu_{\rm cal}\simeq0.18$ mag for the current SH0ES/Planck-scale target.
+
+The late branch is formulated as a falsifiable likelihood architecture rather than a completed solution. Posterior samples are translated into a substrate-exchange diagnostic $Q_{\rm bulk}$ through $\dot\rho_{\rm DE}+3H(1+w_{\rm int})\rho_{\rm DE}=Q_{\rm bulk}$, with $Q_{\rm bulk}/(H\rho_{\rm DE})=3(w_{\rm int}-w_{\rm eff})$. The C3 branch survives only if the reconstructed exchange history is smooth, bounded, and low-frequency. BIH-VI is therefore presented as a stable EFT-level early-universe branch plus a calibration-frame late-universe validation program, not as a UV-complete microscopic substrate theory.
+\end{abstract}
+
+\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Scope boundary.} BIH-VI is presented as an EFT-level cosmological framework. It does not claim to be a UV-complete microscopic theory. The early-universe branch is frozen at the Sqrt-Reg/EFT-clock benchmark. The late-universe branch is a diagnostic calibration-frame extension motivated by the failure of universal metric-lapse deformations. The calibration-frame branch is falsifiable through full distance-likelihood tests and through the smoothness, boundedness, and physical interpretability of the reconstructed substrate-exchange history $Q_{\rm bulk}(z)$.}}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+The standard cosmological model has achieved remarkable empirical success, but two observational fronts motivate controlled extensions. The first is the early-universe problem: a viable inflationary or pre-inflationary framework must produce a nearly scale-invariant scalar spectrum, satisfy tensor constraints, avoid obvious perturbative instabilities, and remain falsifiable. The second is the late-universe calibration problem: the expansion history inferred from early-universe data remains in tension with local distance-ladder determinations of $H_0$, and any proposed mechanism must survive the joint pressure of supernova luminosity distances, BAO geometry, and the CMB acoustic scale.
+
+BIH-VI addresses these questions as an effective-field-theory framework organized around causal boundaries. Its geometric core is the spherical marginal-horizon condition
+\begin{equation}
+\chi=h^{ab}\nabla_aR\nabla_bR=0,
+\end{equation}
+equivalently
+\begin{equation}
+R=2GE_{\rm MS},
+\end{equation}
+where $R$ is the areal radius and $E_{\rm MS}$ is the Misner-Sharp energy. This condition unifies black-hole trapped and cosmological anti-trapped sign sectors at the level of spherical-horizon geometry. The distinction between collapse and expansion is not encoded in $\chi$ alone, but in the orientation of the future null expansions.
+
+\paragraph{Paper hierarchy.} The paper is organized as follows. Sections~\ref{sec:seam}--\ref{sec:exit} summarize the frozen early branch. Section~\ref{sec:late_gate} documents the late-universe stress test and the rejection of the universal metric-lapse branch. Section~\ref{sec:c3} defines the calibration-frame extension. Section~\ref{sec:qbulk} gives the substrate-exchange falsifiability test. Appendices collect equations, rejected branches, likelihood scaffolding, repository structure, and open work.
+
+\section{Boundary seam and Sqrt-Reg thermodynamics}\label{sec:seam}
+For a spherically symmetric spacetime,
+\begin{equation}
+\dd s^2=h_{ab}\dd x^a\dd x^b+R^2\dd\Omega^2,
+\end{equation}
+the future-directed radial null expansions are
+\begin{equation}
+\theta_\pm=\frac{2}{R}\ell_\pm^a\nabla_a R.
+\end{equation}
+With cross-normalization $\ell_+\cdot\ell_-=-2$, one has
+\begin{equation}
+\theta_+\theta_-=-\frac{4\chi}{R^2}.
+\end{equation}
+Thus $\chi>0$ corresponds to normal sign sectors, $\chi=0$ to marginal surfaces, and $\chi<0$ to trapped or anti-trapped regions. The sign pair distinguishes black-hole trapped $(-,-)$ from cosmological anti-trapped $(+,+)$ regions.
+
+Apparent-horizon thermodynamics is applied on the cosmological side using
+\begin{equation}
+x=H^2+\frac{k}{a^2},\qquad R_A=x^{-1/2},\qquad A=\frac{4\pi}{x}.
+\end{equation}
+The Sqrt-Reg entropy functional is
+\begin{equation}
+S_{\sqrt{}}(A)=\frac{1}{4G}\left[\sqrt{A(A-A_c)}+A_c\,\mathrm{arcosh}\sqrt{\frac{A}{A_c}}\right],
+\end{equation}
+with
+\begin{equation}
+S_A=\frac{1}{4G\sqrt{1-A_c/A}},\qquad G_{\rm eff}=\frac{1}{4S_A}=G\sqrt{1-\frac{A_c}{A}}.
+\end{equation}
+The associated Friedmann function is
+\begin{equation}
+F_{\sqrt{}}(x)=2x_c\left[1-\sqrt{1-x/x_c}\right],
+\end{equation}
+so that in the flat case
+\begin{equation}
+F_{\sqrt{}}(H^2)=\frac{8\pi G}{3}\rho.
+\end{equation}
+This gives a density shield
+\begin{equation}
+H^2=\frac{8\pi G}{3}\rho\left[1-\frac{2\pi G\rho}{3H_c^2}\right],\qquad \rho_{\max}=\frac{3H_c^2}{4\pi G}.
+\end{equation}
+
+\section{Frozen EFT-clock branch}\label{sec:engine}
+The stable branch realizes the Sqrt-Reg background inside the EFT of cosmological perturbations:
+\begin{equation}
+S_{\rm EFT}=\int\dd^4x\sqrt{-g}\left[\frac{\mpl^2}{2}R-\Lambda(t)-c(t)g^{00}+\frac{M_2^4(t)}{2}(\delta g^{00})^2+\cdots\right].
+\end{equation}
+The background is
+\begin{equation}
+H^2=H_c^2y(2-y),\qquad y_N=-m(y)y,
+\end{equation}
+with
+\begin{equation}
+\dot H=-mH_c^2y(1-y),\qquad \epsilon_H=\frac{m(1-y)}{2-y}.
+\end{equation}
+The EFT functions are
+\begin{align}
+c(y)&=\mpl^2mH_c^2y(1-y),\\
+\Lambda(y)&=\mpl^2H_c^2y\left[(6-m)+(m-3)y\right],\\
+M_2^4(y)&=\frac{c(y)}{2}\left(c_s^{-2}-1\right).
+\end{align}
+The quadratic scalar and tensor actions are
+\begin{align}
+S_\zeta^{(2)}&=\mpl^2\int\dd t\dd^3x\,a^3\frac{\epsilon_H}{c_s^2}\left[\dot\zeta^2-c_s^2\frac{(\nabla\zeta)^2}{a^2}\right],\\
+S_T^{(2)}&=\frac{\mpl^2}{8}\int\dd t\dd^3x\,a^3\left[\dot h_{ij}^2-\frac{(\nabla h_{ij})^2}{a^2}\right].
+\end{align}
+The tested stability conditions are $\epsilon_H>0$, $c_s^2>0$, and $c_T^2=1$.
+
+\subsection{Cubic gear and benchmark observables}
+Define $z=1-y$ and
+\begin{equation}
+m(y)=\mu z^p.
+\end{equation}
+The benchmark used throughout the frozen branch is
+\begin{equation}
+p=3,\qquad \mu=1,\qquad c_s=1,\qquad N_*=55,\qquad z_e=1/3.
+\end{equation}
+The benchmark gives
+\begin{equation}
+n_s\simeq0.9652,
+\qquad
+r\simeq1.4\times10^{-3},
+\qquad
+\alpha_s\simeq-5.8\times10^{-4}.
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig01_ns_r_island.png}
+\caption{Frozen early-branch parameter island in the $(n_s,r)$ plane. Replace with final publication figure and caption.}
+\label{fig:nsr}
+\end{figure}
+
+\section{Exit switch and ultra-small-scale relic}\label{sec:exit}
+The switch is
+\begin{equation}
+m(y)=\mu(1-y)^3+m_{\rm post}S(y),\qquad S(y)=\frac{1}{1+\exp[(y-y_g)/\Delta]}.
+\end{equation}
+For the benchmark $y_g=2/3$, $m_{\rm post}=4$, and $\Delta=0.01$, the switch remains pivot-safe while producing a localized exit feature.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig02_ms_convergence.png}
+\caption{Mukhanov-Sasaki convergence for the exit switch at $\Delta=0.01$.}
+\label{fig:ms}
+\end{figure}
+
+The leading feature bispectrum diagnostic uses the switch-enhanced interaction
+\begin{equation}
+S_3^{\rm switch}\supset \frac{\mpl^2}{2}\int\dd t\dd^3x\,a^3\epsilon_H\dot\eta_H\zeta^2\dot\zeta.
+\end{equation}
+The normalized feature amplitude can reach order $10^3$ near the exit feature, but only where the scalar power is deeply suppressed; the absolute bispectrum proxy remains finite.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig03_exit_fnl_highres.png}
+\caption{High-resolution equilateral feature-bispectrum diagnostic near the exit feature.}
+\label{fig:fnl}
+\end{figure}
+
+The scale map places the feature at
+\begin{equation}
+k_{\rm peak}\sim1.3\times10^{23}\,\mathrm{Mpc}^{-1},\qquad f_{\rm peak}\sim2.0\times10^8\,\mathrm{Hz}.
+\end{equation}
+Thus the exit feature is not a conventional CMB, LSS, or ordinary 21-cm target.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig04_scale_map.png}
+\caption{Physical scale map for the exit feature.}
+\label{fig:scale}
+\end{figure}
+
+\section{Late-universe diagnostic gate}\label{sec:late_gate}
+Having established the stable EFT-clock realization of the Sqrt-Reg density shield as an early-universe branch, we now assess whether the same boundary-centered framework can be extended to late-time cosmology without modifying its frozen inflationary mechanics. The low-density expansion of the Sqrt-Reg background shows that the entropy shield acts as a UV regulator rather than an infrared dark-energy mechanism. We therefore treat the late universe as a separate observational gate on the BIH clock/stress sector. A direct metric-lapse interpretation, in which a redshift-dependent clock factor multiplies all distance integrals, is rejected at the diagnostic level by supernova-shape and BAO-geometry constraints. Consequently, we define a calibration-frame branch: the global geometry remains governed by $H_{\rm geom}(z)$, while the local distance ladder is allowed to measure a substrate-dependent calibration offset $\Delta M_B\simeq0.18\,\mathrm{mag}$. This recasts the Hubble tension as a testable calibration-frame hypothesis rather than a universal modification of light-propagation distances.
+
+\subsection{Low-density Sqrt-Reg limit}
+For $A\gg A_c$, equivalently $x\ll x_c$,
+\begin{equation}
+S_A=\frac{1}{4G}\left[1+\frac{1}{2}\frac{x}{x_c}+\frac{3}{8}\left(\frac{x}{x_c}\right)^2+\cdots\right],
+\end{equation}
+so the correction decays in the infrared. The Sqrt-Reg shield is therefore a high-density regulator, not a standalone late dark-energy mechanism.
+
+\subsection{Metric-lapse branch and rejection}
+The rejected late branch is
+\begin{equation}
+H_{\rm obs}(z)=\nu(z)H_{\rm geom}(z).
+\end{equation}
+If $\nu(0)$ is forced toward the local distance-ladder uplift, the same lapse enters the distance integrals
+\begin{equation}
+D_C(z)=c\int_0^z\frac{\dd z'}{\nu(z')H_{\rm geom}(z')},
+\end{equation}
+and creates supernova and BAO strain.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig06_metric_lapse_sn_residuals.png}
+\caption{Diagnostic SN-shape residuals from the metric-lapse branch. This branch should be described as rejected at the diagnostic level unless a future formulation changes the frame interpretation.}
+\label{fig:metriclapse}
+\end{figure}
+
+\section{Calibration-frame extension}\label{sec:c3}
+The surviving C3 branch imposes
+\begin{equation}
+\nu_{\rm metric}(z)=1
+\end{equation}
+inside BAO, SN, and CMB distance integrals. The local ladder instead measures
+\begin{equation}
+H_0^{\rm ladder}=\nu_{\rm cal}H_0^{\rm geom}.
+\end{equation}
+Equivalently,
+\begin{equation}
+\Delta M_B=5\log_{10}\nu_{\rm cal}.
+\end{equation}
+For $H_0^{\rm ladder}=73.17$ km s$^{-1}$ Mpc$^{-1}$ and $H_0^{\rm geom}=67.36$ km s$^{-1}$ Mpc$^{-1}$,
+\begin{equation}
+\nu_{\rm cal}\simeq1.08625,
+\qquad
+\Delta M_B\simeq0.1797\,\mathrm{mag}.
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.70\linewidth]{fig08_calibration_target.png}
+\caption{Calibration-frame target: the local ladder measures a readout offset rather than a universal metric-distance deformation.}
+\label{fig:cal}
+\end{figure}
+
+\subsection{Geometry scaffold}
+The geometry sector may be scaffolded with CPL:
+\begin{equation}
+w_{\rm eff}(z)=w_0+w_a\frac{z}{1+z},
+\end{equation}
+\begin{equation}
+E_{\rm BIH}^2(z)=\Omega_r(1+z)^4+\Omega_m(1+z)^3+\Omega_k(1+z)^2+\Omega_{{\rm DE},0}f_{\rm DE}(z),
+\end{equation}
+with
+\begin{equation}
+f_{\rm DE}(z)=(1+z)^{3(1+w_0+w_a)}\exp\left[-3w_a\frac{z}{1+z}\right].
+\end{equation}
+The distances use $H_{\rm geom}(z)=H_0^{\rm geom}E_{\rm BIH}(z)$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig09_c3_geometry_heatmap.png}
+\caption{C3 calibration-frame geometry diagnostic in the CPL scaffold. Production likelihood results should replace this diagnostic plot.}
+\label{fig:c3heat}
+\end{figure}
+
+\section{Likelihood architecture}\label{sec:likelihood}
+The C3 production parameter vector is
+\begin{equation}
+\Theta_{\rm C3}=\{h,\Omega_m,\Omega_k,\omega_b,w_0,w_a,M_B^{\rm geom},\Delta M_B\}.
+\end{equation}
+The likelihood must include DESI DR2 BAO, full Pantheon+SH0ES covariance, a compressed or full CMB acoustic-scale prior, and independent calibration/anchor priors. This section should be updated once the production chain has been run.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+Sector & Parameter(s) & Role \\
+\midrule
+Geometry & $h,\Omega_m,\Omega_k,\omega_b,w_0,w_a$ & BAO/SN/CMB distances \\
+Calibration & $M_B^{\rm geom},\Delta M_B$ & local readout offset \\
+Falsifier & $Q_{\rm bulk}(z)$ & thermodynamic consistency \\
+\bottomrule
+\end{tabular}
+\caption{C3 production-likelihood parameter hierarchy.}
+\end{table}
+
+\section{Substrate-exchange reconstruction}\label{sec:qbulk}
+The diagnostic dark-sector exchange equation is
+\begin{equation}
+\dot\rho_{\rm DE}+3H(1+w_{\rm int})\rho_{\rm DE}=Q_{\rm bulk}.
+\end{equation}
+If the fitted background is represented by $w_{\rm eff}(z)$, then
+\begin{equation}
+\frac{Q_{\rm bulk}}{H\rho_{\rm DE}}=3(w_{\rm int}-w_{\rm eff}).
+\end{equation}
+For $w_{\rm int}=-1$,
+\begin{equation}
+\frac{Q_{\rm bulk}}{H\rho_{\rm DE}}=-3[1+w_{\rm eff}(z)].
+\end{equation}
+The C3 branch is viable only if the posterior-implied exchange profile is smooth, bounded, low-frequency, and physically interpretable.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\linewidth]{fig10_qbulk_profiles.png}
+\caption{Selected $Q_{\rm bulk}/(H\rho_{\rm DE})$ profiles from the C3 diagnostic scaffold.}
+\label{fig:qbulk}
+\end{figure}
+
+\section{Falsifiability and future tests}\label{sec:falsify}
+The framework is falsifiable through at least six routes:
+\begin{enumerate}[leftmargin=*]
+\item Future tensor limits push well below $r\sim10^{-3}$ without detection and without a viable parameter island.
+\item The preferred scalar tilt moves outside the BIH-VI early-branch island after nuisance and reheating freedom are included.
+\item Running is observed with a large or opposite-sign value relative to the benchmark.
+\item Small-scale probes rule out the predicted localized suppression/ringing region.
+\item Full C3 likelihoods reject $\Delta M_B\simeq0.18$ mag once independent anchors are included.
+\item The reconstructed $Q_{\rm bulk}(z)$ is jagged, discontinuous, or requires high-frequency sign-flip chatter.
+\end{enumerate}
+
+\section{Conclusion}\label{sec:conclusion}
+We have presented BIH-VI as a boundary-anchored EFT-clock cosmological framework organized around the invariant marginal-horizon seam $\chi=0$, equivalently $R=2GE_{\rm MS}$. The frozen early-universe branch realizes a Sqrt-Reg density shield with stable scalar and tensor quadratic actions and a Planck-compatible observable island. The exit switch is pivot-safe and maps to an ultra-small-scale, UHF-relic-quiet feature.
+
+The late-universe result is deliberately hierarchical. A universal metric-lapse interpretation fails diagnostic distance-gate tests and is rejected as the primary $H_0$ mechanism. The surviving C3 branch treats the Hubble discrepancy as a calibration-frame hypothesis: metric distances remain governed by $H_{\rm geom}(z)$, while the local distance ladder may measure a calibration/readout offset $\Delta M_B\simeq0.18$ mag. This is not yet a derived solution of the Hubble tension. It is a falsifiable late-universe extension whose viability depends on production likelihoods, independent anchors, and the smoothness of reconstructed $Q_{\rm bulk}(z)$.
+
+\appendix
+\section{Equation map}
+\subsection{Geometric seam}
+\begin{align}
+\chi&=h^{ab}\nabla_aR\nabla_bR,\\
+\chi&=1-\frac{2GE_{\rm MS}}{R},\\
+\chi=0&\Longleftrightarrow R=2GE_{\rm MS}.
+\end{align}
+
+\subsection{Early branch}
+\begin{align}
+H^2&=H_c^2y(2-y),& y_N&=-m(y)y,& \epsilon_H&=\frac{m(1-y)}{2-y}.
+\end{align}
+
+\subsection{Late C3 branch}
+\begin{align}
+\nu_{\rm metric}(z)&=1,& H_0^{\rm ladder}&=\nu_{\rm cal}H_0^{\rm geom},& \Delta M_B&=5\log_{10}\nu_{\rm cal}.
+\end{align}
+
+\section{Rejected branches and negative results}
+Document here: log-critical entropy branch, pure $f(T)$ action, minimal $f(T,B)$ repair, analytic $f(R)$ branch, C1 metric-lapse branch, and C2 metric-lapse+CPL branch. This appendix should include failure criteria rather than rhetorical summaries.
+
+\section{Likelihood implementation}
+Insert repository link and code usage once public. Include Cobaya wrapper, data-preparation instructions, Pantheon+SH0ES covariance handling, DESI DR2 BAO vector/covariance, CMB acoustic-scale prior, and convergence criteria.
+
+\section{Production tables to insert}
+\begin{enumerate}
+\item Early benchmark table: $(\mu,z_*,y_*,n_s,r,\alpha_s,H_c/\mpl)$.
+\item C1/C2 distance-gate table.
+\item C3 posterior constraints.
+\item $Q_{\rm bulk}$ smoothness metrics.
+\item Independent-anchor sensitivity table.
+\end{enumerate}
+
+\section{Repository structure}
+Recommended supplemental repository layout:
+\begin{verbatim}
+BIH-VI/
+  paper/
+  theory/
+  likelihoods/cobaya/
+  likelihoods/python/
+  data/
+  notebooks/
+  results/
+  figures/
+  archive/rejected_branches/
+\end{verbatim}
+
+
+\begin{thebibliography}{99}
+\bibitem{Penrose1965} R. Penrose, ``Gravitational Collapse and Space-Time Singularities,'' Physical Review Letters 14, 57 (1965).
+\bibitem{Hayward1994} S. A. Hayward, ``General laws of black-hole dynamics,'' Physical Review D 49, 6467 (1994).
+\bibitem{Hayward1998} S. A. Hayward, ``Unified first law of black-hole dynamics and relativistic thermodynamics,'' Classical and Quantum Gravity 15, 3147 (1998), arXiv:gr-qc/9710089.
+\bibitem{CaiKim2005} R.-G. Cai and S. P. Kim, ``First law of thermodynamics and Friedmann equations of Friedmann-Robertson-Walker universe,'' JHEP 0502, 050 (2005), arXiv:hep-th/0501055.
+\bibitem{BoussoEngelhardt2015} R. Bousso and N. Engelhardt, ``New Area Law in General Relativity,'' Physical Review Letters 115, 081301 (2015), arXiv:1504.07627.
+\bibitem{Cheung2008} C. Cheung et al., ``The Effective Field Theory of Inflation,'' JHEP 0803, 014 (2008), arXiv:0709.0293.
+\bibitem{Maldacena2003} J. Maldacena, ``Non-Gaussian features of primordial fluctuations in single field inflationary models,'' JHEP 0305, 013 (2003), arXiv:astro-ph/0210603.
+\bibitem{Planck2018} Planck Collaboration, ``Planck 2018 results. X. Constraints on inflation,'' Astronomy and Astrophysics 641, A10 (2020), arXiv:1807.06211.
+\bibitem{BICEPKeck2021} BICEP/Keck Collaboration, ``Improved Constraints on Primordial Gravitational Waves using Planck, WMAP, and BICEP/Keck,'' Physical Review Letters 127, 151301 (2021), arXiv:2110.00483.
+\bibitem{PantheonPlus2022} D. Scolnic et al., ``The Pantheon+ Analysis,'' arXiv:2202.04077. [Verify final metadata.]
+\bibitem{DESIDR2} DESI Collaboration, DESI DR2 BAO and cosmology results (2025). [Placeholder: replace with final paper citations.]
+\bibitem{Riess2024} A. G. Riess et al., SH0ES SMC-anchor Hubble constant analysis, arXiv:2404.08038. [Verify final metadata.]
+\bibitem{Sheykhi2010} A. Sheykhi, ``Entropy-corrected Friedmann equations,'' Physical Review D 81, 104011 (2010).
+\bibitem{DeFeliceTsujikawa2010} A. De Felice and S. Tsujikawa, ``f(R) theories,'' Living Reviews in Relativity 13, 3 (2010), arXiv:1002.4928.
+\bibitem{IzumiOng2013} K. Izumi and Y. C. Ong, ``Cosmological perturbation in f(T) gravity revisited,'' JCAP 1306, 029 (2013), arXiv:1212.5774.
+\bibitem{LiMiao2011} M. Li, R.-X. Miao, and Y.-G. Miao, ``Degrees of freedom of f(T) gravity,'' JHEP 1107, 108 (2011), arXiv:1105.5934.
+\bibitem{HorizonDecoherence} S. E. Gralla and M. Wei, ``Horizon decoherence'' (preprint). [Verify citation status before submission.]
+\end{thebibliography}
+
+\end{document}

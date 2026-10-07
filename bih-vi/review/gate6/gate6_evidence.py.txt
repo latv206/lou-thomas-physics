@@ -1,0 +1,213 @@
+#!/usr/bin/env python3
+"""
+GATE-6 EVIDENCE DEEP-DIVE (read-only) — characterize the B_total zero-crossing
+behavior around folded K_total=6.0, from EXISTING RUN01 data only.
+
+Order: claude-admin ORDER-DISPATCH 2026-07-02 16:12 (intake
+20260702_lou_order_run_all_lanes). NO new physics run: this script only reads
+the certified RUN01 CSVs (hash-verified before use) and derives diagnostics.
+It does NOT re-gate and does NOT alter the RUN01 verdict (which stands as
+computed: A2_PRODUCTION_FAIL_FLATTENED_POLE); it produces evidence for Lou's
+gate-6 disposition decision.
+
+v2: reports ALL sign crossings (v1 reported only the first, K~1.9); the
+equilateral-corroboration hypothesis was REFUTED by the data and replaced by
+the folded-specific caveat; added the delta-direction sign flip at fixed K=6
+and interval log-slopes (deceleration test).
+
+Outputs (this folder): GATE6_EVIDENCE_NOTE.md, gate6_derived.csv,
+GATE6_stdout.log
+"""
+import csv, hashlib, math, os, sys
+
+RUN01 = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                     "2026-07-02_A2_PRODUCTION_ALLSHAPE_RUN01")
+HERE = os.path.dirname(os.path.abspath(__file__))
+EXPECT = {
+    "A2_PRODUCTION_shape_grid.csv": "a2af70540d8097a915bdb7b9936939fe7ab3cf179bfb09e34aa182f05f27b80a",
+    "A2_PRODUCTION_operator_pieces.csv": "1a66576afdd626fe9bfbd759b54a532e393bddae05bd2a9e14fd03874fc951a5",
+}
+
+
+class Tee:
+    def __init__(self, path):
+        self.f = open(path, "w", encoding="utf-8"); self.s = sys.stdout
+    def write(self, x): self.s.write(x); self.f.write(x)
+    def flush(self): self.s.flush(); self.f.flush()
+
+
+def sha(p):
+    h = hashlib.sha256()
+    with open(p, "rb") as f:
+        for c in iter(lambda: f.read(1 << 20), b""):
+            h.update(c)
+    return h.hexdigest()
+
+
+def crossings(seq):
+    """All zero-crossings of (x, y) pairs by linear interpolation, plus an
+    extrapolated crossing past the last interval if y hasn't crossed."""
+    xs = []
+    for (x0, y0), (x1, y1) in zip(seq, seq[1:]):
+        if y0 == 0 or y0 * y1 < 0:
+            xs.append((x0 + (x1 - x0) * (0 - y0) / (y1 - y0), "interpolated"))
+    if not xs or (seq[-1][1] * seq[-2][1] > 0):
+        (x0, y0), (x1, y1) = seq[-2], seq[-1]
+        if y1 != y0 and abs(y1) < abs(y0):        # heading toward zero past the edge
+            xe = x1 + (x1 - x0) * (0 - y1) / (y1 - y0)
+            if xe > x1:
+                xs.append((xe, "extrapolated-past-grid-edge"))
+    return xs
+
+
+def main():
+    sys.stdout = Tee(os.path.join(HERE, "GATE6_stdout.log"))
+    for name, exp in EXPECT.items():
+        got = sha(os.path.join(RUN01, name))
+        if got != exp:
+            print(f"ABORT: input hash mismatch {name}: {got}")
+            sys.exit(2)
+        print(f"input OK {name}")
+    rows = list(csv.DictReader(open(os.path.join(RUN01, "A2_PRODUCTION_shape_grid.csv"), encoding="utf-8")))
+    pieces = {r["row_id"]: r for r in
+              csv.DictReader(open(os.path.join(RUN01, "A2_PRODUCTION_operator_pieces.csv"), encoding="utf-8"))}
+    F = lambda r, k: float(r[k])
+    folded = [r for r in rows if r["family"] == "folded"]
+    eq = sorted([r for r in rows if r["family"] == "equilateral"], key=lambda r: F(r, "K_total"))
+    iso6 = sorted([r for r in rows if r["family"] == "isosceles" and abs(F(r, "K_total") - 6.0) < 1e-9],
+                  key=lambda r: F(r, "r"))
+    derived = []
+
+    # 1) folded B_total(K) per delta: ALL zero-crossings
+    print("\n== folded B_total(K) per delta + ALL zero-crossings ==")
+    for de in ("0.01", "0.003", "0.001"):
+        seq = sorted([r for r in folded if r["delta"] == de], key=lambda r: F(r, "K_total"))
+        Bs = [(F(r, "K_total"), F(r, "B_total")) for r in seq]
+        print(f"delta={de}: " + "  ".join(f"K{k:g}:{b:+.4g}" for k, b in Bs))
+        for i, (kx, tag) in enumerate(crossings(Bs), 1):
+            print(f"  crossing #{i}: K* = {kx:.3f} ({tag})")
+            derived.append(dict(metric=f"Kstar{i}_delta{de}", value=f"{kx:.4f}", note=tag))
+
+    # 2) delta-direction sign flip at fixed K=6 + interval log-slopes (deceleration test)
+    print("\n== B_total at fixed K=6.0 across delta (the gated family) ==")
+    b6 = {}
+    for de in ("0.01", "0.003", "0.001"):
+        r = next(r for r in folded if r["delta"] == de and abs(F(r, "K_total") - 6.0) < 1e-9)
+        b6[de] = F(r, "B_total")
+    print(f"  B(6, 1e-2)={b6['0.01']:+.4g}   B(6, 3e-3)={b6['0.003']:+.4g}   B(6, 1e-3)={b6['0.001']:+.4g}")
+    flip = b6["0.01"] * b6["0.003"] < 0 or b6["0.003"] * b6["0.001"] < 0
+    print(f"  SIGN FLIP inside the delta family: {flip} (zero of B_total crossed between samples)")
+    s1 = math.log(abs(b6["0.003"]) / abs(b6["0.01"])) / math.log((1/0.003) / (1/0.01))
+    s2 = math.log(abs(b6["0.001"]) / abs(b6["0.003"])) / math.log((1/0.001) / (1/0.003))
+    print(f"  interval log|B| slopes: [1e-2 -> 3e-3] {s1:.3f} (sign-flip interval, estimator-invalid)"
+          f"  [3e-3 -> 1e-3] {s2:.3f}")
+    print(f"  DECELERATING ({s1:.2f} -> {s2:.2f}); a delta^-p pole accelerates or holds p")
+    derived.append(dict(metric="B6_sign_flip_in_delta_family", value=str(flip), note="gate slope spans a zero"))
+    derived.append(dict(metric="interval_slope_1e2_to_3e3", value=f"{s1:.4f}", note="spans sign flip"))
+    derived.append(dict(metric="interval_slope_3e3_to_1e3", value=f"{s2:.4f}", note="post-flip, decelerating"))
+
+    # 3) magnitude collapse toward K=6
+    print("\n== |B_total| at K=4,5,6 per delta (magnitude collapse toward the zero) ==")
+    for de in ("0.01", "0.003", "0.001"):
+        seq = {F(r, "K_total"): F(r, "B_total") for r in folded if r["delta"] == de}
+        print(f"delta={de}: |B(4)|={abs(seq[4.0]):.4g}  |B(5)|={abs(seq[5.0]):.4g}  |B(6)|={abs(seq[6.0]):.4g}"
+              f"  ratio |B(6)|/|B(5)| = {abs(seq[6.0])/abs(seq[5.0]):.3f}")
+        derived.append(dict(metric=f"absB6_over_absB5_delta{de}",
+                            value=f"{abs(seq[6.0])/abs(seq[5.0]):.4f}", note="pole would be >> 1"))
+
+    # 4) operator cancellation at folded K=6
+    print("\n== operator cancellation at folded K_total=6.0 ==")
+    pn = ("B_O1", "B_O2", "B_O3a", "B_O3b", "B_O3c", "B_V1", "B_V2", "B_f2", "B_f3", "B_f4")
+    for de in ("0.01", "0.003", "0.001"):
+        rid = f"folded:d{float(de):g}_K6.00"
+        p = pieces[rid]
+        tot = float(p["B_total"]); s_abs = sum(abs(float(p[c])) for c in pn)
+        big = sorted(((c, float(p[c])) for c in pn), key=lambda t: -abs(t[1]))[:3]
+        print(f"{rid}: B_total={tot:+.4g}  sum|pieces|={s_abs:.4g}  cancellation={s_abs/abs(tot):.0f}x"
+              f"  top pieces: " + ", ".join(f"{c}={v:+.4g}" for c, v in big))
+        derived.append(dict(metric=f"cancellation_x_delta{de}", value=f"{s_abs/abs(tot):.1f}",
+                            note="sum|pieces|/|B_total| at K=6"))
+
+    # 5) cross-family check — REFUTES corroboration: no zero near K~6 elsewhere
+    print("\n== cross-family check (equilateral / isosceles) ==")
+    eqB = [(F(r, "K_total"), F(r, "B_total")) for r in eq]
+    eqx = [(k, t) for k, t in crossings(eqB) if t == "interpolated"]
+    print(f"  equilateral sign changes in [0.5, 6.0]: "
+          f"{', '.join(f'K~{k:.3f}' for k, t in eqx) if eqx else 'NONE — B_total negative throughout'}")
+    print(f"  equilateral B(5.90)={dict(eqB)[5.9]:+.4g}  B(6.00)={dict(eqB)[6.0]:+.4g}")
+    print("  isosceles K=6: " + "  ".join(f"r{F(r,'r'):g}:{F(r,'B_total'):+.3g}" for r in iso6))
+    iso_pos = sum(1 for r in iso6 if F(r, "B_total") > 0)
+    print(f"  -> the near-K~6 zero-crossing is FOLDED-SPECIFIC (not present in equilateral or"
+          f" isosceles at K=6; isosceles positive rows: {iso_pos}/{len(iso6)})")
+    derived.append(dict(metric="equilateral_crossings_near_6", value="0",
+                        note="B negative throughout production band above K~0.5"))
+    derived.append(dict(metric="isosceles_K6_n_positive", value=str(iso_pos), note=f"of {len(iso6)}"))
+
+    # 6) fNL smallness at the trip point
+    print("\n== fNL at folded K=6 (no amplitude blowup) ==")
+    for de in ("0.01", "0.003", "0.001"):
+        r = next(r for r in folded if r["delta"] == de and abs(F(r, "K_total") - 6.0) < 1e-9)
+        print(f"  delta={de}: fNL={F(r,'f_NL'):+.4f}  pert_proxy={F(r,'pert_proxy'):.3g}")
+
+    with open(os.path.join(HERE, "gate6_derived.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=["metric", "value", "note"])
+        w.writeheader()
+        for d in derived:
+            w.writerow(d)
+
+    L = ["# GATE-6 EVIDENCE — folded K_total=6.0 (RUN01 data, read-only)", "",
+         "RUN01 verdict A2_PRODUCTION_FAIL_FLATTENED_POLE STANDS as computed; this note is",
+         "diagnostic evidence for Lou's gate-6 disposition decision, derived exclusively from",
+         "the hash-verified RUN01 CSVs. No new physics was run.", "",
+         "## What the data shows",
+         "1. AT FIXED K_total=6.0, B_total CHANGES SIGN inside the gated delta family itself:",
+         f"   {b6['0.01']:+.4g} (delta 1e-2) -> {b6['0.003']:+.4g} (3e-3) -> {b6['0.001']:+.4g} (1e-3).",
+         "   The gate's 3-point log|B| slope therefore spans a zero of B_total — the regime",
+         "   where a log-slope estimator is mechanically invalid. The measured slope_B=0.516",
+         "   is dominated by the sign-flip interval (interval slopes: 0.68 across the flip,",
+         "   0.33 after it — DECELERATING; a delta^-p pole accelerates or holds p).",
+         "2. Per delta, |B_total| COLLAPSES toward K=6 (|B(6)|/|B(5)| = 0.05-0.30); the",
+         "   folded family's upper zero-crossing in K sits at K* ~ 5.8-6.1 depending on delta",
+         "   (past the grid edge at delta=1e-2, inside [5,6] at 3e-3 and 1e-3). A pole grows;",
+         "   this shrinks and flips.",
+         "3. At K=6 the ledger sum is a 98x-318x cancellation residual (top pieces V2/V1/f2,",
+         "   each ~30-40x the total) — B_total is a small residual near a zero surface, so its",
+         "   log-slope is exquisitely sensitive to delta while nothing physical grows.",
+         "4. CAVEAT (honestly reported): the near-K~6 zero-crossing is FOLDED-SPECIFIC — the",
+         "   equilateral family shows NO sign change in the production band (B negative",
+         "   throughout K in [0.5, 6.0]) and all isosceles K=6 rows are negative. The",
+         "   flattened direction of shape space genuinely behaves differently here; that is",
+         "   the one datum in favor of taking the trip seriously rather than dismissing it.",
+         "5. No amplitude blowup accompanies the trip: folded K=6 fNL in [-0.03, +0.08],",
+         "   pert_proxy ~ 1e-7 (physical units); slope_B=0.516 barely exceeds the 0.5",
+         "   threshold and is far from the 0.9 'clear pole' criterion; all six other K",
+         "   groups pass cleanly (slope_B <= 0.21).", "",
+         "## Reading",
+         "The evidence is consistent with a BOUNDED, SIGN-CHANGING B_total near a zero surface",
+         "of the flattened geometry at the K-grid edge — i.e. a benign zero-crossing artifact",
+         "of the log-slope estimator — and inconsistent with a delta^-p absolute-B pole",
+         "(which would grow, accelerate, and not sign-flip). The verdict trip is the gate",
+         "working as literally specified on data outside the estimator's assumption. The",
+         "folded-specific nature of the zero (point 4) is flagged and argues for RESOLVING",
+         "rather than waving through: one more delta decade (1e-4) or K samples bracketing",
+         "5.5-6.0 would separate 'finite flattened-limit value' from anything growing.", "",
+         "## Options (decision is Lou's; none executed)",
+         "a) Accept RUN01 as-is (gate letter tripped; verdict stands).",
+         "b) Authorize RUN02 with a decided gate-6 amendment (exclude sign-flip delta families",
+         "   from the log-slope test and/or test a pole model on |B|), plus optionally",
+         "   delta=1e-4 and K in {5.25, 5.50, 5.75} to resolve the zero surface.",
+         "c) Narrow the production K_total ceiling below the crossing (e.g. 5.5).",
+         "Each of (b)/(c) is a spec change + fresh authorization per the A2 gate law.", "",
+         "Derived numbers: gate6_derived.csv. Full trace: GATE6_stdout.log.",
+         "Inputs: RUN01 shape_grid + operator_pieces CSVs (hashes verified, recorded in log).", "",
+         "FORBIDDEN-CLAIMS NOTE: no physics claims are made beyond numerical characterization",
+         "of RUN01 outputs on the frozen benchmark."]
+    with open(os.path.join(HERE, "GATE6_EVIDENCE_NOTE.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(L))
+    print("\nEVIDENCE NOTE + DERIVED CSV WRITTEN (v2 — corrected crossing detection,")
+    print("equilateral-corroboration hypothesis refuted and replaced by folded-specific caveat)")
+    sys.stdout.flush()
+
+
+if __name__ == "__main__":
+    main()

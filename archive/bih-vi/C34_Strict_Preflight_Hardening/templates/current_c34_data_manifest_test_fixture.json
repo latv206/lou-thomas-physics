@@ -1,0 +1,78 @@
+{
+  "project": "BIH-VI C3.4 Real-Data Acquisition",
+  "created_utc": "2026-07-01T00:00:00Z",
+  "sn_table": {
+    "path": "./legacy_data/bih_vi_c34_realdata/data/Pantheon+SH0ES.dat",
+    "source": "PantheonPlusSH0ES/DataRelease Pantheon+_Data/4_DISTANCES_AND_COVAR/Pantheon+SH0ES.dat",
+    "version_or_commit": "main branch as downloaded 2026-07-01 via public raw GitHub URL",
+    "sha256": "1cb0fc379ef066afdc2ffd1857681cc478024570d8a3eba284fb645775198cf8",
+    "row_count": 1701,
+    "id_column": "CID",
+    "ra_column": "RA",
+    "dec_column": "DEC",
+    "redshift_column_for_position": "zHD (candidate; C3.3 must document zHD/zCMB/zHEL convention)",
+    "redshift_column_for_distance": "zHD/zHEL per Pantheon+ convention; not yet final for C3.3",
+    "residual_column": "MU_SH0ES or externally computed residual; production choice not finalized",
+    "uncertainty_column": "MU_SH0ES_ERR_DIAG / covariance dominates; note open GitHub issue re diagonal differences"
+  },
+  "covariance": {
+    "path": "./legacy_data/bih_vi_c34_realdata/data/Pantheon+SH0ES_STAT+SYS.cov",
+    "source": "PantheonPlusSH0ES/DataRelease Pantheon+_Data/4_DISTANCES_AND_COVAR/Pantheon+SH0ES_STAT+SYS.cov",
+    "version_or_commit": "main branch as downloaded 2026-07-01 via public raw GitHub URL",
+    "sha256": "abf806d966485e64afdb359c87bffc0ecc00d05eff0a31ced66f247385df0fdc",
+    "shape": [
+      1701,
+      1701
+    ],
+    "leading_N_convention": true
+  },
+  "density_fields": [
+    {
+      "name": "2M++ Carrick et al. v1.0 density field",
+      "path_or_directory": "./legacy_data/bih_vi_c34_realdata/data/twompp_density.npy",
+      "source": "Cosmicflows 2M++ Density and Peculiar Velocity Fields v1.0",
+      "version_or_commit": "website last updated 2020-09-02; README downloaded, density array not downloaded in this run",
+      "coordinate_frame": "Galactic Cartesian comoving coordinates X,Y,Z; configuration/real space; origin Local Group in center cell [128,128,128]",
+      "units": "Mpc_h",
+      "field_type": "delta",
+      "box_min": [
+        -200,
+        -200,
+        -200
+      ],
+      "box_max": [
+        200,
+        200,
+        200
+      ],
+      "grid_shape": [
+        257,
+        257,
+        257
+      ],
+      "smoothing_scales_Mpc": [
+        "4 Mpc/h native only; C3.2 Rs={5,10,25,50,100,200,300} requires derived smoothing pipeline"
+      ],
+      "mask_or_edge_policy": "finite cube; edge/mask policy and high-Rs smoothing coverage must be defined before C3.3/C3.2",
+      "sha256_or_manifest": "MISSING density file; twompp_README sha256=85b240f48c12f37e24ad9db397016f29973480009381a476ff641b79184bfec6"
+    }
+  ],
+  "nuisance_controls": {
+    "host_mass": "HOST_LOGMASS, HOST_LOGMASS_ERR in Pantheon+SH0ES.dat",
+    "metallicity": "not present in Pantheon+SH0ES.dat; external host/anchor table needed",
+    "sSFR": "not present in Pantheon+SH0ES.dat; external host table needed",
+    "dust": "MWEBV present; host dust proxy not present; external table may be needed",
+    "survey_id": "IDSURVEY",
+    "peculiar_velocity": "VPEC, VPECERR present; covariance also includes PV effects but explicit C3.2 control/robustness cuts still required"
+  },
+  "qa_status": {
+    "ready_for_c33_join": false,
+    "blocking_issues": [
+      "2M++ density array twompp_density.npy not acquired in this run",
+      "native 2M++ smoothing is 4 Mpc/h only; C3.2 smoothing-scale products must be generated or supplied",
+      "C3.3 coordinate transform currently assumes equatorial Cartesian; 2M++ grid is Galactic Cartesian, so coordinate-frame rotation must be implemented or preprocessed",
+      "production residual definition not finalized (MU_SH0ES vs externally computed residual)",
+      "metallicity/sSFR/host dust controls need external tables or explicit omission rationale"
+    ]
+  }
+}

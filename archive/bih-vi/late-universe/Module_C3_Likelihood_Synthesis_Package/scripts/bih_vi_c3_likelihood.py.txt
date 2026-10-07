@@ -1,0 +1,331 @@
+
+"""
+BIH-VI Module C3 production likelihood scaffold.
+
+This module implements the calibration-frame branch:
+    nu_metric(z) = 1 in all distance integrals
+    H0_ladder = nu_cal H0_geom only in the calibration/readout sector
+
+It supports:
+    - DESI DR2 compressed BAO mean/covariance
+    - Pantheon+SH0ES full covariance if the public files are present locally
+    - Planck theta_* compressed prior
+    - Delta M_B calibration prior
+    - Q_bulk reconstruction for CPL w(z)
+
+This file is meant for external networked environments. The sandbox that generated
+this package could not download the public Pantheon+ covariance at runtime.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional, Dict, Tuple
+import numpy as np
+import pandas as pd
+
+C_KM_S = 299792.458
+T_CMB = 2.7255
+N_EFF = 3.046
+OMEGA_GAMMA_H2 = 2.472e-5 * (T_CMB / 2.7255) ** 4
+
+@dataclass
+class C3Params:
+    h: float = 0.6736
+    omega_m: float = 0.3158
+    omega_k: float = 0.0
+    omega_b_h2: float = 0.02237
+    w0: float = -1.0
+    wa: float = 0.0
+    M_B_geom: float = -19.42
+    Delta_M_B: float = 0.179655
+
+    @property
+    def H0(self) -> float:
+        return 100.0 * self.h
+
+    @property
+    def omega_gamma(self) -> float:
+        return OMEGA_GAMMA_H2 / self.h**2
+
+    @property
+    def omega_r(self) -> float:
+        return self.omega_gamma * (1.0 + 0.2271 * N_EFF)
+
+    @property
+    def omega_de(self) -> float:
+        return 1.0 - self.omega_m - self.omega_k - self.omega_r
+
+    @property
+    def omega_m_h2(self) -> float:
+        return self.omega_m * self.h**2
+
+def cpl_f_de(z: np.ndarray, p: C3Params) -> np.ndarray:
+    z = np.asarray(z, dtype=float)
+    return (1.0 + z)**(3.0 * (1.0 + p.w0 + p.wa)) * np.exp(-3.0 * p.wa * z / (1.0 + z))
+
+def E2(z: np.ndarray, p: C3Params) -> np.ndarray:
+    z = np.asarray(z, dtype=float)
+    return (p.omega_r * (1+z)**4
+            + p.omega_m * (1+z)**3
+            + p.omega_k * (1+z)**2
+            + p.omega_de * cpl_f_de(z, p))
+
+def E(z: np.ndarray, p: C3Params) -> np.ndarray:
+    e2 = E2(z, p)
+    if np.any(e2 <= 0) or np.any(~np.isfinite(e2)):
+        raise ValueError("Invalid E^2 for this parameter set.")
+    return np.sqrt(e2)
+
+def S_k(chi: np.ndarray, omega_k: float, H0: float) -> np.ndarray:
+    """Curvature transverse comoving distance from line-of-sight comoving distance chi [Mpc]."""
+    chi = np.asarray(chi, dtype=float)
+    if abs(omega_k) < 1e-8:
+        return chi
+    dh = C_KM_S / H0
+    sqrt_ok = np.sqrt(abs(omega_k))
+    arg = sqrt_ok * chi / dh
+    if omega_k > 0:
+        return dh / sqrt_ok * np.sinh(arg)
+    return dh / sqrt_ok * np.sin(arg)
+
+def comoving_distance(z: np.ndarray, p: C3Params, n_grid: int = 6000) -> np.ndarray:
+    z = np.asarray(z, dtype=float)
+    zmax = max(float(np.max(z)) * 1.001, 1e-4)
+    zg = np.linspace(0.0, zmax, n_grid)
+    invH = 1.0 / (p.H0 * E(zg, p))
+    dc = np.zeros_like(zg)
+    dz = np.diff(zg)
+    dc[1:] = np.cumsum(0.5 * dz * (invH[:-1] + invH[1:])) * C_KM_S
+    return np.interp(z, zg, dc)
+
+def distances(z: np.ndarray, p: C3Params) -> Dict[str, np.ndarray]:
+    z = np.asarray(z, dtype=float)
+    dc = comoving_distance(z, p)
+    dm = S_k(dc, p.omega_k, p.H0)
+    h = p.H0 * E(z, p)
+    dh = C_KM_S / h
+    dl = (1 + z) * dm
+    da = dm / (1 + z)
+    return {"DC": dc, "DM": dm, "DH": dh, "DL": dl, "DA": da, "H": h}
+
+def z_star_hu_sugiyama(p: C3Params) -> float:
+    wb = p.omega_b_h2
+    wm = p.omega_m_h2
+    g1 = 0.0783 * wb**(-0.238) / (1 + 39.5 * wb**0.763)
+    g2 = 0.560 / (1 + 21.1 * wb**1.81)
+    return 1048.0 * (1 + 0.00124 * wb**(-0.738)) * (1 + g1 * wm**g2)
+
+def z_drag_eisenstein_hu(p: C3Params) -> float:
+    wb = p.omega_b_h2
+    wm = p.omega_m_h2
+    b1 = 0.313 * wm**(-0.419) * (1 + 0.607 * wm**0.674)
+    b2 = 0.238 * wm**0.223
+    return 1291 * wm**0.251 / (1 + 0.659 * wm**0.828) * (1 + b1 * wb**b2)
+
+def sound_speed_baryon_photon(z: np.ndarray, p: C3Params) -> np.ndarray:
+    # R_b = 3 rho_b / (4 rho_gamma)
+    rb = 3.0 * p.omega_b_h2 / (4.0 * OMEGA_GAMMA_H2) / (1.0 + np.asarray(z))
+    return 1.0 / np.sqrt(3.0 * (1.0 + rb))
+
+def sound_horizon(z_start: float, p: C3Params, z_max: float = 1.0e7, n_grid: int = 12000) -> float:
+    # r_s(z) = int_z^inf c_s dz/H(z), in Mpc.
+    # Log grid handles early-time tail.
+    zg = np.geomspace(1.0 + z_start, 1.0 + z_max, n_grid) - 1.0
+    integrand = sound_speed_baryon_photon(zg, p) * C_KM_S / (p.H0 * E(zg, p))
+    return float(np.trapz(integrand, zg))
+
+def theta_star_100(p: C3Params) -> float:
+    zs = z_star_hu_sugiyama(p)
+    rs = sound_horizon(zs, p)
+    dm = distances(np.array([zs]), p)["DM"][0]
+    return 100.0 * rs / dm
+
+def r_drag(p: C3Params) -> float:
+    return sound_horizon(z_drag_eisenstein_hu(p), p)
+
+class DESIDR2BAOLikelihood:
+    def __init__(self, mean_path: str | Path, cov_path: str | Path):
+        self.mean = pd.read_csv(mean_path)
+        self.cov = np.loadtxt(cov_path)
+        self.inv = np.linalg.inv(self.cov)
+
+    def predict(self, p: C3Params) -> np.ndarray:
+        z = self.mean["z"].to_numpy(float)
+        d = distances(z, p)
+        rd = r_drag(p)
+        pred = []
+        for zi, q, dm, dh in zip(z, self.mean["quantity"], d["DM"], d["DH"]):
+            if q == "DM_over_rd":
+                pred.append(dm / rd)
+            elif q == "DH_over_rd":
+                pred.append(dh / rd)
+            elif q == "DV_over_rd":
+                pred.append((zi * dm**2 * dh)**(1.0/3.0) / rd)
+            else:
+                raise ValueError(f"Unknown BAO quantity: {q}")
+        return np.asarray(pred)
+
+    def chi2(self, p: C3Params) -> float:
+        diff = self.predict(p) - self.mean["value"].to_numpy(float)
+        return float(diff @ self.inv @ diff)
+
+def load_pantheon_cov(path: str | Path, n: int) -> np.ndarray:
+    arr = np.loadtxt(path)
+    if arr.size == n*n + 1 and abs(arr[0] - n) < 1e-6:
+        arr = arr[1:]
+    if arr.size != n*n:
+        raise ValueError(f"Covariance size mismatch: got {arr.size}, expected {n*n} or {n*n+1}.")
+    return arr.reshape((n, n))
+
+class PantheonPlusSH0ESLikelihood:
+    """
+    Pantheon+SH0ES full-covariance likelihood.
+
+    Expected public files:
+      Pantheon+SH0ES.dat
+      Pantheon+SH0ES_STAT+SYS.cov
+
+    Convention:
+      - Hubble-flow SN predicted m_B = M_B_geom + mu_model(zHD,zHEL)
+      - Cepheid calibrator predicted m_B = M_B_geom + Delta_M_B + CEPH_DIST
+      - Delta_M_B is the BIH calibration-frame offset.
+    """
+    def __init__(self, data_path: str | Path, cov_path: str | Path, include_calibrators: bool = True):
+        self.data = pd.read_csv(data_path, delim_whitespace=True, comment="#")
+        self.include_calibrators = include_calibrators
+
+        # Required flexible column discovery.
+        self.col_zcos = self._find_col(["zHD", "zCMB", "zcmb"])
+        self.col_zhel = self._find_col(["zHEL", "zhel"])
+        self.col_mb = self._find_col(["m_b_corr", "mb", "mB", "m_b"])
+        self.col_cal = self._find_col(["IS_CALIBRATOR", "is_calibrator"], required=False)
+        self.col_ceph = self._find_col(["CEPH_DIST", "cepheid_mu", "MU_CEPH"], required=False)
+
+        if not include_calibrators and self.col_cal is not None:
+            mask = self.data[self.col_cal].to_numpy(int) == 0
+            self.data = self.data.loc[mask].reset_index(drop=True)
+
+        n = len(pd.read_csv(data_path, delim_whitespace=True, comment="#"))
+        full_cov = load_pantheon_cov(cov_path, n)
+        if len(self.data) != n:
+            # subselect covariance for non-calibrator shape mode
+            original = pd.read_csv(data_path, delim_whitespace=True, comment="#")
+            mask = original[self.col_cal].to_numpy(int) == 0
+            full_cov = full_cov[np.ix_(mask, mask)]
+        self.cov = full_cov
+        self.inv = np.linalg.inv(self.cov)
+
+    def _find_col(self, candidates, required=True):
+        for c in candidates:
+            if c in self.data.columns:
+                return c
+        if required:
+            raise ValueError(f"Could not find any of columns {candidates}; available={list(self.data.columns)}")
+        return None
+
+    def model_mu(self, p: C3Params) -> np.ndarray:
+        zcos = self.data[self.col_zcos].to_numpy(float)
+        zhel = self.data[self.col_zhel].to_numpy(float)
+        dc = comoving_distance(zcos, p)
+        dm = S_k(dc, p.omega_k, p.H0)
+        dl = (1.0 + zhel) * dm
+        return 5.0 * np.log10(dl) + 25.0
+
+    def residual(self, p: C3Params) -> np.ndarray:
+        mb = self.data[self.col_mb].to_numpy(float)
+        pred = p.M_B_geom + self.model_mu(p)
+
+        if self.include_calibrators and self.col_cal is not None and self.col_ceph is not None:
+            is_cal = self.data[self.col_cal].to_numpy(int).astype(bool)
+            ceph = self.data[self.col_ceph].to_numpy(float)
+            pred[is_cal] = p.M_B_geom + p.Delta_M_B + ceph[is_cal]
+
+        return mb - pred
+
+    def chi2(self, p: C3Params) -> float:
+        r = self.residual(p)
+        return float(r @ self.inv @ r)
+
+class CMBThetaStarPrior:
+    def __init__(self, theta100_mean: float = 1.0411, theta100_sigma: float = 0.0003):
+        self.mean = theta100_mean
+        self.sigma = theta100_sigma
+
+    def chi2(self, p: C3Params) -> float:
+        th = theta_star_100(p)
+        return float(((th - self.mean) / self.sigma)**2)
+
+class DeltaMBPrior:
+    def __init__(self, mean: float = 0.179655, sigma: float = 0.030894):
+        self.mean = mean
+        self.sigma = sigma
+
+    def chi2(self, p: C3Params) -> float:
+        return float(((p.Delta_M_B - self.mean) / self.sigma)**2)
+
+def w_eff(z: np.ndarray, p: C3Params) -> np.ndarray:
+    z = np.asarray(z, dtype=float)
+    return p.w0 + p.wa * z / (1.0 + z)
+
+def qbulk_over_HrhoDE(z: np.ndarray, p: C3Params, w_int: float = -1.0) -> np.ndarray:
+    return 3.0 * (w_int - w_eff(z, p))
+
+def qbulk_smoothness_metrics(p: C3Params, zmax: float = 3.0, n: int = 600) -> Dict[str, float]:
+    z = np.linspace(0.0, zmax, n)
+    q = qbulk_over_HrhoDE(z, p)
+    dq = np.gradient(q, z)
+    d2q = np.gradient(dq, z)
+    sign_changes = int(np.sum(np.diff(np.signbit(q)) != 0))
+    return {
+        "q_min": float(np.min(q)),
+        "q_max": float(np.max(q)),
+        "q_abs_max": float(np.max(np.abs(q))),
+        "dq_abs_max": float(np.max(np.abs(dq))),
+        "d2q_rms": float(np.sqrt(np.mean(d2q**2))),
+        "sign_changes": sign_changes,
+        "smooth_pass_default": bool(np.max(np.abs(dq)) < 2.0 and np.sqrt(np.mean(d2q**2)) < 2.0),
+    }
+
+def total_chi2(
+    p: C3Params,
+    bao: Optional[DESIDR2BAOLikelihood] = None,
+    sne: Optional[PantheonPlusSH0ESLikelihood] = None,
+    cmb: Optional[CMBThetaStarPrior] = None,
+    dmb_prior: Optional[DeltaMBPrior] = None,
+    priors: bool = True,
+) -> Tuple[float, Dict[str, float]]:
+    comps: Dict[str, float] = {}
+
+    # Hard physical guards.
+    if p.h <= 0 or p.omega_m <= 0 or p.omega_b_h2 <= 0 or p.omega_de <= 0:
+        return np.inf, {"invalid": np.inf}
+
+    try:
+        _ = E(np.array([0.0, 1.0, 1100.0]), p)
+    except Exception:
+        return np.inf, {"invalid": np.inf}
+
+    if priors:
+        # Wide top-hat priors for the direct sampler.
+        if not (0.55 < p.h < 0.85 and 0.15 < p.omega_m < 0.5 and -0.2 < p.omega_k < 0.2):
+            return np.inf, {"prior_top_hat": np.inf}
+        if not (-2.0 < p.w0 < -0.2 and -3.0 < p.wa < 3.0):
+            return np.inf, {"prior_top_hat": np.inf}
+        if not (-20.5 < p.M_B_geom < -18.0 and -0.2 < p.Delta_M_B < 0.5):
+            return np.inf, {"prior_top_hat": np.inf}
+        if not (0.018 < p.omega_b_h2 < 0.026):
+            return np.inf, {"prior_top_hat": np.inf}
+
+    for name, like in [("bao", bao), ("sne", sne), ("cmb_theta", cmb), ("delta_MB_prior", dmb_prior)]:
+        if like is None:
+            continue
+        try:
+            comps[name] = like.chi2(p)
+        except Exception as e:
+            comps[name] = np.inf
+            comps[name + "_error"] = str(e)
+            return np.inf, comps
+
+    total = float(sum(v for v in comps.values() if isinstance(v, (int, float, np.floating))))
+    return total, comps

@@ -1,0 +1,55 @@
+{
+  "density_fields": [
+    {
+      "name": "2M++ Carrick et al. v1.0 preprocessed smoothed density field",
+      "path_or_directory": "<LOCAL_PATH>/twompp_smoothed",
+      "source": "https://cosmicflows.iap.fr/download/",
+      "version_or_commit": "v1.0, public Cosmicflows 2M++ density field",
+      "coordinate_frame": "Galactic Cartesian comoving",
+      "units": "Mpc_h",
+      "field_type": "delta",
+      "box_min": [
+        -200.0,
+        -200.0,
+        -200.0
+      ],
+      "box_max": [
+        200.0,
+        200.0,
+        200.0
+      ],
+      "grid_shape": [
+        257,
+        257,
+        257
+      ],
+      "smoothing_scales_Mpc": [
+        5,
+        10,
+        25,
+        50,
+        100,
+        200,
+        300
+      ],
+      "native_gaussian_smoothing_Mpc_h": 4.0,
+      "native_gaussian_smoothing_Mpc": 5.938242280285036,
+      "mask_or_edge_policy": "finite cube; interpolation outside box is NaN; covariance sub-select C[I,I]; smoothing uses nearest-edge mode; coverage audited by c33_density_coverage_by_scale.csv",
+      "sha256_or_manifest": "<LOCAL_PATH>/twompp_smoothed/grid_metadata.json and smoothing_metadata.csv"
+    }
+  ],
+  "sn_table_patch": {
+    "redshift_column_for_position": "zCMB",
+    "redshift_column_for_distance": "zHD plus zHEL only if using Pantheon+ distance convention externally",
+    "residual_column": "MU_SH0ES residual against fixed H0_geom background OR externally supplied standardized Hubble residual; must be finalized before C3.2",
+    "uncertainty_column": "MU_SH0ES_ERR_DIAG for diagnostics; STAT+SYS covariance is authoritative for production"
+  },
+  "nuisance_controls_patch": {
+    "host_mass": "HOST_LOGMASS",
+    "survey_id": "IDSURVEY",
+    "peculiar_velocity": "VPEC,VPECERR plus z-cut robustness suite z>0.01,z>0.02,z>0.03",
+    "metallicity": "optional external table; omission test required if absent",
+    "sSFR": "optional external table; omission test required if absent",
+    "dust": "MWEBV available; host dust requires external table or omission test"
+  }
+}

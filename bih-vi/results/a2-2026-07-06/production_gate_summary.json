@@ -1,0 +1,117 @@
+{
+  "UT_K": {
+    "passed": true,
+    "value": 2.660212940106564e-15,
+    "tol": 1e-10
+  },
+  "UT_FR": {
+    "passed": true,
+    "value": 1.0907152156689323e-15,
+    "tol": 1e-10
+  },
+  "BG_ETA": {
+    "passed": true,
+    "etaN_grad_rel": 8.69514892450742e-05,
+    "aH_0p35": 0.7922204085469607,
+    "tol_eta": 0.001,
+    "tol_aH": 0.03
+  },
+  "G_W": {
+    "passed": true,
+    "worst_surface_region": 2.152469052996153e-06,
+    "worst_global_transient": 0.00044588600547745827,
+    "tol_surface": 1e-05,
+    "tol_global": 0.001
+  },
+  "CONV": {
+    "passed": true,
+    "rel_dev": 0.0008409466620926676,
+    "fNL_DN": 0.05886452494286938,
+    "fNL_DNhalf": 0.05891402686863576,
+    "tol": 0.02
+  },
+  "G_S_CONTINUITY_SENTINELS": {
+    "passed": true,
+    "rows": [
+      {
+        "family": "squeezed",
+        "K": 0.02,
+        "expected": 0.05886452494286938,
+        "actual": 0.05886452494286938,
+        "abs_dev": 0.0,
+        "passed": true
+      },
+      {
+        "family": "equilateral",
+        "K": 0.02,
+        "expected": 0.037002126018083,
+        "actual": 0.037002126018083,
+        "abs_dev": 0.0,
+        "passed": true
+      },
+      {
+        "family": "squeezed",
+        "K": 0.04,
+        "expected": 0.058106084779109,
+        "actual": 0.058106084779109,
+        "abs_dev": 0.0,
+        "passed": true
+      },
+      {
+        "family": "equilateral",
+        "K": 0.04,
+        "expected": 0.030902659690699403,
+        "actual": 0.030902659687979263,
+        "abs_dev": 2.7201400853993363e-12,
+        "passed": true
+      },
+      {
+        "family": "squeezed",
+        "K": 0.06,
+        "expected": 0.055075,
+        "actual": 0.055074541608155336,
+        "abs_dev": 4.583918446626756e-07,
+        "passed": true
+      },
+      {
+        "family": "equilateral",
+        "K": 0.06,
+        "expected": 0.022304,
+        "actual": 0.0223037017322976,
+        "abs_dev": 2.982677024011837e-07,
+        "passed": true
+      }
+    ],
+    "tol": 0.00075
+  },
+  "EQUILATERAL_HARD_ROWS_STABLE": {
+    "passed": true,
+    "n": 11
+  },
+  "SQUEEZED_HARD_ROWS_STABLE": {
+    "passed": true,
+    "n": 11
+  },
+  "FOLDED_GFLAT_OR_FLAGGED": {
+    "passed": true,
+    "n": 14,
+    "n_gflat_pass": 0
+  },
+  "NO_FOLDED_CLAIM_WITHOUT_GFLAT": {
+    "passed": true,
+    "n_folded_claim": 0
+  },
+  "NO_PROVISIONAL_CLAIM": {
+    "passed": true,
+    "n_provisional_claim": 0
+  },
+  "NO_K_GT_0P06_CLAIM": {
+    "passed": true,
+    "n_gt": 0
+  },
+  "EXECUTION_LOCK": {
+    "passed": true,
+    "production": true,
+    "lou_authorized": true
+  }
+}

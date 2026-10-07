@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+"""
+Download public 2M++ density/velocity products from Cosmicflows.
+
+This script is meant for a networked local workstation or cluster.
+The ChatGPT sandbox may not be able to resolve/download the binary files.
+
+Outputs:
+  twompp_density.npy
+  twompp_velocity.npy          optional unless --no-velocity
+  twompp_README.txt
+  twompp_download_manifest.json
+"""
+from __future__ import annotations
+from pathlib import Path
+import argparse, json, hashlib, urllib.request, time, os, sys
+import numpy as np
+
+URLS = {
+    "density": "https://cosmicflows.iap.fr/assets/data/twompp_density.npy",
+    "velocity": "https://cosmicflows.iap.fr/assets/data/twompp_velocity.npy",
+    "readme": "https://cosmicflows.iap.fr/assets/data/twompp_README.txt",
+}
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def download(url: str, out: Path, retries: int = 3):
+    out.parent.mkdir(parents=True, exist_ok=True)
+    tmp = out.with_suffix(out.suffix + ".part")
+    for attempt in range(1, retries + 1):
+        try:
+            print(f"Downloading {url} -> {out}")
+            with urllib.request.urlopen(url, timeout=120) as r, tmp.open("wb") as f:
+                total = r.headers.get("Content-Length")
+                total_i = int(total) if total and total.isdigit() else None
+                done = 0
+                while True:
+                    chunk = r.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                    done += len(chunk)
+                    if total_i:
+                        pct = 100 * done / total_i
+                        print(f"\r  {done/1e6:.1f} MB / {total_i/1e6:.1f} MB ({pct:.1f}%)", end="")
+                print()
+            tmp.replace(out)
+            return
+        except Exception as e:
+            print(f"Attempt {attempt} failed: {e}", file=sys.stderr)
+            if attempt == retries:
+                raise
+            time.sleep(2 * attempt)
+
+def validate_npy(path: Path, expected_shape=None, kind="density"):
+    arr = np.load(path, mmap_mode="r")
+    info = {
+        "path": str(path),
+        "shape": list(arr.shape),
+        "dtype": str(arr.dtype),
+        "sha256": sha256(path),
+        "bytes": path.stat().st_size,
+    }
+    if expected_shape is not None and tuple(arr.shape) != tuple(expected_shape):
+        raise ValueError(f"{kind} shape mismatch: got {arr.shape}, expected {expected_shape}")
+    return info
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default="data/twompp")
+    ap.add_argument("--no-velocity", action="store_true")
+    args = ap.parse_args()
+
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    files = {
+        "density": out / "twompp_density.npy",
+        "readme": out / "twompp_README.txt",
+    }
+    if not args.no_velocity:
+        files["velocity"] = out / "twompp_velocity.npy"
+
+    for key, path in files.items():
+        download(URLS[key], path)
+
+    manifest = {
+        "source": "Cosmicflows 2M++ Density and Peculiar Velocity Fields v1.0",
+        "urls": {k: URLS[k] for k in files},
+        "files": {},
+        "expected": {
+            "density_shape": [257, 257, 257],
+            "velocity_shape": [3, 257, 257, 257],
+            "coordinate_frame": "Galactic Cartesian comoving, observer/Local Group at center",
+            "units": "Mpc/h",
+            "box_min": [-200.0, -200.0, -200.0],
+            "box_max": [200.0, 200.0, 200.0],
+            "native_gaussian_smoothing": "4 Mpc/h",
+            "field_type": "delta",
+        }
+    }
+
+    manifest["files"]["density"] = validate_npy(files["density"], [257, 257, 257], "density")
+    if "velocity" in files:
+        manifest["files"]["velocity"] = validate_npy(files["velocity"], [3, 257, 257, 257], "velocity")
+    manifest["files"]["readme"] = {
+        "path": str(files["readme"]),
+        "sha256": sha256(files["readme"]),
+        "bytes": files["readme"].stat().st_size
+    }
+
+    (out / "twompp_download_manifest.json").write_text(json.dumps(manifest, indent=2))
+    print(json.dumps(manifest, indent=2))
+
+if __name__ == "__main__":
+    main()

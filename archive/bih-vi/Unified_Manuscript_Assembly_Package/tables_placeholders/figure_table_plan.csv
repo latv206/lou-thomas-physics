@@ -1,0 +1,15 @@
+ID,Placeholder,Suggested source
+Figure 1,Null-expansion sign sectors,boundary_inversion_flrw.png / boundary_inversion_blackhole.png
+Figure 2,Sqrt-Reg Friedmann function and density ceiling,new plot or main report figure
+Figure 3,"(n_s,r) parameter island",bih_vi_ns_r_scan_clean.png
+Figure 4,M-S exit feature convergence,bih_vi_ms_convergence_delta001.png
+Figure 5,Module B scale map,bih_vi_module_b_scale_map.png
+Figure 6,Metric-lapse failure heatmaps,Module C1/C2 diagnostic package
+Figure 7,Calibration target Delta M_B,Module C3 calibration package
+Figure 8,C3 posterior corner plot,production chain
+Figure 9,Q_bulk posterior band,production chain + reconstruct_qbulk.py
+Table 1,Claim hierarchy,claim_hierarchy.csv
+Table 2,Frozen benchmark,main report benchmark table
+Table 3,C1/C2 failure summary,Module C1/C2 diagnostics
+Table 4,C3 likelihood blocks,likelihood synthesis package
+Table 5,Q_bulk smoothness criteria,production chain

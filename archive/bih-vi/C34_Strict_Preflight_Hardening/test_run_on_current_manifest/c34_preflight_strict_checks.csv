@@ -1,0 +1,36 @@
+component,check,pass,severity,detail
+manifest,file_exists,True,blocker,./legacy_data/bih_vi_c34_realdata/c34_data_manifest.json
+manifest,project_name_present,True,blocker,BIH-VI C3.4 Real-Data Acquisition
+sn_table,path_exists,True,blocker,./legacy_data/bih_vi_c34_realdata/data/Pantheon+SH0ES.dat
+sn_table,sha256,True,info,1cb0fc379ef066afdc2ffd1857681cc478024570d8a3eba284fb645775198cf8
+sn_table,row_count_readable,True,blocker,1701
+sn_table,manifest_row_count_matches_file,True,blocker,manifest=1701 actual=1701
+sn_table,id_column_exists_in_table,True,blocker,CID
+sn_table,ra_column_exists_in_table,True,blocker,RA
+sn_table,dec_column_exists_in_table,True,blocker,DEC
+sn_table,redshift_column_for_position_resolved_not_placeholder,False,blocker,zHD (candidate; C3.3 must document zHD/zCMB/zHEL convention)
+sn_table,redshift_column_for_distance_resolved_not_placeholder,False,warning,zHD/zHEL per Pantheon+ convention; not yet final for C3.3
+sn_table,residual_column_resolved_not_placeholder,False,warning,MU_SH0ES or externally computed residual; production choice not finalized
+sn_table,uncertainty_column_resolved_not_placeholder,False,warning,MU_SH0ES_ERR_DIAG / covariance dominates; note open GitHub issue re diagonal differences
+covariance,path_exists,True,blocker,./legacy_data/bih_vi_c34_realdata/data/Pantheon+SH0ES_STAT+SYS.cov
+covariance,sha256,True,info,abf806d966485e64afdb359c87bffc0ecc00d05eff0a31ced66f247385df0fdc
+covariance,shape_readable,True,blocker,"{'shape': (1701, 1701), 'leading_N': True}"
+covariance,shape_matches_sn_rows,True,blocker,"cov=(1701, 1701), sn_rows=1701"
+density_field_0_2M++ Carrick et al. v1.0 density field,path_exists,False,blocker,./legacy_data/bih_vi_c34_realdata/data/twompp_density.npy
+density_field_0_2M++ Carrick et al. v1.0 density field,coordinate_frame_resolved_not_placeholder,True,blocker,"Galactic Cartesian comoving coordinates X,Y,Z; configuration/real space; origin Local Group in center cell [128,128,128]"
+density_field_0_2M++ Carrick et al. v1.0 density field,units_resolved_not_placeholder,True,blocker,Mpc_h
+density_field_0_2M++ Carrick et al. v1.0 density field,field_type_resolved_not_placeholder,True,blocker,delta
+density_field_0_2M++ Carrick et al. v1.0 density field,mask_or_edge_policy_resolved_not_placeholder,False,blocker,finite cube; edge/mask policy and high-Rs smoothing coverage must be defined before C3.3/C3.2
+density_field_0_2M++ Carrick et al. v1.0 density field,units_allowed_value,True,blocker,Mpc_h
+density_field_0_2M++ Carrick et al. v1.0 density field,field_type_allowed_value,True,blocker,delta
+density_field_0_2M++ Carrick et al. v1.0 density field,box_min_numeric_len_3,True,blocker,"[-200, -200, -200]"
+density_field_0_2M++ Carrick et al. v1.0 density field,box_max_numeric_len_3,True,blocker,"[200, 200, 200]"
+density_field_0_2M++ Carrick et al. v1.0 density field,grid_shape_numeric_len_3,True,blocker,"[257, 257, 257]"
+density_field_0_2M++ Carrick et al. v1.0 density field,smoothing_scales_numeric,False,blocker,"['4 Mpc/h native only; C3.2 Rs={5,10,25,50,100,200,300} requires derived smoothing pipeline']"
+nuisance_controls,host_mass_resolved_not_placeholder,True,blocker,"HOST_LOGMASS, HOST_LOGMASS_ERR in Pantheon+SH0ES.dat"
+nuisance_controls,survey_id_resolved_not_placeholder,True,blocker,IDSURVEY
+nuisance_controls,peculiar_velocity_resolved_not_placeholder,False,blocker,"VPEC, VPECERR present; covariance also includes PV effects but explicit C3.2 control/robustness cuts still required"
+nuisance_controls,metallicity_resolved_not_placeholder,False,warning,not present in Pantheon+SH0ES.dat; external host/anchor table needed
+nuisance_controls,sSFR_resolved_not_placeholder,False,warning,not present in Pantheon+SH0ES.dat; external host table needed
+nuisance_controls,dust_resolved_not_placeholder,False,warning,MWEBV present; host dust proxy not present; external table may be needed
+qa_status,manifest_not_claiming_ready_with_blockers,True,blocker,"{'ready_for_c33_join': False, 'blocking_issues': ['2M++ density array twompp_density.npy not acquired in this run', 'native 2M++ smoothing is 4 Mpc/h only; C3.2 smoothing-scale products must be generated or supplied', 'C3.3 coordinate transform currently assumes equatorial Cartesian; 2M++ grid is Galactic Cartesian, so coordinate-frame rotation must be implemented or preprocessed', 'production residual definition not finalized (MU_SH0ES vs externally computed residual)', 'metallicity/sSFR/host dust controls need external tables or explicit omission rationale']}"

@@ -1,0 +1,32 @@
+{
+  "edition": "2026.10.07.1",
+  "review_type": "AI-assisted publication privacy review",
+  "unresolved_findings": [],
+  "inspection_errors": [],
+  "benign_findings": [
+    {
+      "file": "tests/test_release.py",
+      "part": "text",
+      "kind": "private_path",
+      "reason": "Synthetic path-traversal rejection test"
+    }
+  ],
+  "personal_affiliation_location_removed": true,
+  "public_author_credit": "Lou Thomas",
+  "template_contact_fields_removed": true,
+  "supported_research_code_data_and_notebooks_unchanged": 110,
+  "pdf_privacy_verification": "pdf_privacy_revision.json",
+  "retained_animation_frames_decoded": 40,
+  "public_disclosures": [
+    "Author name",
+    "AI assistance",
+    "Physics review and draft history"
+  ],
+  "limits": [
+    "Not a legal or ownership clearance",
+    "Not an absolute malware or privacy guarantee",
+    "No exhaustive OCR or steganography analysis",
+    "DOCX layout not re-rendered"
+  ],
+  "verdict": "PASS"
+}

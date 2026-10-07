@@ -1,0 +1,14 @@
+{
+  "method": "AI-assisted static review and targeted execution",
+  "reviewed_code_units": 27,
+  "unresolved_pattern_findings": 0,
+  "benign_findings": [],
+  "benign_reason": "Earlier unfilled contact templates removed in privacy revision.",
+  "inspection_errors": 0,
+  "document_render_limitation": "LibreOffice unavailable; DOCX structure checked, layout not re-rendered",
+  "malware_certification": false,
+  "third_party_dependency_audit": false,
+  "publication_recheck": "publication_privacy.json",
+  "existing_reviewed_code_unchanged": true,
+  "additional_publication_regression_module_reviewed": true
+}

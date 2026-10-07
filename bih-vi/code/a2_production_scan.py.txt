@@ -1,0 +1,965 @@
+#!/usr/bin/env python3
+"""
+BIH-VI A2 PRODUCTION SCAN — hub-aware single-file script.
+
+Decision A implementation:
+- Uses the sealed G-S v3 bounded-eta_H instrument structure.
+- Claim-bearing families: equilateral + squeezed hard rows only, K <= 0.060.
+- Folded/flattened rows are diagnostic/report-only under the current sealed
+  instrument unless G-FLAT explicitly passes; under Decision A they remain out
+  of primary claims regardless and are reported with full diagnostics.
+
+Execution lock:
+    python a2_production_scan.py --production --lou-authorized
+
+Outputs are written to:
+    HUB_ROOT/outbox/A2_PRODUCTION_LOCAL/
+where HUB_ROOT is taken from the HUB_ROOT environment variable, or discovered
+from the current Hub/runs/... working directory.
+
+No pandas dependency. Requires Python 3 + numpy.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import math
+import os
+import sys
+import time
+import traceback
+from datetime import datetime, timezone
+from pathlib import Path
+import itertools
+
+import numpy as np
+
+# =============================================================================
+# Frozen benchmark and production scan configuration
+# =============================================================================
+P_EXP, MU, M_POST = 3, 1.0, 4.0
+DELTA, Y_G = 0.01, 2.0 / 3.0
+H_C_OVER_MPL = 3.8e-6  # provenance only; numerics use H(y_g)=1 convention
+N_MIN, N_MAX, DN = -22.0, 0.45, 0.001
+X_INIT, I_EPS = 60.0, 0.03
+B_HARD, B_PROV = 2.0, 1.5
+SURFACES = [0.20, 0.25, 0.30, 0.35, 0.40]
+Q_SQ = 1.0e-3
+
+# Production grids requested by Lou.
+K_HARD = [round(0.010 + 0.005 * i, 3) for i in range(11)]  # 0.010..0.060
+K_PROV = [0.072, 0.090, 0.119]
+
+# G-S reference sentinels from the closed/local reproduced G-S run.
+GS_REFERENCE_FNL = {
+    ("squeezed", 0.020): 0.05886452494286938,
+    ("equilateral", 0.020): 0.037002126018083,
+    ("squeezed", 0.040): 0.058106084779109,
+    ("equilateral", 0.040): 0.030902659690699403,
+    ("squeezed", 0.060): 0.055075,   # report-rounded sentinel; tolerant check
+    ("equilateral", 0.060): 0.022304, # report-rounded sentinel; tolerant check
+}
+GS_SENTINEL_TOL = 7.5e-4
+
+# G-S row stability tolerances.
+TOL_UT = 1e-10
+TOL_BGETA = 1e-3
+TOL_W_SURF = 1e-5
+TOL_W_GLOB = 1e-3
+TOL_CONV = 2e-2
+TOL_GS_ABS = 0.002
+TOL_GS_REL = 0.05
+TOL_GS_B = 0.05
+
+# G-FLAT diagnostic thresholds. These are deliberately strict; failure demotes
+# folded/flattened rows to diagnostic report-only.
+GFLAT_I_EPS_HALF = I_EPS / 2.0
+GFLAT_DELTA_MAIN = 1.0e-2
+GFLAT_DELTA_TIGHT = 1.0e-3
+GFLAT_TOL_INSTRUMENT_DEV = 0.10
+GFLAT_TOL_DELTA_DEV = 0.10
+GFLAT_TOL_CANCELLATION = 50.0
+
+RNG = np.random.default_rng(20260701)
+REQUIRED_OUTPUTS = [
+    "production_manifest.json",
+    "run_report.md",
+    "sendback_summary.json",
+    "production_scan_rows.csv",
+    "production_family_summary.csv",
+    "production_gate_summary.json",
+    "script_hash.txt",
+    "folded_gflat_diagnostics.csv",
+    "claim_rows.csv",
+    "flagged_rows.csv",
+]
+
+FORBIDDEN_LEDGER_NAMES = ["O5", "B_bdry", "B_EOM", "local_zeta2_FR", "Delta2_denominator"]
+LEDGER_TERMS = ["O1", "O2", "O3a", "O3b", "O3c", "V1", "V2", "f2", "f3", "f4"]
+BULK_TERMS = ["O1", "O2", "O3a", "O3b", "O3c", "V1", "V2"]
+
+
+# =============================================================================
+# Hub awareness and output routing
+# =============================================================================
+class HubPaths:
+    def __init__(self, hub_root: Path, run_dir: Path, outbox_dir: Path):
+        self.hub_root = hub_root
+        self.inbox_dir = hub_root / "inbox"
+        self.frozen_dir = hub_root / "frozen"
+        self.runs_dir = hub_root / "runs"
+        self.run_dir = run_dir
+        self.outbox_dir = outbox_dir
+        self.ledger_path = hub_root / "ledger.md"
+
+    def get_outbox_path(self, filename: str) -> Path:
+        return self.outbox_dir / filename
+
+
+def discover_hub_paths() -> HubPaths:
+    cwd = Path.cwd().resolve()
+    parts_lower = [p.lower() for p in cwd.parts]
+    if "runs" not in parts_lower:
+        raise PermissionError("Execution restricted to Hub/runs/ directory.")
+
+    env_root = os.environ.get("HUB_ROOT")
+    if env_root:
+        hub_root = Path(env_root).expanduser().resolve()
+    else:
+        idx = parts_lower.index("runs")
+        if idx <= 0:
+            raise PermissionError("Cannot discover Hub root from current runs/ path.")
+        hub_root = Path(*cwd.parts[:idx]).resolve()
+
+    run_dir = hub_root / "runs" / "A2_PRODUCTION_LOCAL"
+    # Allow execution inside any Hub/runs/<name> folder, but keep canonical outbox.
+    if "runs" in parts_lower:
+        run_dir = cwd
+    outbox_dir = hub_root / "outbox" / "A2_PRODUCTION_LOCAL"
+
+    # Check minimal Hub structure.
+    if not hub_root.exists():
+        raise FileNotFoundError(f"HUB_ROOT does not exist: {hub_root}")
+    for required in ["runs", "outbox"]:
+        p = hub_root / required
+        if not p.exists():
+            raise FileNotFoundError(f"Required Hub directory missing: {p}")
+
+    outbox_dir.mkdir(parents=True, exist_ok=True)
+    return HubPaths(hub_root=hub_root, run_dir=run_dir, outbox_dir=outbox_dir)
+
+
+def append_to_ledger(paths: HubPaths, log_entry: str) -> None:
+    paths.ledger_path.parent.mkdir(parents=True, exist_ok=True)
+    with paths.ledger_path.open("a", encoding="utf-8") as f:
+        f.write(log_entry.rstrip() + "\n")
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def trapz(y, x):
+    return np.trapezoid(y, x) if hasattr(np, "trapezoid") else np.trapz(y, x)
+
+
+# =============================================================================
+# Background: frozen G-S/BIH-VI benchmark
+# =============================================================================
+def switch_S(y):
+    return 1.0 / (1.0 + np.exp(np.clip((y - Y_G) / DELTA, -700.0, 700.0)))
+
+
+def m_of_y(y):
+    return MU * (1.0 - y) ** P_EXP + M_POST * switch_S(y)
+
+
+def _rk4_y(y, h):
+    f = lambda w: -m_of_y(w) * w
+    k1 = f(y)
+    k2 = f(y + 0.5 * h * k1)
+    k3 = f(y + 0.5 * h * k2)
+    k4 = f(y + h * k3)
+    return float(np.clip(y + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6.0, 1e-12, 1.0 - 1e-12))
+
+
+def build_background(dn: float = DN):
+    N = np.arange(N_MIN, N_MAX + 0.5 * dn, dn)
+    i0 = int(np.argmin(np.abs(N)))
+    y = np.empty_like(N)
+    y[i0] = Y_G
+    for i in range(i0, len(N) - 1):
+        y[i + 1] = _rk4_y(float(y[i]), float(N[i + 1] - N[i]))
+    for i in range(i0, 0, -1):
+        y[i - 1] = _rk4_y(float(y[i]), float(N[i - 1] - N[i]))
+
+    S = switch_S(y)
+    m = m_of_y(y)
+    one_my = np.maximum(1.0 - y, 1e-300)
+    two_my = np.maximum(2.0 - y, 1e-300)
+    H = np.sqrt(np.maximum(y * (2.0 - y), 1e-300)) / math.sqrt(Y_G * (2.0 - Y_G))
+    a = np.exp(N)
+    eps = np.maximum(m * one_my / two_my, 1e-14)
+
+    Sp = -S * (1.0 - S) / DELTA
+    Spp = S * (1.0 - S) * (1.0 - 2.0 * S) / (DELTA ** 2)
+    mp = -P_EXP * MU * one_my ** (P_EXP - 1) + M_POST * Sp
+    mpp = P_EXP * (P_EXP - 1) * MU * one_my ** (P_EXP - 2) + M_POST * Spp
+    G = mp / m - 1.0 / one_my + 1.0 / two_my
+    Gp = mpp / m - (mp / m) ** 2 - 1.0 / one_my ** 2 + 1.0 / two_my ** 2
+    y_N = -m * y
+    eta = y_N * G
+    eta_N = y_N * (-(mp * y + m) * G + y_N * Gp)
+    q_N = 1.0 + 0.5 * eta
+    return dict(N=N, a=a, H=H, eps=eps, eta=eta, eta_N=eta_N, q_N=q_N, y=y, dn=dn)
+
+
+# =============================================================================
+# Mode integration and ledger kernels
+# =============================================================================
+def zeta_rhs(z, p, x, eps, eta):
+    return p, -(3.0 + eta - eps) * p - x * x * z
+
+
+def integrate_mode(k: float, bg: dict):
+    N, a, H = bg["N"], bg["a"], bg["H"]
+    eps, eta, q_N = bg["eps"], bg["eta"], bg["q_N"]
+    x_all = k / (a * H)
+    idx = np.where(x_all >= X_INIT)[0]
+    i_start = int(idx[-1]) if len(idx) else 0
+    if i_start == len(N) - 1:
+        raise RuntimeError(f"x_init unreachable for k={k}: background/units error")
+
+    z_s = a[i_start] * math.sqrt(2.0 * eps[i_start])
+    v = 1.0 / math.sqrt(2.0 * k)
+    v_N = -1j * x_all[i_start] * v
+    z = v / z_s
+    p = (v_N - q_N[i_start] * v) / z_s
+    Z = np.full(len(N), np.nan + 1j * np.nan, complex)
+    Pv = np.full(len(N), np.nan + 1j * np.nan, complex)
+    Z[i_start], Pv[i_start] = z, p
+
+    for i in range(i_start, len(N) - 1):
+        h = N[i + 1] - N[i]
+        x0, e0, t0 = x_all[i], eps[i], eta[i]
+        x1, e1, t1 = x_all[i + 1], eps[i + 1], eta[i + 1]
+        xm, em, tm = 0.5 * (x0 + x1), 0.5 * (e0 + e1), 0.5 * (t0 + t1)
+        k1z, k1p = zeta_rhs(z, p, x0, e0, t0)
+        k2z, k2p = zeta_rhs(z + 0.5 * h * k1z, p + 0.5 * h * k1p, xm, em, tm)
+        k3z, k3p = zeta_rhs(z + 0.5 * h * k2z, p + 0.5 * h * k2p, xm, em, tm)
+        k4z, k4p = zeta_rhs(z + h * k3z, p + h * k3p, x1, e1, t1)
+        z = z + h * (k1z + 2 * k2z + 2 * k3z + k4z) / 6.0
+        p = p + h * (k1p + 2 * k2p + 2 * k3p + k4p) / 6.0
+        Z[i + 1], Pv[i + 1] = z, p
+
+    ic = i_start + int(np.argmin(np.abs(x_all[i_start:] - 1.0)))
+    sl = slice(i_start, len(N))
+    W = H[sl] * np.imag(Z[sl] * np.conj(Pv[sl]))
+    T = 1.0 / (4.0 * a[sl] ** 3 * eps[sl])
+    dev = np.abs(W / T - 1.0)
+    wdev_glob = float(np.max(dev))
+    post = dev[N[sl] >= 0.1]
+    wdev_surf = float(np.max(post)) if len(post) else wdev_glob
+    return dict(k=k, zeta=Z, zeta_N=Pv, i_start=i_start, i_cross=ic,
+                N_cross=float(N[ic]), wdev_glob=wdev_glob,
+                wdev_surf=wdev_surf, x_all=x_all)
+
+
+def dot_table(k1, k2, k3):
+    k = (k1, k2, k3)
+    d = [[0.0] * 3 for _ in range(3)]
+    for i in range(3):
+        d[i][i] = k[i] ** 2
+    d[0][1] = d[1][0] = 0.5 * (k3 ** 2 - k1 ** 2 - k2 ** 2)
+    d[0][2] = d[2][0] = 0.5 * (k2 ** 2 - k1 ** 2 - k3 ** 2)
+    d[1][2] = d[2][1] = 0.5 * (k1 ** 2 - k2 ** 2 - k3 ** 2)
+    return d
+
+
+def triangle_vectors(k1, k2, k3):
+    c = max(-1.0, min(1.0, (k3 ** 2 - k1 ** 2 - k2 ** 2) / (2.0 * k1 * k2)))
+    s = math.sqrt(max(0.0, 1.0 - c * c))
+    v1 = np.array([k1, 0.0, 0.0])
+    v2 = np.array([k2 * c, k2 * s, 0.0])
+    return [v1, v2, -(v1 + v2)]
+
+
+def integrand_O1(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    kern = zb[0] * pb[1] * pb[2] + zb[1] * pb[0] * pb[2] + zb[2] * pb[0] * pb[1]
+    return a ** 3 * eps ** 2 * H * 2.0 * kern
+
+
+def integrand_O2(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    return (a * eps ** 2 / H) * 2.0 * (-(d[1][2] + d[0][2] + d[0][1])) * zb[0] * zb[1] * zb[2]
+
+
+def integrand_V1(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    kern = zb[0] * pb[1] * pb[2] + zb[1] * pb[0] * pb[2] + zb[2] * pb[0] * pb[1]
+    return -(a ** 3) * eps * eta * H * 2.0 * kern
+
+
+def integrand_V2(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    return (a * eps * eta / H) * 2.0 * (-(d[1][2] + d[0][2] + d[0][1])) * zb[0] * zb[1] * zb[2]
+
+
+def integrand_O3a(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    s = 0.0
+    for sg in itertools.permutations(range(3)):
+        s = s + (d[sg[1]][sg[2]] / kk[sg[2]] ** 2) * pb[sg[0]] * zb[sg[1]] * pb[sg[2]]
+    return -2.0 * a ** 3 * eps ** 2 * H * s
+
+
+def integrand_O3b(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    s = 0.0
+    for sg in itertools.permutations(range(3)):
+        s = s + (d[sg[0]][sg[1]] / kk[sg[1]] ** 2) * zb[sg[0]] * pb[sg[1]] * pb[sg[2]]
+    return 0.5 * a ** 3 * eps ** 3 * H * s
+
+
+def integrand_O3c(a, H, eps, eta, eta_N, zb, pb, kk, d):
+    s = 0.0
+    for i in range(3):
+        j, l = [q for q in range(3) if q != i]
+        s = s + (kk[i] ** 2 * d[j][l] / (kk[j] ** 2 * kk[l] ** 2)) * zb[i] * pb[j] * pb[l]
+    return 0.5 * a ** 3 * eps ** 3 * H * s
+
+
+BULK_OPS = dict(O1=integrand_O1, O2=integrand_O2, O3a=integrand_O3a,
+                O3b=integrand_O3b, O3c=integrand_O3c, V1=integrand_V1,
+                V2=integrand_V2)
+
+
+def B_bulk(op, m1, m2, m3, bg, idx_f, i_eps=I_EPS):
+    N, a, H = bg["N"], bg["a"], bg["H"]
+    eps, eta, eta_N = bg["eps"], bg["eta"], bg["eta_N"]
+    i0 = max(m1["i_start"], m2["i_start"], m3["i_start"])
+    sl = slice(i0, idx_f + 1)
+    kk = (m1["k"], m2["k"], m3["k"])
+    d = dot_table(*kk)
+    reg = np.exp(-i_eps * sum(kk) / (a[sl] * H[sl]))
+    zb = [np.conj(m["zeta"][sl]) for m in (m1, m2, m3)]
+    pb = [np.conj(m["zeta_N"][sl]) for m in (m1, m2, m3)]
+    integ = trapz(BULK_OPS[op](a[sl], H[sl], eps[sl], eta[sl], eta_N[sl], zb, pb, kk, d) * reg, N[sl])
+    outside = m1["zeta"][idx_f] * m2["zeta"][idx_f] * m3["zeta"][idx_f]
+    return float(-2.0 * np.imag(outside * integ))
+
+
+def FR_pieces(m1, m2, m3, bg, idx_f):
+    a_f, H_f = bg["a"][idx_f], bg["H"][idx_f]
+    eps_f = bg["eps"][idx_f]
+    kk = (m1["k"], m2["k"], m3["k"])
+    d = dot_table(*kk)
+    P = [abs(m["zeta"][idx_f]) ** 2 for m in (m1, m2, m3)]
+    X = [H_f * float(np.real(m["zeta"][idx_f] * np.conj(m["zeta_N"][idx_f]))) for m in (m1, m2, m3)]
+    Bf2 = Bf3 = Bf4 = 0.0
+    for i in range(3):
+        j, l = [q for q in range(3) if q != i]
+        Pi = d[j][l] - d[i][j] * d[i][l] / kk[i] ** 2
+        Bf2 += (1.0 / H_f) * (P[j] * X[l] + P[l] * X[j])
+        Bf3 += Pi * P[j] * P[l] / (2.0 * a_f ** 2 * H_f ** 2)
+        Bf4 += (eps_f / (2.0 * H_f)) * Pi * (P[j] * X[l] / kk[l] ** 2 + X[j] * P[l] / kk[j] ** 2)
+    SPP = P[0] * P[1] + P[0] * P[2] + P[1] * P[2]
+    return dict(f2=Bf2, f3=Bf3, f4=Bf4, SPP=SPP, P=P, X=X)
+
+
+# =============================================================================
+# Independent unit tests
+# =============================================================================
+def leg_factor(leg, e, ctx):
+    a, H, eps = ctx["a"], ctx["H"], ctx["eps"]
+    zb, pb, kk, kv = ctx["zb"], ctx["pb"], ctx["kk"], ctx["kv"]
+    if leg == "Z":
+        return zb[e], None
+    if leg == "Zdot":
+        return H * pb[e], None
+    if leg == "GradZ":
+        return zb[e], 1j * kv[e]
+    if leg == "GradPsi":
+        return (-a ** 2 * eps / kk[e] ** 2) * H * pb[e], 1j * kv[e]
+    if leg == "LapPsi":
+        return a ** 2 * eps * H * pb[e], None
+    if leg == "LapZ":
+        return -kk[e] ** 2 * zb[e], None
+    raise ValueError(leg)
+
+
+UT_VERTICES = dict(
+    O1=(lambda c: c["a"] ** 3 * c["eps"] ** 2 / c["H"], ("Z", "Zdot", "Zdot"), None),
+    O2=(lambda c: c["a"] * c["eps"] ** 2 / c["H"], ("Z", "GradZ", "GradZ"), (1, 2)),
+    O3a=(lambda c: -2.0 * c["a"] * c["eps"] / c["H"], ("Zdot", "GradZ", "GradPsi"), (1, 2)),
+    O3b=(lambda c: c["eps"] / (2.0 * c["a"] * c["H"]), ("GradZ", "GradPsi", "LapPsi"), (0, 1)),
+    O3c=(lambda c: c["eps"] / (4.0 * c["a"] * c["H"]), ("LapZ", "GradPsi", "GradPsi"), (1, 2)),
+    V1=(lambda c: -c["a"] ** 3 * c["eps"] * c["eta"] / c["H"], ("Z", "Zdot", "Zdot"), None),
+    V2=(lambda c: c["a"] * c["eps"] * c["eta"] / c["H"], ("Z", "GradZ", "GradZ"), (1, 2)),
+)
+
+
+def engine_kernel(name, ctx):
+    coeff_fn, legs, dpair = UT_VERTICES[name]
+    total = 0.0 + 0.0j
+    for sg in itertools.permutations(range(3)):
+        scal = 1.0 + 0.0j
+        vecs = {}
+        for pos, leg in enumerate(legs):
+            s, v = leg_factor(leg, sg[pos], ctx)
+            scal = scal * s
+            if v is not None:
+                vecs[pos] = v
+        if dpair is not None:
+            scal = scal * np.dot(vecs[dpair[0]], vecs[dpair[1]])
+        total += scal
+    return coeff_fn(ctx) * total
+
+
+def run_UT_K(ntrials=12):
+    worst = 0.0
+    for _ in range(ntrials):
+        k1, k2 = RNG.uniform(0.5, 2.0, 2)
+        k3 = RNG.uniform(abs(k1 - k2) + 0.05, k1 + k2 - 0.05)
+        kk = (k1, k2, k3)
+        ctx = dict(a=RNG.uniform(0.5, 5), H=RNG.uniform(0.5, 2), eps=RNG.uniform(0.01, 1.5),
+                   eta=RNG.uniform(-0.5, 0.5), eta_N=RNG.uniform(-0.5, 0.5),
+                   zb=[complex(*RNG.normal(0, 1, 2)) for _ in range(3)],
+                   pb=[complex(*RNG.normal(0, 1, 2)) for _ in range(3)],
+                   kk=kk, kv=triangle_vectors(*kk))
+        d = dot_table(*kk)
+        for name in BULK_OPS:
+            prod = BULK_OPS[name](ctx["a"], ctx["H"], ctx["eps"], ctx["eta"], ctx["eta_N"],
+                                  ctx["zb"], ctx["pb"], kk, d)
+            eng = engine_kernel(name, ctx)
+            worst = max(worst, abs(prod - eng) / max(abs(prod), abs(eng), 1e-300))
+    return float(worst)
+
+
+def run_UT_FR(ntrials=12):
+    worst = 0.0
+    for _ in range(ntrials):
+        k1, k2 = RNG.uniform(0.5, 2.0, 2)
+        k3 = RNG.uniform(abs(k1 - k2) + 0.05, k1 + k2 - 0.05)
+        kk = (k1, k2, k3)
+        kv = triangle_vectors(*kk)
+        a_f, H_f = RNG.uniform(0.5, 5), RNG.uniform(0.5, 2)
+        eps_f = RNG.uniform(0.01, 1.5)
+        P = list(RNG.uniform(0.1, 2.0, 3))
+        X = list(RNG.normal(0, 1, 3))
+        d = dot_table(*kk)
+        h2 = h3 = h4 = 0.0
+        for i in range(3):
+            j, l = [q for q in range(3) if q != i]
+            Pi = d[j][l] - d[i][j] * d[i][l] / kk[i] ** 2
+            h2 += (1.0 / H_f) * (P[j] * X[l] + P[l] * X[j])
+            h3 += Pi * P[j] * P[l] / (2.0 * a_f ** 2 * H_f ** 2)
+            h4 += (eps_f / (2.0 * H_f)) * Pi * (P[j] * X[l] / kk[l] ** 2 + X[j] * P[l] / kk[j] ** 2)
+        e2 = e3 = e4 = 0.0
+        for i in range(3):
+            others = [q for q in range(3) if q != i]
+            for (j, l) in (others, others[::-1]):
+                qj, ql = -kv[j], -kv[l]
+                e2 += (1.0 / H_f) * P[j] * X[l]
+                br3 = (-np.dot(1j * qj, 1j * ql)
+                       + np.dot(kv[i], 1j * qj) * np.dot(kv[i], 1j * ql) / kk[i] ** 2)
+                e3 += float(np.real(br3)) * P[j] * P[l] / (4.0 * a_f ** 2 * H_f ** 2)
+                br4 = (np.dot(1j * qj, 1j * ql)
+                       - np.dot(kv[i], 1j * qj) * np.dot(kv[i], 1j * ql) / kk[i] ** 2)
+                e4 += float(np.real(br4)) * P[j] * ((-a_f ** 2 * eps_f / kk[l] ** 2) * X[l]) / (2.0 * a_f ** 2 * H_f)
+        for hv, ev in ((h2, e2), (h3, e3), (h4, e4)):
+            worst = max(worst, abs(hv - ev) / max(abs(hv), abs(ev), 1e-300))
+    return float(worst)
+
+
+# =============================================================================
+# Shapes and row evaluation
+# =============================================================================
+def kset_for_shape(row, folded_delta=None):
+    fam, K = row["family"], row["K"]
+    if fam == "equilateral":
+        return (K, K, K)
+    if fam == "squeezed":
+        sc = 3.0 * K / (Q_SQ + 2.0)
+        return (sc * Q_SQ, sc, sc)
+    if fam == "folded":
+        dlt = GFLAT_DELTA_MAIN if folded_delta is None else folded_delta
+        a = 3.0 * K / (2.0 * (2.0 - dlt))
+        return (a, a, 2.0 * a * (1.0 - dlt))
+    raise ValueError(f"unknown family {fam}")
+
+
+def shape_rows():
+    rows = []
+    for K in K_HARD + K_PROV:
+        band = "hard" if K in K_HARD else "provisional"
+        for fam in ["squeezed", "equilateral", "folded"]:
+            sid = f"{fam}_K{K:.3f}"
+            if fam == "squeezed":
+                sid = f"squeezed_q{Q_SQ:g}_K{K:.3f}"
+            if fam == "folded":
+                sid = f"folded_delta{GFLAT_DELTA_MAIN:g}_K{K:.3f}"
+            rows.append(dict(shape_id=sid, family=fam, K=float(K), band=band))
+    return rows
+
+
+def ledger_at_surface(m1, m2, m3, bg, idx_f, i_eps=I_EPS):
+    i0 = max(m1["i_start"], m2["i_start"], m3["i_start"])
+    if i0 >= idx_f:
+        return None
+    B = {op: B_bulk(op, m1, m2, m3, bg, idx_f, i_eps=i_eps) for op in BULK_TERMS}
+    fr = FR_pieces(m1, m2, m3, bg, idx_f)
+    B["f2"], B["f3"], B["f4"] = fr["f2"], fr["f3"], fr["f4"]
+    B_tot = sum(B.values())
+    fNL = (5.0 / 6.0) * B_tot / fr["SPP"]
+    aH = bg["a"][idx_f] * bg["H"][idx_f]
+    x_S = max(m1["k"], m2["k"], m3["k"]) / aH
+    cancellation = sum(abs(v) for v in B.values()) / max(abs(B_tot), 1e-300)
+    return dict(B=B, B_total=B_tot, fNL=float(fNL), x_S=float(x_S),
+                SPP=float(fr["SPP"]), cancellation_factor=float(cancellation))
+
+
+def eval_shape(row, modes, bg, surf_idx, folded_delta=None, i_eps=I_EPS):
+    k1, k2, k3 = kset_for_shape(row, folded_delta=folded_delta)
+    m1, m2, m3 = (modes[round(k1, 14)], modes[round(k2, 14)], modes[round(k3, 14)])
+    per_surf = {}
+    frozen_hard_all = True
+    frozen_prov_all = True
+    for s in SURFACES:
+        res = ledger_at_surface(m1, m2, m3, bg, surf_idx[s], i_eps=i_eps)
+        if res is None:
+            frozen_hard_all = False
+            frozen_prov_all = False
+            continue
+        per_surf[str(s)] = res
+        if res["x_S"] > math.exp(-B_HARD):
+            frozen_hard_all = False
+        if res["x_S"] > math.exp(-B_PROV):
+            frozen_prov_all = False
+    if not per_surf:
+        return None
+    fvals = [per_surf[str(s)]["fNL"] for s in SURFACES if str(s) in per_surf]
+    bvals = [per_surf[str(s)]["B_total"] for s in SURFACES if str(s) in per_surf]
+    spread = max(fvals) - min(fvals)
+    meanf = float(np.mean(fvals))
+    bmax = max(abs(b) for b in bvals)
+    bspread = (max(bvals) - min(bvals)) / bmax if bmax > 0 else 0.0
+    gs_pass = (spread <= max(TOL_GS_REL * abs(meanf), TOL_GS_ABS)) and (bspread <= TOL_GS_B)
+    ref = per_surf.get("0.35") or per_surf.get(str(SURFACES[2]))
+    return dict(
+        shape_id=row["shape_id"], family=row["family"], K=row["K"], band=row["band"],
+        k1=k1, k2=k2, k3=k3,
+        frozen_hard_all=bool(frozen_hard_all), frozen_prov_all=bool(frozen_prov_all),
+        fNL_by_surface={k: v["fNL"] for k, v in per_surf.items()},
+        x_S_by_surface={k: v["x_S"] for k, v in per_surf.items()},
+        fNL_spread=float(spread), fNL_mean=meanf, B_spread_rel=float(bspread),
+        passed_GS=bool(gs_pass), fNL_ref035=float(ref["fNL"]), B_total_ref035=float(ref["B_total"]),
+        cancellation_factor_ref035=float(ref["cancellation_factor"]),
+        B_pieces_ref035={k: float(v) for k, v in ref["B"].items()},
+    )
+
+
+def gflat_diagnostic(row, modes, bg, surf_idx):
+    assert row["family"] == "folded"
+    main = eval_shape(row, modes, bg, surf_idx, folded_delta=GFLAT_DELTA_MAIN, i_eps=I_EPS)
+    half = eval_shape(row, modes, bg, surf_idx, folded_delta=GFLAT_DELTA_MAIN, i_eps=GFLAT_I_EPS_HALF)
+    tight = eval_shape(row, modes, bg, surf_idx, folded_delta=GFLAT_DELTA_TIGHT, i_eps=I_EPS)
+    if main is None or half is None or tight is None:
+        return dict(gflat_pass=False, gflat_reason="missing_eval")
+    f0, f_half, f_tight = main["fNL_ref035"], half["fNL_ref035"], tight["fNL_ref035"]
+    instrument_dev = abs(f_half - f0) / max(abs(f0), abs(f_half), 1e-300)
+    delta_dev = abs(f_tight - f0) / max(abs(f0), abs(f_tight), 1e-300)
+    sign_flip = (f0 == 0.0) or (f0 * f_half < 0.0) or (f0 * f_tight < 0.0)
+    cancellation = main["cancellation_factor_ref035"]
+    passed = (instrument_dev <= GFLAT_TOL_INSTRUMENT_DEV and
+              delta_dev <= GFLAT_TOL_DELTA_DEV and
+              cancellation <= GFLAT_TOL_CANCELLATION and
+              not sign_flip and
+              main["passed_GS"] and
+              main["frozen_hard_all"])
+    reason = "pass" if passed else "flat_limit"
+    return dict(
+        shape_id=row["shape_id"], family="folded", K=row["K"],
+        fNL_ref035=f0, fNL_ieps_half=f_half, fNL_delta_tight=f_tight,
+        instrument_dev=float(instrument_dev), delta_dev=float(delta_dev),
+        cancellation_factor=float(cancellation), sign_flip=bool(sign_flip),
+        passed_GS=bool(main["passed_GS"]), frozen_hard_all=bool(main["frozen_hard_all"]),
+        gflat_pass=bool(passed), gflat_reason=reason,
+        tol_instrument_dev=GFLAT_TOL_INSTRUMENT_DEV,
+        tol_delta_dev=GFLAT_TOL_DELTA_DEV,
+        tol_cancellation=GFLAT_TOL_CANCELLATION,
+    )
+
+
+# =============================================================================
+# CSV/report utilities
+# =============================================================================
+def flatten_for_csv(row):
+    out = {}
+    for k, v in row.items():
+        if isinstance(v, (dict, list)):
+            out[k] = json.dumps(v, sort_keys=True)
+        else:
+            out[k] = v
+    return out
+
+
+def write_csv(path: Path, rows):
+    rows = list(rows)
+    if not rows:
+        path.write_text("", encoding="utf-8")
+        return
+    flat = [flatten_for_csv(r) for r in rows]
+    fields = []
+    for r in flat:
+        for k in r.keys():
+            if k not in fields:
+                fields.append(k)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for r in flat:
+            w.writerow(r)
+
+
+def json_bool(x):
+    return bool(x) if isinstance(x, (np.bool_,)) else x
+
+
+def write_json(path: Path, obj):
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(obj, f, indent=2, sort_keys=False, default=lambda o: float(o) if isinstance(o, np.floating) else str(o))
+
+
+def make_family_summary(all_rows, claim_rows, flagged_rows):
+    out = []
+    for fam in ["equilateral", "squeezed", "folded"]:
+        fam_rows = [r for r in all_rows if r.get("family") == fam]
+        fam_claim = [r for r in claim_rows if r.get("family") == fam]
+        fam_flag = [r for r in flagged_rows if r.get("family") == fam]
+        hard_rows = [r for r in fam_rows if r.get("band") == "hard"]
+        prov_rows = [r for r in fam_rows if r.get("band") == "provisional"]
+        out.append(dict(
+            family=fam,
+            rows_tested=len(fam_rows),
+            hard_rows=len(hard_rows),
+            provisional_rows=len(prov_rows),
+            claim_rows=len(fam_claim),
+            flagged_rows=len(fam_flag),
+            worst_fNL_spread=max([abs(r.get("fNL_spread", 0.0)) for r in fam_rows] or [0.0]),
+            worst_B_spread_rel=max([abs(r.get("B_spread_rel", 0.0)) for r in fam_rows] or [0.0]),
+            max_abs_fNL_ref035=max([abs(r.get("fNL_ref035", 0.0)) for r in fam_rows] or [0.0]),
+        ))
+    return out
+
+
+def claim_row_allowed(r, gflat_map):
+    if r["family"] not in ("equilateral", "squeezed"):
+        return False
+    if r["band"] != "hard":
+        return False
+    if r["K"] > 0.0600001:
+        return False
+    if not r["frozen_hard_all"]:
+        return False
+    if not r["passed_GS"]:
+        return False
+    return True
+
+
+def classify_rows(all_rows, gflat_rows):
+    gflat_map = {r["shape_id"]: r for r in gflat_rows}
+    claim_rows = []
+    flagged_rows = []
+    for r in all_rows:
+        rr = dict(r)
+        if claim_row_allowed(rr, gflat_map):
+            rr["disposition"] = "claim"
+            rr["claim_basis"] = "equilateral_or_squeezed_hard_K_le_0.06"
+            claim_rows.append(rr)
+        else:
+            reasons = []
+            if rr["family"] == "folded":
+                gd = gflat_map.get(rr["shape_id"])
+                reasons.append("diagnostic_folded_decision_A")
+                if gd and not gd.get("gflat_pass"):
+                    reasons.append("flat_limit")
+                if gd and gd.get("gflat_pass"):
+                    reasons.append("gflat_pass_but_report_only_under_decision_A")
+            if rr["band"] == "provisional":
+                reasons.append("provisional_K_report_only")
+            if rr["K"] > 0.0600001:
+                reasons.append("K_gt_0.06_report_only")
+            if not rr["frozen_hard_all"]:
+                reasons.append("not_frozen_hard_all")
+            if not rr["passed_GS"]:
+                reasons.append("failed_GS_stability")
+            rr["disposition"] = "flagged"
+            rr["flag_reason"] = ";".join(reasons) if reasons else "not_claim_eligible"
+            flagged_rows.append(rr)
+    return claim_rows, flagged_rows
+
+
+# =============================================================================
+# Main production run
+# =============================================================================
+def run_production(paths: HubPaths, args):
+    started = utc_now()
+    t0 = time.time()
+    script_path = Path(__file__).resolve()
+    script_hash = sha256_file(script_path)
+
+    print("BIH-VI A2 PRODUCTION SCAN")
+    print(f"HUB_ROOT: {paths.hub_root}")
+    print(f"RUN_DIR: {paths.run_dir}")
+    print(f"OUTBOX: {paths.outbox_dir}")
+    print(f"SCRIPT_SHA256: {script_hash}")
+
+    # Execution lock gate.
+    execution_lock_passed = bool(args.production and args.lou_authorized)
+    if not execution_lock_passed:
+        raise PermissionError("Execution requires --production --lou-authorized")
+
+    # Unit gates.
+    print("Running UT-K / UT-FR...")
+    ut_k = run_UT_K()
+    ut_fr = run_UT_FR()
+
+    print("Building background...")
+    bg = build_background()
+    N = bg["N"]
+    grad_eta = np.gradient(bg["eta"], N, edge_order=2)
+    away = np.abs(N) > 0.1
+    bgeta = float(np.max(np.abs((bg["eta_N"][away] - grad_eta[away]) / np.maximum(np.abs(bg["eta_N"][away]), 1e-6))))
+    i35 = int(np.argmin(np.abs(N - 0.35)))
+    aH35 = float(bg["a"][i35] * bg["H"][i35])
+
+    rows_template = shape_rows()
+    kset = set()
+    for r in rows_template:
+        for dlt in ([None, GFLAT_DELTA_TIGHT] if r["family"] == "folded" else [None]):
+            for k in kset_for_shape(r, folded_delta=dlt):
+                kset.add(round(float(k), 14))
+    kset = sorted(kset)
+    print(f"Integrating {len(kset)} unique modes for production grid...")
+    modes = {k: integrate_mode(k, bg) for k in kset}
+    wsurf = max(m["wdev_surf"] for m in modes.values())
+    wglob = max(m["wdev_glob"] for m in modes.values())
+
+    surf_idx = {s: int(np.argmin(np.abs(N - s))) for s in SURFACES}
+    print("Evaluating rows...")
+    all_rows = []
+    gflat_rows = []
+    for r in rows_template:
+        rec = eval_shape(r, modes, bg, surf_idx)
+        if rec is None:
+            continue
+        all_rows.append(rec)
+        if r["family"] == "folded":
+            gd = gflat_diagnostic(r, modes, bg, surf_idx)
+            gflat_rows.append(gd)
+
+    # Continuity sentinels.
+    continuity = []
+    for (fam, K), ref in GS_REFERENCE_FNL.items():
+        matches = [r for r in all_rows if r["family"] == fam and abs(r["K"] - K) < 1e-12]
+        if not matches:
+            continuity.append(dict(family=fam, K=K, expected=ref, actual=None, abs_dev=None, passed=False))
+        else:
+            actual = matches[0]["fNL_ref035"]
+            dev = abs(actual - ref)
+            continuity.append(dict(family=fam, K=K, expected=ref, actual=actual,
+                                   abs_dev=dev, passed=bool(dev <= GS_SENTINEL_TOL)))
+
+    # CONV: one squeezed K=0.020 reference row at DN/2.
+    print("Running DN/2 convergence sentinel...")
+    bg2 = build_background(dn=DN / 2.0)
+    rref = dict(shape_id=f"squeezed_q{Q_SQ:g}_K0.020", family="squeezed", K=0.020, band="hard")
+    ks_ref = [round(k, 14) for k in kset_for_shape(rref)]
+    modes2 = {k: integrate_mode(k, bg2) for k in ks_ref}
+    idx2 = {s: int(np.argmin(np.abs(bg2["N"] - s))) for s in SURFACES}
+    rec2 = eval_shape(rref, modes2, bg2, idx2)
+    rec1 = [r for r in all_rows if r["shape_id"] == rref["shape_id"]][0]
+    conv_rel = abs(rec2["fNL_ref035"] / rec1["fNL_ref035"] - 1.0)
+
+    claim_rows, flagged_rows = classify_rows(all_rows, gflat_rows)
+    family_summary = make_family_summary(all_rows, claim_rows, flagged_rows)
+
+    # Gate definitions and checks.
+    gate_summary = {
+        "UT_K": dict(passed=ut_k <= TOL_UT, value=ut_k, tol=TOL_UT),
+        "UT_FR": dict(passed=ut_fr <= TOL_UT, value=ut_fr, tol=TOL_UT),
+        "BG_ETA": dict(passed=bgeta <= TOL_BGETA and abs(aH35 - 0.798) <= 0.03,
+                        etaN_grad_rel=bgeta, aH_0p35=aH35, tol_eta=TOL_BGETA, tol_aH=0.03),
+        "G_W": dict(passed=(wsurf <= TOL_W_SURF and wglob <= TOL_W_GLOB),
+                    worst_surface_region=wsurf, worst_global_transient=wglob,
+                    tol_surface=TOL_W_SURF, tol_global=TOL_W_GLOB),
+        "CONV": dict(passed=conv_rel <= TOL_CONV, rel_dev=conv_rel,
+                     fNL_DN=rec1["fNL_ref035"], fNL_DNhalf=rec2["fNL_ref035"], tol=TOL_CONV),
+        "G_S_CONTINUITY_SENTINELS": dict(passed=all(c["passed"] for c in continuity),
+                                          rows=continuity, tol=GS_SENTINEL_TOL),
+        "EQUILATERAL_HARD_ROWS_STABLE": dict(passed=all(r["passed_GS"] and r["frozen_hard_all"] for r in all_rows
+                                                         if r["family"] == "equilateral" and r["band"] == "hard" and r["K"] <= 0.0600001),
+                                              n=sum(1 for r in all_rows if r["family"] == "equilateral" and r["band"] == "hard" and r["K"] <= 0.0600001)),
+        "SQUEEZED_HARD_ROWS_STABLE": dict(passed=all(r["passed_GS"] and r["frozen_hard_all"] for r in all_rows
+                                                     if r["family"] == "squeezed" and r["band"] == "hard" and r["K"] <= 0.0600001),
+                                          n=sum(1 for r in all_rows if r["family"] == "squeezed" and r["band"] == "hard" and r["K"] <= 0.0600001)),
+        "FOLDED_GFLAT_OR_FLAGGED": dict(passed=all(g.get("gflat_pass") or g.get("gflat_reason") == "flat_limit" for g in gflat_rows),
+                                        n=len(gflat_rows), n_gflat_pass=sum(1 for g in gflat_rows if g.get("gflat_pass"))),
+        "NO_FOLDED_CLAIM_WITHOUT_GFLAT": dict(passed=all((r["family"] != "folded") for r in claim_rows),
+                                               n_folded_claim=sum(1 for r in claim_rows if r["family"] == "folded")),
+        "NO_PROVISIONAL_CLAIM": dict(passed=all(r["band"] == "hard" for r in claim_rows),
+                                      n_provisional_claim=sum(1 for r in claim_rows if r["band"] != "hard")),
+        "NO_K_GT_0P06_CLAIM": dict(passed=all(r["K"] <= 0.0600001 for r in claim_rows),
+                                    n_gt=sum(1 for r in claim_rows if r["K"] > 0.0600001)),
+        "EXECUTION_LOCK": dict(passed=execution_lock_passed, production=args.production, lou_authorized=args.lou_authorized),
+    }
+    all_gates_pass = all(bool(v.get("passed")) for v in gate_summary.values())
+    verdict = "PASS" if all_gates_pass else "FAIL"
+
+    finished = utc_now()
+    runtime = time.time() - t0
+    out_hashes = {}
+
+    # Write outputs.
+    manifest = dict(
+        run="A2_PRODUCTION_LOCAL",
+        started_utc=started,
+        finished_utc=finished,
+        runtime_sec=runtime,
+        verdict=verdict,
+        script_path=str(script_path),
+        script_sha256=script_hash,
+        hub_root=str(paths.hub_root),
+        run_dir=str(paths.run_dir),
+        outbox_dir=str(paths.outbox_dir),
+        decision="A",
+        ledger_terms=LEDGER_TERMS,
+        forbidden_terms=FORBIDDEN_LEDGER_NAMES,
+        hard_K_grid=K_HARD,
+        provisional_K_grid=K_PROV,
+        claim_families=["equilateral", "squeezed"],
+        diagnostic_families=["folded"],
+        required_outputs=REQUIRED_OUTPUTS,
+        scope_boundary="EFT-level A2 production scan; no UV-completion claim.",
+    )
+
+    sendback = dict(
+        run="A2_PRODUCTION_LOCAL",
+        verdict=verdict,
+        script_sha256=script_hash,
+        started_utc=started,
+        finished_utc=finished,
+        runtime_sec=runtime,
+        gates=gate_summary,
+        n_rows=len(all_rows),
+        n_claim_rows=len(claim_rows),
+        n_flagged_rows=len(flagged_rows),
+        n_gflat_rows=len(gflat_rows),
+        family_summary=family_summary,
+        allowed_claim=("Equilateral and squeezed hard-envelope rows are stable under sealed G-S criteria for K <= 0.06." if verdict == "PASS" else "No production claim; one or more gates failed."),
+        folded_disposition="diagnostic/report-only under current sealed instrument unless G-FLAT passes; Decision A keeps folded out of primary claims.",
+    )
+
+    write_json(paths.get_outbox_path("production_manifest.json"), manifest)
+    write_json(paths.get_outbox_path("sendback_summary.json"), sendback)
+    write_json(paths.get_outbox_path("production_gate_summary.json"), gate_summary)
+    write_csv(paths.get_outbox_path("production_scan_rows.csv"), all_rows)
+    write_csv(paths.get_outbox_path("production_family_summary.csv"), family_summary)
+    write_csv(paths.get_outbox_path("folded_gflat_diagnostics.csv"), gflat_rows)
+    write_csv(paths.get_outbox_path("claim_rows.csv"), claim_rows)
+    write_csv(paths.get_outbox_path("flagged_rows.csv"), flagged_rows)
+    paths.get_outbox_path("script_hash.txt").write_text(script_hash + "\n", encoding="utf-8")
+
+    # Markdown report.
+    lines = []
+    lines.append("# BIH-VI A2 Production Scan")
+    lines.append("")
+    lines.append(f"Verdict: **{verdict}**")
+    lines.append(f"Script SHA-256: `{script_hash}`")
+    lines.append(f"Runtime: {runtime:.1f} sec")
+    lines.append("")
+    lines.append("## Gates")
+    for k, v in gate_summary.items():
+        lines.append(f"- {k}: {'PASS' if v.get('passed') else 'FAIL'}  `{json.dumps(v, default=str)}`")
+    lines.append("")
+    lines.append("## Claim envelope")
+    lines.append("Claim-bearing rows are equilateral + squeezed hard rows only, K <= 0.06, passing sealed G-S criteria.")
+    lines.append("Folded/flattened configurations are diagnostic/report-only under Decision A unless separately authorized after future instrument validation.")
+    lines.append("")
+    lines.append("## Claim rows")
+    lines.append("| family | shape_id | K | f_NL @0.35 | fNL spread | B drift |")
+    lines.append("|---|---|---:|---:|---:|---:|")
+    for r in claim_rows:
+        lines.append(f"| {r['family']} | {r['shape_id']} | {r['K']:.3f} | {r['fNL_ref035']:.8g} | {r['fNL_spread']:.3e} | {r['B_spread_rel']:.3e} |")
+    lines.append("")
+    lines.append("## Folded/G-FLAT diagnostics")
+    lines.append("| shape_id | K | G-FLAT | reason | instrument_dev | delta_dev | sign_flip |")
+    lines.append("|---|---:|---|---|---:|---:|---|")
+    for g in gflat_rows:
+        lines.append(f"| {g['shape_id']} | {g['K']:.3f} | {'PASS' if g['gflat_pass'] else 'FLAG'} | {g['gflat_reason']} | {g.get('instrument_dev', 0):.3e} | {g.get('delta_dev', 0):.3e} | {g.get('sign_flip', False)} |")
+    lines.append("")
+    lines.append("## Forbidden claims")
+    lines.append("- No all-shape closure claim.")
+    lines.append("- No folded/flattened physical conclusion from flagged rows.")
+    lines.append("- No UV-completion claim.")
+    lines.append("- No BIH-VI detection claim.")
+    paths.get_outbox_path("run_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    # Hash outputs after all writes.
+    for name in REQUIRED_OUTPUTS:
+        p = paths.get_outbox_path(name)
+        out_hashes[name] = sha256_file(p) if p.exists() else None
+
+    # Update manifest/sendback with output hashes.
+    manifest["output_hashes"] = out_hashes
+    sendback["output_hashes"] = out_hashes
+    write_json(paths.get_outbox_path("production_manifest.json"), manifest)
+    write_json(paths.get_outbox_path("sendback_summary.json"), sendback)
+    out_hashes["production_manifest.json"] = sha256_file(paths.get_outbox_path("production_manifest.json"))
+    out_hashes["sendback_summary.json"] = sha256_file(paths.get_outbox_path("sendback_summary.json"))
+
+    # Ledger append.
+    ledger_line = (
+        f"{finished} | A2_PRODUCTION_LOCAL | {script_hash} | {verdict} | "
+        f"{paths.outbox_dir} | {json.dumps(out_hashes, sort_keys=True)} | "
+        "notes=no G: writes; no script edits by runner; no publish/replace/regenerate; local production scan"
+    )
+    append_to_ledger(paths, ledger_line)
+
+    print(f"VERDICT: {verdict}")
+    print(f"Outbox: {paths.outbox_dir}")
+    print(f"Claim rows: {len(claim_rows)}")
+    print(f"Flagged rows: {len(flagged_rows)}")
+    if verdict != "PASS":
+        failed = [k for k, v in gate_summary.items() if not v.get("passed")]
+        print("FAILED GATES: " + ", ".join(failed))
+        sys.exit(1)
+    return sendback
+
+
+def parse_args():
+    p = argparse.ArgumentParser(description="BIH-VI A2 production scan, Hub-aware.")
+    p.add_argument("--production", action="store_true", help="Required execution lock flag.")
+    p.add_argument("--lou-authorized", action="store_true", help="Required authorization flag.")
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    try:
+        paths = discover_hub_paths()
+        run_production(paths, args)
+    except Exception as e:
+        print("A2_PRODUCTION_ERROR: " + str(e))
+        traceback.print_exc()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

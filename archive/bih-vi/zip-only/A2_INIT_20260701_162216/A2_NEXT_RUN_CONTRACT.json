@@ -1,0 +1,18 @@
+{
+  "status": "A2_INIT_COMPLETE_NEXT_RUN_REQUIRED",
+  "next_run_name": "A2_RUN01_FULL_TREE_LEVEL_ININ",
+  "required_implementation": [
+    "Compute or load Mukhanov-Sasaki mode functions for frozen benchmark.",
+    "Implement exact tree-level in-in integrals for O1-O4 plus field redefinition/boundary contribution.",
+    "Use A2_SHAPE_SCAN_GRID.csv as the fixed shape grid.",
+    "Report operator-separated B_zeta, summed B_zeta, f_NL^shape, P_zeta(k_i), and perturbativity ratios.",
+    "Run convergence over integration depth, time step, squeezed ratios, and folded regulators.",
+    "Do not promote proxy canary results to physics conclusions."
+  ],
+  "locked_inputs": [
+    "A2_FROZEN_BENCHMARK_MANIFEST.json",
+    "A2_CUBIC_OPERATOR_REGISTRY.json",
+    "A2_SHAPE_SCAN_GRID.csv",
+    "A2_PASS_FAIL_GATES.json"
+  ]
+}

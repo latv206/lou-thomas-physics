@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "scope": "finite TFIM instrument, not a cosmological validation",
+  "source_sha256": {
+    "run_phase1.py": "6505d0f20ee10540f9248cab06b638f356b01b596ea9d5add3e0389d9dec6935",
+    "gaussian_tfim.py": "60fc23d0a9ddf6a9cfefb35bd9d22cb70e1d87b5135327d0858b3a503d79f88e",
+    "ed_tfim.py": "533410cdd74b2aee3ae5add3ff45f446fa37531cbd08af066fcde635e660576f"
+  },
+  "numbers": {
+    "validation_N10": {
+      "1.0": {
+        "dE": 1.4210854715202004e-14,
+        "max_dS": 2.6334490144108713e-13,
+        "E": -12.38148999965477
+      },
+      "1.5": {
+        "dE": 3.552713678800501e-14,
+        "max_dS": 4.619638005465276e-13,
+        "E": -16.53525494675913
+      }
+    },
+    "calabrese_cardy": {
+      "c_fit": 0.5061831642190168,
+      "rms_resid": 6.0875399868440344e-05
+    },
+    "first_law": {
+      "slope": 1.9698467404427915,
+      "max_identity_residual": 1.0535192510041647e-15,
+      "max_dK_ED_vs_Gaussian": 5.643541189925827e-13,
+      "g_KM": 10.314321539396653,
+      "S_A": 0.6450769524915316
+    },
+    "eh_profile": {
+      "R2_parabola": 0.9982980220600175,
+      "nn_share": 0.9859005168033393
+    }
+  }
+}
